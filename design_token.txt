@@ -1,0 +1,2 @@
+1. green themed ui
+2. lucide-react icons

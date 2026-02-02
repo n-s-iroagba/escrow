@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Fintech Login | GreenWealth</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec5b",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102216",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .gradient-bg {
+            background: radial-gradient(circle at top right, rgba(19, 236, 91, 0.08), transparent 40%),
+                        radial-gradient(circle at bottom left, rgba(19, 236, 91, 0.05), transparent 30%);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col font-display transition-colors duration-300">
+<!-- Top Navigation Bar -->
+<header class="w-full px-6 lg:px-20 py-4 flex items-center justify-between border-b border-gray-200 dark:border-white/10 bg-white/50 dark:bg-black/20 backdrop-blur-md sticky top-0 z-50">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 text-primary">
+<svg fill="currentColor" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M36.7273 44C33.9891 44 31.6043 39.8386 30.3636 33.69C29.123 39.8386 26.7382 44 24 44C21.2618 44 18.877 39.8386 17.6364 33.69C16.3957 39.8386 14.0109 44 11.2727 44C7.25611 44 4 35.0457 4 24C4 12.9543 7.25611 4 11.2727 4C14.0109 4 16.3957 8.16144 17.6364 14.31C18.877 8.16144 21.2618 4 24 4C26.7382 4 29.123 8.16144 30.3636 14.31C31.6043 8.16144 33.9891 4 36.7273 4C40.7439 4 44 12.9543 44 24C44 35.0457 40.7439 44 36.7273 44Z"></path>
+</svg>
+</div>
+<span class="text-[#0d1b12] dark:text-white text-xl font-bold tracking-tight">GreenWealth</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="hidden sm:flex text-sm font-semibold text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">Support</button>
+<button class="bg-primary hover:bg-primary/90 text-[#0d1b12] px-5 py-2 rounded-lg text-sm font-bold transition-all shadow-sm">Sign Up</button>
+</div>
+</header>
+<main class="flex-grow flex items-center justify-center p-6 gradient-bg">
+<div class="w-full max-w-[440px] bg-white dark:bg-zinc-900 shadow-2xl shadow-emerald-900/5 rounded-xl border border-gray-100 dark:border-white/5 overflow-hidden">
+<!-- Login Header -->
+<div class="pt-10 pb-6 px-8 text-center">
+<h1 class="text-3xl font-bold text-[#0d1b12] dark:text-white tracking-tight">Welcome Back</h1>
+<p class="text-gray-500 dark:text-gray-400 mt-2 text-sm">Enter your details to manage your assets.</p>
+</div>
+<!-- Login Form -->
+<form class="px-8 pb-8 space-y-5">
+<!-- Email Field -->
+<div class="space-y-1.5">
+<label class="text-sm font-semibold text-[#0d1b12] dark:text-gray-200 ml-1">Email Address</label>
+<div class="relative group">
+<input class="w-full h-12 px-4 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-zinc-800/50 text-[#0d1b12] dark:text-white placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" placeholder="name@company.com" type="email"/>
+</div>
+</div>
+<!-- Password Field -->
+<div class="space-y-1.5">
+<div class="flex justify-between items-center px-1">
+<label class="text-sm font-semibold text-[#0d1b12] dark:text-gray-200">Password</label>
+<a class="text-xs font-bold text-emerald-700 dark:text-primary hover:underline" href="#">Forgot Password?</a>
+</div>
+<div class="relative group flex items-stretch">
+<input class="w-full h-12 px-4 rounded-lg rounded-r-none border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-zinc-800/50 text-[#0d1b12] dark:text-white placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all border-r-0" placeholder="••••••••" type="password"/>
+<button class="flex items-center justify-center px-3 border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-zinc-800/50 rounded-r-lg border-l-0 text-gray-400 hover:text-primary transition-colors" type="button">
+<span class="material-symbols-outlined text-xl">visibility</span>
+</button>
+</div>
+</div>
+<!-- Submit Button -->
+<button class="w-full h-12 bg-primary hover:bg-emerald-400 text-[#0d1b12] font-bold rounded-lg shadow-lg shadow-primary/20 transition-all transform active:scale-[0.98] mt-2" type="submit">
+                    Log In
+                </button>
+<!-- Divider -->
+<div class="relative py-4">
+<div class="absolute inset-0 flex items-center">
+<div class="w-full border-t border-gray-100 dark:border-white/5"></div>
+</div>
+<div class="relative flex justify-center text-xs uppercase">
+<span class="bg-white dark:bg-zinc-900 px-3 text-gray-400 font-medium tracking-wider">Or continue with</span>
+</div>
+</div>
+<!-- Social Logins -->
+<div class="grid grid-cols-2 gap-4">
+<button class="flex items-center justify-center gap-2 h-11 rounded-lg border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors" type="button">
+<img alt="Google" class="w-5 h-5" data-alt="Google logo in colors" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjAjBWTjrCjBSYroMo6Rb-VAWOgg_dHKBQ5nmJtBlirhjkupfrADRsVmoI1Zj8DNgOm1ZnALI-tOe1Xq6iZYLnmF95PkjaoyYbfvt-Nc2aFLiNYB6kwOZoolxnXCkMYqBzoBIjNtO6UiHk1h6gW6UXfBh11j4nUxwF-Y4UP94OBIWBAdwQX7oW7wu6eX6oD9TzE3a48onhXK6owHTv1CvBEOpWEM78iP7wWeDmR3_MlW9ajUOd5RbId_y2BM0gfq_Nr_ACqZmTj0A"/>
+<span class="text-sm font-medium text-gray-700 dark:text-gray-200">Google</span>
+</button>
+<button class="flex items-center justify-center gap-2 h-11 rounded-lg border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors" type="button">
+<span class="material-symbols-outlined text-xl text-gray-900 dark:text-white">ios</span>
+<span class="text-sm font-medium text-gray-700 dark:text-gray-200">Apple</span>
+</button>
+</div>
+</form>
+<!-- Footer -->
+<div class="bg-gray-50/50 dark:bg-black/20 py-4 px-8 text-center border-t border-gray-100 dark:border-white/5">
+<p class="text-sm text-gray-500 dark:text-gray-400">
+                    Don't have an account? 
+                    <a class="font-bold text-emerald-700 dark:text-primary hover:underline" href="#">Create one</a>
+</p>
+</div>
+</div>
+</main>
+<!-- Page Footer -->
+<footer class="py-8 text-center">
+<div class="flex items-center justify-center gap-2 text-xs text-gray-400 dark:text-gray-500 uppercase tracking-widest font-semibold mb-2">
+<span class="material-symbols-outlined text-sm text-emerald-500">lock</span>
+            Secure 256-bit AES Encryption
+        </div>
+<div class="flex justify-center gap-6 text-xs text-gray-400 dark:text-gray-500">
+<a class="hover:text-primary" href="#">Privacy Policy</a>
+<a class="hover:text-primary" href="#">Terms of Service</a>
+<a class="hover:text-primary" href="#">Help Center</a>
+</div>
+</footer>
+</body></html>

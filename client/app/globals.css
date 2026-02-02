@@ -1,0 +1,16 @@
+/* app/globals.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+@layer utilities {
+  .gradient-bg {
+    background: radial-gradient(circle at top right, rgba(19, 236, 91, 0.08), transparent 40%),
+      radial-gradient(circle at bottom left, rgba(19, 236, 91, 0.05), transparent 30%);
+  }
+}
