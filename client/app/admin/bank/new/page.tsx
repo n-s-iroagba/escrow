@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import API_ROUTES from '@/constants/api-routes';
 import { usePost } from '@/hooks/useApiQuery';
 import { uploadFile } from '@/utils';
-import { ArrowLeft, Upload, X } from 'lucide-react';
+import { ArrowLeft, Upload, X, Landmark, Building2 } from 'lucide-react';
 import Link from 'next/link';
 
 export default function NewBankPage() {
@@ -26,9 +26,7 @@ export default function NewBankPage() {
     });
 
     const { post, isPending, error } = usePost(API_ROUTES.BANKS.CREATE, {
-        onSuccess: () => {
-            router.push('/admin/bank'); // Redirect to list
-        },
+        onSuccess: () => router.push('/admin/bank'),
     });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -39,7 +37,6 @@ export default function NewBankPage() {
     const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files || e.target.files.length === 0) return;
         const file = e.target.files[0];
-
         try {
             setUploading(true);
             const url = await uploadFile(file, 'image');
@@ -47,7 +44,6 @@ export default function NewBankPage() {
             setFormData((prev) => ({ ...prev, logoUrl: url }));
         } catch (err) {
             console.error('Upload failed', err);
-            // Ideally show toast
         } finally {
             setUploading(false);
         }
@@ -64,185 +60,141 @@ export default function NewBankPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#f6f8f6] p-8 font-display text-[#0d1b12]">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-6 lg:p-10">
             <div className="max-w-3xl mx-auto">
                 {/* Header */}
                 <div className="mb-8 flex items-center gap-4">
                     <Link
                         href="/admin/bank"
-                        className="p-2 rounded-full hover:bg-gray-200 transition-colors"
+                        className="p-2.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 transition-colors shadow-sm"
                     >
-                        <ArrowLeft className="w-5 h-5" />
+                        <ArrowLeft className="w-5 h-5 text-slate-600" />
                     </Link>
-                    <h1 className="text-2xl font-bold">Add New Bank</h1>
+                    <div>
+                        <h1 className="text-2xl font-bold text-slate-900">Add New Bank</h1>
+                        <p className="text-slate-500 text-sm">Configure a new fiat bank account for escrow settlements.</p>
+                    </div>
                 </div>
 
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                        {/* Logo Upload */}
+                <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/40 border border-slate-200/60 overflow-hidden">
+                    {/* Header Banner */}
+                    <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 p-6 flex items-center gap-4">
+                        <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+                            <Landmark className="w-7 h-7 text-white" />
+                        </div>
                         <div>
-                            <label className="block text-sm font-medium mb-2 text-gray-700">Bank Logo</label>
-                            <div className="flex items-center gap-6">
-                                {logoPreview ? (
-                                    <div className="relative w-24 h-24 rounded-xl border border-gray-100 overflow-hidden bg-gray-50 group">
-                                        <img
-                                            src={logoPreview}
-                                            alt="Logo preview"
-                                            className="w-full h-full object-contain p-2"
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={handleRemoveLogo}
-                                            className="absolute top-1 right-1 p-1 bg-white rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50 hover:text-red-500"
-                                        >
-                                            <X className="w-4 h-4" />
-                                        </button>
-                                    </div>
-                                ) : (
-                                    <div className="relative w-24 h-24 rounded-xl border-2 border-dashed border-gray-200 hover:border-[#13ec5b] transition-colors bg-gray-50 flex flex-col items-center justify-center text-gray-400 group cursor-pointer">
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={handleLogoUpload}
-                                            disabled={uploading}
-                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
-                                        />
-                                        <Upload className="w-6 h-6 mb-1 group-hover:text-[#13ec5b] transition-colors" />
-                                        <span className="text-[10px] uppercase font-semibold tracking-wider">
-                                            {uploading ? '...' : 'Upload'}
-                                        </span>
-                                    </div>
-                                )}
-                                <div className="flex-1">
-                                    <p className="text-sm text-gray-500">
-                                        Upload a transparent PNG/SVG for best results. Max 2MB.
-                                    </p>
+                            <h2 className="text-white font-bold text-lg">Bank Account Setup</h2>
+                            <p className="text-white/80 text-sm">Enter the banking details below</p>
+                        </div>
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="p-8 space-y-8">
+                        {/* Logo Upload */}
+                        <div className="flex items-center gap-6">
+                            {logoPreview ? (
+                                <div className="relative w-20 h-20 rounded-xl border border-slate-200 overflow-hidden bg-slate-50 group">
+                                    <img src={logoPreview} alt="Logo" className="w-full h-full object-contain p-2" />
+                                    <button
+                                        type="button"
+                                        onClick={handleRemoveLogo}
+                                        className="absolute top-1 right-1 p-1 bg-white rounded-full shadow opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50"
+                                    >
+                                        <X className="w-4 h-4 text-red-500" />
+                                    </button>
                                 </div>
+                            ) : (
+                                <label className="w-20 h-20 rounded-xl border-2 border-dashed border-slate-200 hover:border-emerald-400 bg-slate-50 flex flex-col items-center justify-center cursor-pointer transition-colors">
+                                    <input type="file" accept="image/*" onChange={handleLogoUpload} disabled={uploading} className="hidden" />
+                                    <Upload className="w-5 h-5 text-slate-400 mb-1" />
+                                    <span className="text-[10px] text-slate-400 font-semibold">{uploading ? '...' : 'Logo'}</span>
+                                </label>
+                            )}
+                            <div>
+                                <p className="font-medium text-slate-900 text-sm">Bank Logo</p>
+                                <p className="text-xs text-slate-400">PNG or SVG, max 2MB</p>
                             </div>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {/* Bank Name */}
                             <div className="col-span-2">
-                                <label className="block text-sm font-medium mb-1.5 text-gray-700">Bank Name</label>
+                                <label className="block text-sm font-semibold text-slate-700 mb-2">Bank Name *</label>
                                 <input
-                                    type="text"
-                                    name="name"
-                                    value={formData.name}
-                                    onChange={handleInputChange}
-                                    required
-                                    className="w-full h-12 px-4 rounded-xl bg-gray-50 border border-gray-200 focus:border-[#13ec5b] focus:ring-1 focus:ring-[#13ec5b] focus:bg-white transition-all outline-none"
+                                    type="text" name="name" value={formData.name} onChange={handleInputChange} required
+                                    className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 focus:bg-white transition-all outline-none"
                                     placeholder="e.g. Chase Bank"
                                 />
                             </div>
-
-                            {/* Account Number */}
                             <div>
-                                <label className="block text-sm font-medium mb-1.5 text-gray-700">Account Number</label>
+                                <label className="block text-sm font-semibold text-slate-700 mb-2">Account Number *</label>
                                 <input
-                                    type="text"
-                                    name="accountNumber"
-                                    value={formData.accountNumber}
-                                    onChange={handleInputChange}
-                                    required
-                                    className="w-full h-12 px-4 rounded-xl bg-gray-50 border border-gray-200 focus:border-[#13ec5b] focus:ring-1 focus:ring-[#13ec5b] focus:bg-white transition-all outline-none"
+                                    type="text" name="accountNumber" value={formData.accountNumber} onChange={handleInputChange} required
+                                    className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 focus:bg-white transition-all outline-none font-mono"
                                 />
                             </div>
-
-                            {/* Currency */}
                             <div>
-                                <label className="block text-sm font-medium mb-1.5 text-gray-700">Currency</label>
+                                <label className="block text-sm font-semibold text-slate-700 mb-2">Currency *</label>
                                 <select
-                                    name="currency"
-                                    value={formData.currency}
-                                    onChange={handleInputChange}
-                                    className="w-full h-12 px-4 rounded-xl bg-gray-50 border border-gray-200 focus:border-[#13ec5b] focus:ring-1 focus:ring-[#13ec5b] focus:bg-white transition-all outline-none appearance-none"
+                                    name="currency" value={formData.currency} onChange={handleInputChange}
+                                    className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 focus:bg-white transition-all outline-none appearance-none"
                                 >
-                                    <option value="USD">USD - United States Dollar</option>
+                                    <option value="USD">USD - US Dollar</option>
                                     <option value="EUR">EUR - Euro</option>
                                     <option value="GBP">GBP - British Pound</option>
+                                    <option value="NGN">NGN - Nigerian Naira</option>
                                 </select>
                             </div>
-
-                            {/* Recipient Name */}
                             <div className="col-span-2">
-                                <label className="block text-sm font-medium mb-1.5 text-gray-700">Recipient Name (Optional)</label>
+                                <label className="block text-sm font-semibold text-slate-700 mb-2">Recipient Name</label>
                                 <input
-                                    type="text"
-                                    name="recipientName"
-                                    value={formData.recipientName}
-                                    onChange={handleInputChange}
-                                    className="w-full h-12 px-4 rounded-xl bg-gray-50 border border-gray-200 focus:border-[#13ec5b] focus:ring-1 focus:ring-[#13ec5b] focus:bg-white transition-all outline-none"
+                                    type="text" name="recipientName" value={formData.recipientName} onChange={handleInputChange}
+                                    className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 focus:bg-white transition-all outline-none"
                                     placeholder="Account Holder Name"
                                 />
                             </div>
-
-                            {/* Routing Number */}
                             <div>
-                                <label className="block text-sm font-medium mb-1.5 text-gray-700">Routing Number (Optional)</label>
+                                <label className="block text-sm font-semibold text-slate-700 mb-2">Routing Number</label>
                                 <input
-                                    type="text"
-                                    name="routingNumber"
-                                    value={formData.routingNumber}
-                                    onChange={handleInputChange}
-                                    className="w-full h-12 px-4 rounded-xl bg-gray-50 border border-gray-200 focus:border-[#13ec5b] focus:ring-1 focus:ring-[#13ec5b] focus:bg-white transition-all outline-none"
+                                    type="text" name="routingNumber" value={formData.routingNumber} onChange={handleInputChange}
+                                    className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 focus:bg-white transition-all outline-none font-mono"
                                 />
                             </div>
-
-                            {/* SWIFT */}
                             <div>
-                                <label className="block text-sm font-medium mb-1.5 text-gray-700">SWIFT / BIC (Optional)</label>
+                                <label className="block text-sm font-semibold text-slate-700 mb-2">SWIFT / BIC</label>
                                 <input
-                                    type="text"
-                                    name="swift"
-                                    value={formData.swift}
-                                    onChange={handleInputChange}
-                                    className="w-full h-12 px-4 rounded-xl bg-gray-50 border border-gray-200 focus:border-[#13ec5b] focus:ring-1 focus:ring-[#13ec5b] focus:bg-white transition-all outline-none"
+                                    type="text" name="swift" value={formData.swift} onChange={handleInputChange}
+                                    className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 focus:bg-white transition-all outline-none font-mono uppercase"
                                 />
                             </div>
-
-                            {/* IBAN */}
                             <div className="col-span-2">
-                                <label className="block text-sm font-medium mb-1.5 text-gray-700">IBAN (Optional)</label>
+                                <label className="block text-sm font-semibold text-slate-700 mb-2">IBAN</label>
                                 <input
-                                    type="text"
-                                    name="iban"
-                                    value={formData.iban}
-                                    onChange={handleInputChange}
-                                    className="w-full h-12 px-4 rounded-xl bg-gray-50 border border-gray-200 focus:border-[#13ec5b] focus:ring-1 focus:ring-[#13ec5b] focus:bg-white transition-all outline-none"
+                                    type="text" name="iban" value={formData.iban} onChange={handleInputChange}
+                                    className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 focus:bg-white transition-all outline-none font-mono uppercase"
                                 />
                             </div>
-
-                            {/* Bank Address */}
                             <div className="col-span-2">
-                                <label className="block text-sm font-medium mb-1.5 text-gray-700">Bank Address (Optional)</label>
+                                <label className="block text-sm font-semibold text-slate-700 mb-2">Bank Address</label>
                                 <input
-                                    type="text"
-                                    name="bankAddress"
-                                    value={formData.bankAddress}
-                                    onChange={handleInputChange}
-                                    className="w-full h-12 px-4 rounded-xl bg-gray-50 border border-gray-200 focus:border-[#13ec5b] focus:ring-1 focus:ring-[#13ec5b] focus:bg-white transition-all outline-none"
+                                    type="text" name="bankAddress" value={formData.bankAddress} onChange={handleInputChange}
+                                    className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 focus:bg-white transition-all outline-none"
                                 />
                             </div>
                         </div>
 
                         {error && (
-                            <div className="p-4 rounded-xl bg-red-50 text-red-600 text-sm">
+                            <div className="p-4 rounded-xl bg-red-50 text-red-700 text-sm border border-red-100">
                                 {error}
                             </div>
                         )}
 
-                        <div className="pt-4 flex items-center justify-end gap-4">
-                            <Link
-                                href="/admin/bank"
-                                className="px-6 py-3 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 transition-colors"
-                            >
+                        <div className="pt-4 flex items-center justify-end gap-4 border-t border-slate-100">
+                            <Link href="/admin/bank" className="px-6 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 transition-colors">
                                 Cancel
                             </Link>
                             <button
                                 type="submit"
                                 disabled={isPending || uploading}
-                                className="px-8 py-3 rounded-xl bg-[#13ec5b] text-[#0d1b12] text-sm font-bold shadow-[0_4px_14px_0_rgba(19,236,91,0.3)] hover:shadow-[0_6px_20px_rgba(19,236,91,0.23)] hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="px-8 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white text-sm font-bold shadow-lg shadow-emerald-500/25 transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {isPending ? 'Creating...' : 'Create Bank'}
                             </button>

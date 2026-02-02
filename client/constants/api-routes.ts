@@ -1,4 +1,13 @@
 const API_ROUTES = {
+    AUTH: {
+        LOGIN: '/auth/login',
+        REGISTER: '/auth/register',
+        LOGOUT: '/auth/logout',
+        REFRESH_ACCESS_TOKEN: '/auth/refresh-token',
+        VERIFY_EMAIL: '/auth/verify-email',
+        FORGOT_PASSWORD: '/auth/forgot-password',
+        RESET_PASSWORD: '/auth/reset-password',
+    },
     ESCROWS: {
         GET_ALL: '/escrow', // Admin or cleanup
         GET_MY: '/escrow/my-escrows',

@@ -13,6 +13,7 @@ import kycRoutes from './routers/kycRoutes';
 import bankRoutes from './routers/bankRoutes';
 import custodialWalletRoutes from './routers/custodialWalletRoutes';
 import userRoutes from './routers/userRoutes';
+import authRoutes from './routers/authRoutes';
 
 class App {
   public app: Application;
@@ -55,6 +56,10 @@ class App {
     this.app.use(express.json({ limit: '10mb' }));
     this.app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+    // Cookie parsing
+    const cookieParser = require('cookie-parser');
+    this.app.use(cookieParser());
+
   }
 
   private async initializeDatabase(): Promise<void> {
@@ -93,6 +98,8 @@ class App {
     this.app.use(`/api/${env.API_VERSION}/kyc`, kycRoutes);
     this.app.use(`/api/${env.API_VERSION}/banks`, bankRoutes);
     this.app.use(`/api/${env.API_VERSION}/custodial-wallets`, custodialWalletRoutes);
+    this.app.use(`/api/${env.API_VERSION}/auth`, authRoutes);
+    this.app.use(`/api/${env.API_VERSION}/users`, userRoutes);
 
 
     // 404 handler

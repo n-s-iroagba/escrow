@@ -4,14 +4,13 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import API_ROUTES from '@/constants/api-routes';
 import { usePost, useGet } from '@/hooks/useApiQuery';
-import { TradeType, TokenType, PaymentMethod } from '@/constants/enums';
+import { TradeType, PaymentMethod } from '@/constants/enums';
+import { ArrowLeft, ArrowRight, Check, ShieldCheck, Coins, Banknote, Wallet } from 'lucide-react';
+import Link from 'next/link';
 
 export default function InitiateEscrowPage() {
     const router = useRouter();
     const [step, setStep] = useState(1);
-
-    // Use user profile to pre-fill email? ideally yes but keeping simple
-    // Assuming context provides user email, for now hardcoded placeholder or store
 
     interface FormData {
         isBuyerInitiated: boolean;
@@ -32,20 +31,16 @@ export default function InitiateEscrowPage() {
     }
 
     const [formData, setFormData] = useState<FormData>({
-        isBuyerInitiated: true, // Default to Buyer role
+        isBuyerInitiated: true,
         tradeType: TradeType.CRYPTO_TO_CRYPTO,
         buyCurrency: 'BTC',
         sellCurrency: 'USDT',
         amount: '',
         counterPartyEmail: '',
         paymentMethod: '',
-        counterPartyConfirmationDeadline: '',
-
-        // Reception details
+        counterPartyConfirmationDeadline: '24',
         walletAddress: '',
         walletNetwork: 'mainnet',
-
-        // Bank Details (if Seller & Crypto-Fiat)
         bankAccountNumber: '',
         bankAccountHolderName: '',
         bankRoutingNumber: '',
@@ -54,12 +49,8 @@ export default function InitiateEscrowPage() {
     });
 
     const { post, isPending, error } = usePost(API_ROUTES.ESCROWS.CREATE, {
-        onSuccess: (data) => {
-            router.push(`/trader/escrow/${data.id}`);
-        },
+        onSuccess: (data) => router.push(`/trader/escrow/${data.id}`),
     });
-
-    const { data: banks } = useGet(API_ROUTES.BANKS.GET_ALL);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -75,7 +66,6 @@ export default function InitiateEscrowPage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
         const payload: any = {
             isBuyerInitiated: formData.isBuyerInitiated,
             tradeType: formData.tradeType,
@@ -84,24 +74,14 @@ export default function InitiateEscrowPage() {
             amount: parseFloat(formData.amount),
             counterPartyEmail: formData.counterPartyEmail,
             paymentMethod: formData.paymentMethod,
-            // Construct deadline date
             counterPartyConfirmationDeadline: new Date(Date.now() + (parseInt(formData.counterPartyConfirmationDeadline || '24') * 60 * 60 * 1000)),
         };
 
-        // Attach reception details based on rules
         const isCryptoFiat = formData.tradeType === TradeType.CRYPTO_TO_FIAT;
-
         if (formData.isBuyerInitiated) {
-            // Buyer needs wallet to receive crypto
-            // (Assuming buyer always buying crypto in this context based on "buyCurrency")
-            payload.walletDetails = {
-                walletAddress: formData.walletAddress,
-                network: formData.walletNetwork
-            };
+            payload.walletDetails = { walletAddress: formData.walletAddress, network: formData.walletNetwork };
         } else {
-            // Seller Initiated
             if (isCryptoFiat) {
-                // Seller receiving Fiat -> Bank
                 payload.bankDetails = {
                     accountNumber: formData.bankAccountNumber,
                     accountHolderName: formData.bankAccountHolderName,
@@ -110,65 +90,89 @@ export default function InitiateEscrowPage() {
                     swift: formData.bankSwift
                 };
             } else {
-                // Crypto-Crypto -> Seller receiving Crypto -> Wallet
-                payload.walletDetails = {
-                    walletAddress: formData.walletAddress,
-                    network: formData.walletNetwork
-                };
+                payload.walletDetails = { walletAddress: formData.walletAddress, network: formData.walletNetwork };
             }
         }
-
         await post(payload);
     };
 
-    return (
-        <div className="min-h-screen bg-[#f6f8f6] p-8 font-display text-[#0d1b12]">
-            <div className="max-w-3xl mx-auto">
-                <h1 className="text-3xl font-bold mb-8">Initiate Escrow</h1>
+    const steps = [
+        { num: 1, label: 'Transaction' },
+        { num: 2, label: 'Details' },
+        { num: 3, label: 'Reception' },
+    ];
 
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-                    {/* Stepper Indicator */}
-                    <div className="flex items-center gap-4 mb-8 text-sm">
-                        <span className={`font-bold ${step >= 1 ? 'text-[#13ec5b]' : 'text-gray-400'}`}>1. Transaction</span>
-                        <div className="h-px bg-gray-200 flex-1"></div>
-                        <span className={`font-bold ${step >= 2 ? 'text-[#13ec5b]' : 'text-gray-400'}`}>2. Details</span>
-                        <div className="h-px bg-gray-200 flex-1"></div>
-                        <span className={`font-bold ${step >= 3 ? 'text-[#13ec5b]' : 'text-gray-400'}`}>3. Reception</span>
+    return (
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-6 lg:p-10">
+            <div className="max-w-3xl mx-auto">
+                {/* Header */}
+                <div className="mb-8 flex items-center gap-4">
+                    <Link href="/trader/escrow" className="p-2.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 transition-colors shadow-sm">
+                        <ArrowLeft className="w-5 h-5 text-slate-600" />
+                    </Link>
+                    <div>
+                        <h1 className="text-2xl font-bold text-slate-900">Initiate Escrow</h1>
+                        <p className="text-slate-500 text-sm">Create a new secure transaction</p>
+                    </div>
+                </div>
+
+                <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/40 border border-slate-200/60 overflow-hidden">
+                    {/* Stepper */}
+                    <div className="bg-slate-50 p-6 border-b border-slate-100">
+                        <div className="flex items-center justify-between max-w-md mx-auto">
+                            {steps.map((s, i) => (
+                                <div key={s.num} className="flex items-center">
+                                    <div className={`flex items-center gap-2 ${step >= s.num ? 'text-emerald-600' : 'text-slate-400'}`}>
+                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${step >= s.num ? 'bg-emerald-500 text-white' : 'bg-slate-200 text-slate-500'}`}>
+                                            {step > s.num ? <Check className="w-4 h-4" /> : s.num}
+                                        </div>
+                                        <span className="font-semibold text-sm hidden sm:inline">{s.label}</span>
+                                    </div>
+                                    {i < steps.length - 1 && (
+                                        <div className={`w-12 sm:w-20 h-0.5 mx-2 ${step > s.num ? 'bg-emerald-500' : 'bg-slate-200'}`}></div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
                     </div>
 
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={handleSubmit} className="p-8">
                         {step === 1 && (
-                            <div className="space-y-6">
+                            <div className="space-y-8">
                                 {/* Role Selection */}
                                 <div>
-                                    <label className="block text-sm font-medium mb-2 text-gray-700">I am the...</label>
-                                    <div className="flex gap-4">
+                                    <label className="block text-sm font-semibold text-slate-700 mb-3">I am the...</label>
+                                    <div className="grid grid-cols-2 gap-4">
                                         <button
                                             type="button"
                                             onClick={() => handleRoleSelect('buyer')}
-                                            className={`flex-1 py-3 rounded-xl border-2 transition-all font-bold ${formData.isBuyerInitiated ? 'border-[#13ec5b] bg-green-50 text-[#0d1b12]' : 'border-gray-200 text-gray-400 hover:border-gray-300'}`}
+                                            className={`p-6 rounded-xl border-2 transition-all text-center ${formData.isBuyerInitiated ? 'border-emerald-500 bg-emerald-50' : 'border-slate-200 hover:border-slate-300'}`}
                                         >
-                                            Buyer
+                                            <div className={`w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center ${formData.isBuyerInitiated ? 'bg-emerald-500 text-white' : 'bg-slate-100 text-slate-400'}`}>
+                                                <Coins className="w-6 h-6" />
+                                            </div>
+                                            <p className={`font-bold ${formData.isBuyerInitiated ? 'text-emerald-700' : 'text-slate-600'}`}>Buyer</p>
+                                            <p className="text-xs text-slate-400 mt-1">I'm purchasing assets</p>
                                         </button>
                                         <button
                                             type="button"
                                             onClick={() => handleRoleSelect('seller')}
-                                            className={`flex-1 py-3 rounded-xl border-2 transition-all font-bold ${!formData.isBuyerInitiated ? 'border-[#13ec5b] bg-green-50 text-[#0d1b12]' : 'border-gray-200 text-gray-400 hover:border-gray-300'}`}
+                                            className={`p-6 rounded-xl border-2 transition-all text-center ${!formData.isBuyerInitiated ? 'border-emerald-500 bg-emerald-50' : 'border-slate-200 hover:border-slate-300'}`}
                                         >
-                                            Seller
+                                            <div className={`w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center ${!formData.isBuyerInitiated ? 'bg-emerald-500 text-white' : 'bg-slate-100 text-slate-400'}`}>
+                                                <Banknote className="w-6 h-6" />
+                                            </div>
+                                            <p className={`font-bold ${!formData.isBuyerInitiated ? 'text-emerald-700' : 'text-slate-600'}`}>Seller</p>
+                                            <p className="text-xs text-slate-400 mt-1">I'm selling assets</p>
                                         </button>
                                     </div>
                                 </div>
 
                                 {/* Trade Type */}
                                 <div>
-                                    <label className="block text-sm font-medium mb-2 text-gray-700">Trade Type</label>
-                                    <select
-                                        name="tradeType"
-                                        value={formData.tradeType}
-                                        onChange={handleInputChange}
-                                        className="w-full h-12 px-4 rounded-xl bg-gray-50 border border-gray-200 outline-none"
-                                    >
+                                    <label className="block text-sm font-semibold text-slate-700 mb-2">Trade Type</label>
+                                    <select name="tradeType" value={formData.tradeType} onChange={handleInputChange}
+                                        className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all">
                                         <option value={TradeType.CRYPTO_TO_CRYPTO}>Crypto → Crypto</option>
                                         <option value={TradeType.CRYPTO_TO_FIAT}>Crypto → Fiat</option>
                                     </select>
@@ -177,13 +181,9 @@ export default function InitiateEscrowPage() {
                                 {/* Currencies */}
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-sm font-medium mb-2 text-gray-700">Buying (Receiving)</label>
-                                        <select
-                                            name="buyCurrency"
-                                            value={formData.buyCurrency}
-                                            onChange={handleInputChange}
-                                            className="w-full h-12 px-4 rounded-xl bg-gray-50 border border-gray-200 outline-none"
-                                        >
+                                        <label className="block text-sm font-semibold text-slate-700 mb-2">Buying (Receiving)</label>
+                                        <select name="buyCurrency" value={formData.buyCurrency} onChange={handleInputChange}
+                                            className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 outline-none">
                                             <option value="BTC">BTC</option>
                                             <option value="ETH">ETH</option>
                                             <option value="USDT">USDT</option>
@@ -196,13 +196,9 @@ export default function InitiateEscrowPage() {
                                         </select>
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium mb-2 text-gray-700">Selling (Sending)</label>
-                                        <select
-                                            name="sellCurrency"
-                                            value={formData.sellCurrency}
-                                            onChange={handleInputChange}
-                                            className="w-full h-12 px-4 rounded-xl bg-gray-50 border border-gray-200 outline-none"
-                                        >
+                                        <label className="block text-sm font-semibold text-slate-700 mb-2">Selling (Sending)</label>
+                                        <select name="sellCurrency" value={formData.sellCurrency} onChange={handleInputChange}
+                                            className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 outline-none">
                                             <option value="BTC">BTC</option>
                                             <option value="ETH">ETH</option>
                                             <option value="USDT">USDT</option>
@@ -212,115 +208,111 @@ export default function InitiateEscrowPage() {
 
                                 {/* Amount */}
                                 <div>
-                                    <label className="block text-sm font-medium mb-2 text-gray-700">Transaction Value</label>
-                                    <input
-                                        type="number"
-                                        name="amount"
-                                        value={formData.amount}
-                                        onChange={handleInputChange}
-                                        className="w-full h-12 px-4 rounded-xl bg-gray-50 border border-gray-200 outline-none"
-                                        placeholder="0.00"
-                                    />
+                                    <label className="block text-sm font-semibold text-slate-700 mb-2">Transaction Amount</label>
+                                    <div className="relative">
+                                        <input type="number" name="amount" value={formData.amount} onChange={handleInputChange}
+                                            className="w-full h-14 px-4 pr-16 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none text-xl font-bold transition-all"
+                                            placeholder="0.00" />
+                                        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-semibold">{formData.buyCurrency}</span>
+                                    </div>
                                 </div>
 
                                 <div className="flex justify-end pt-4">
-                                    <button onClick={nextStep} type="button" className="px-6 py-3 bg-[#13ec5b] rounded-xl font-bold">Next</button>
+                                    <button onClick={nextStep} type="button" className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-emerald-500/25 hover:from-emerald-600 hover:to-emerald-700 transition-all">
+                                        Next <ArrowRight className="w-4 h-4" />
+                                    </button>
                                 </div>
                             </div>
                         )}
 
                         {step === 2 && (
                             <div className="space-y-6">
-                                {/* Payment Method (If Buyer & Crypto-Fiat) */}
                                 {formData.isBuyerInitiated && formData.tradeType === TradeType.CRYPTO_TO_FIAT && (
                                     <div>
-                                        <label className="block text-sm font-medium mb-2 text-gray-700">Payment Method</label>
-                                        <select
-                                            name="paymentMethod"
-                                            value={formData.paymentMethod}
-                                            onChange={handleInputChange}
-                                            className="w-full h-12 px-4 rounded-xl bg-gray-50 border border-gray-200 outline-none"
-                                        >
+                                        <label className="block text-sm font-semibold text-slate-700 mb-2">Payment Method</label>
+                                        <select name="paymentMethod" value={formData.paymentMethod} onChange={handleInputChange}
+                                            className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 outline-none">
                                             <option value="">Select Method</option>
                                             {parseFloat(formData.amount) < 60000 && <option value={PaymentMethod.PAYPAL}>PayPal</option>}
                                             <option value={PaymentMethod.WIRE_TRANSFER}>Wire Transfer</option>
                                         </select>
                                     </div>
                                 )}
-
                                 <div>
-                                    <label className="block text-sm font-medium mb-2 text-gray-700">Counterparty Email</label>
-                                    <input
-                                        type="email"
-                                        name="counterPartyEmail"
-                                        value={formData.counterPartyEmail}
-                                        onChange={handleInputChange}
-                                        className="w-full h-12 px-4 rounded-xl bg-gray-50 border border-gray-200 outline-none"
-                                        placeholder="email@example.com"
-                                    />
+                                    <label className="block text-sm font-semibold text-slate-700 mb-2">Counterparty Email</label>
+                                    <input type="email" name="counterPartyEmail" value={formData.counterPartyEmail} onChange={handleInputChange}
+                                        className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none"
+                                        placeholder="trader@example.com" />
                                 </div>
-
                                 <div>
-                                    <label className="block text-sm font-medium mb-2 text-gray-700">Conf. Deadline (Hours)</label>
-                                    <input
-                                        type="number"
-                                        name="counterPartyConfirmationDeadline"
-                                        value={formData.counterPartyConfirmationDeadline}
-                                        onChange={handleInputChange}
-                                        className="w-full h-12 px-4 rounded-xl bg-gray-50 border border-gray-200 outline-none"
-                                        placeholder="24"
-                                    />
+                                    <label className="block text-sm font-semibold text-slate-700 mb-2">Confirmation Deadline (Hours)</label>
+                                    <input type="number" name="counterPartyConfirmationDeadline" value={formData.counterPartyConfirmationDeadline} onChange={handleInputChange}
+                                        className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 outline-none"
+                                        placeholder="24" />
                                 </div>
-
                                 <div className="flex justify-between pt-4">
-                                    <button onClick={prevStep} type="button" className="px-6 py-3 bg-gray-100 rounded-xl font-bold">Back</button>
-                                    <button onClick={nextStep} type="button" className="px-6 py-3 bg-[#13ec5b] rounded-xl font-bold">Next</button>
+                                    <button onClick={prevStep} type="button" className="px-6 py-3 bg-slate-100 text-slate-700 rounded-xl font-bold hover:bg-slate-200 transition-colors">Back</button>
+                                    <button onClick={nextStep} type="button" className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-emerald-500/25">
+                                        Next <ArrowRight className="w-4 h-4" />
+                                    </button>
                                 </div>
                             </div>
                         )}
 
                         {step === 3 && (
                             <div className="space-y-6">
-                                <h3 className="font-bold text-lg">Where should you receive assets?</h3>
+                                <div className="flex items-center gap-3 mb-6">
+                                    <div className="p-3 bg-violet-100 rounded-xl">
+                                        <Wallet className="w-6 h-6 text-violet-600" />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-slate-900">Reception Details</h3>
+                                        <p className="text-sm text-slate-500">Where should you receive your assets?</p>
+                                    </div>
+                                </div>
 
                                 {(!formData.isBuyerInitiated && formData.tradeType === TradeType.CRYPTO_TO_FIAT) ? (
-                                    // Seller receiving Fiat -> Bank Form
                                     <>
                                         <div>
-                                            <label className="block text-sm font-medium mb-2 text-gray-700">Account Holder Name</label>
-                                            <input type="text" name="bankAccountHolderName" value={formData.bankAccountHolderName} onChange={handleInputChange} className="w-full h-12 px-4 rounded-xl bg-gray-50 border border-gray-200 outline-none" />
+                                            <label className="block text-sm font-semibold text-slate-700 mb-2">Account Holder Name</label>
+                                            <input type="text" name="bankAccountHolderName" value={formData.bankAccountHolderName} onChange={handleInputChange}
+                                                className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 outline-none" />
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-medium mb-2 text-gray-700">Account Number</label>
-                                            <input type="text" name="bankAccountNumber" value={formData.bankAccountNumber} onChange={handleInputChange} className="w-full h-12 px-4 rounded-xl bg-gray-50 border border-gray-200 outline-none" />
+                                            <label className="block text-sm font-semibold text-slate-700 mb-2">Account Number</label>
+                                            <input type="text" name="bankAccountNumber" value={formData.bankAccountNumber} onChange={handleInputChange}
+                                                className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 outline-none font-mono" />
                                         </div>
                                         <div className="grid grid-cols-2 gap-4">
                                             <div>
-                                                <label className="block text-sm font-medium mb-2 text-gray-700">Routing Number</label>
-                                                <input type="text" name="bankRoutingNumber" value={formData.bankRoutingNumber} onChange={handleInputChange} className="w-full h-12 px-4 rounded-xl bg-gray-50 border border-gray-200 outline-none" />
+                                                <label className="block text-sm font-semibold text-slate-700 mb-2">Routing Number</label>
+                                                <input type="text" name="bankRoutingNumber" value={formData.bankRoutingNumber} onChange={handleInputChange}
+                                                    className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 outline-none font-mono" />
                                             </div>
                                             <div>
-                                                <label className="block text-sm font-medium mb-2 text-gray-700">SWIFT</label>
-                                                <input type="text" name="bankSwift" value={formData.bankSwift} onChange={handleInputChange} className="w-full h-12 px-4 rounded-xl bg-gray-50 border border-gray-200 outline-none" />
+                                                <label className="block text-sm font-semibold text-slate-700 mb-2">SWIFT</label>
+                                                <input type="text" name="bankSwift" value={formData.bankSwift} onChange={handleInputChange}
+                                                    className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 outline-none font-mono uppercase" />
                                             </div>
                                         </div>
                                     </>
                                 ) : (
-                                    // Receiving Crypto -> Wallet Form
-                                    <>
-                                        <div>
-                                            <label className="block text-sm font-medium mb-2 text-gray-700">Wallet Address</label>
-                                            <input type="text" name="walletAddress" value={formData.walletAddress} onChange={handleInputChange} className="w-full h-12 px-4 rounded-xl bg-gray-50 border border-gray-200 outline-none font-mono" placeholder="0x..." />
-                                        </div>
-                                    </>
+                                    <div>
+                                        <label className="block text-sm font-semibold text-slate-700 mb-2">Wallet Address</label>
+                                        <input type="text" name="walletAddress" value={formData.walletAddress} onChange={handleInputChange}
+                                            className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 outline-none font-mono"
+                                            placeholder="0x..." />
+                                    </div>
                                 )}
 
-                                {error && <div className="text-red-500 text-sm bg-red-50 p-3 rounded-lg">{error}</div>}
+                                {error && <div className="p-4 bg-red-50 text-red-700 rounded-xl text-sm border border-red-100">{error}</div>}
 
-                                <div className="flex justify-between pt-4">
-                                    <button onClick={prevStep} type="button" className="px-6 py-3 bg-gray-100 rounded-xl font-bold">Back</button>
-                                    <button type="submit" disabled={isPending} className="px-8 py-3 bg-[#13ec5b] rounded-xl font-bold shadow-lg shadow-green-200">
-                                        {isPending ? 'Initializing...' : 'Initialize Escrow'}
+                                <div className="flex justify-between pt-4 border-t border-slate-100">
+                                    <button onClick={prevStep} type="button" className="px-6 py-3 bg-slate-100 text-slate-700 rounded-xl font-bold hover:bg-slate-200 transition-colors">Back</button>
+                                    <button type="submit" disabled={isPending}
+                                        className="px-8 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-emerald-500/25 hover:from-emerald-600 hover:to-emerald-700 transition-all disabled:opacity-50">
+                                        <ShieldCheck className="w-5 h-5" />
+                                        {isPending ? 'Creating...' : 'Initialize Escrow'}
                                     </button>
                                 </div>
                             </div>

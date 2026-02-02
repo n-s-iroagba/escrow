@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useGet } from '@/hooks/useApiQuery';
 import API_ROUTES from '@/constants/api-routes';
 import Link from 'next/link';
-import { Plus, ArrowRight, Filter, Wallet } from 'lucide-react';
+import { Plus, ArrowRight, Wallet, Coins, Banknote, ChevronRight } from 'lucide-react';
 import { EscrowState } from '@/constants/enums';
 
 export default function EscrowListPage() {
@@ -15,118 +15,131 @@ export default function EscrowListPage() {
     );
 
     const getStatusBadge = (state: string) => {
-        switch (state) {
-            case EscrowState.INITIALIZED:
-                return <span className="px-2 py-1 bg-blue-50 text-blue-600 rounded text-xs font-bold border border-blue-100">Initialized</span>;
-            case EscrowState.ONE_PARTY_FUNDED:
-                return <span className="px-2 py-1 bg-yellow-50 text-yellow-600 rounded text-xs font-bold border border-yellow-100">Funding Pending</span>;
-            case EscrowState.COMPLETELY_FUNDED:
-                return <span className="px-2 py-1 bg-purple-50 text-purple-600 rounded text-xs font-bold border border-purple-100">Funded</span>;
-            case EscrowState.RELEASED:
-                return <span className="px-2 py-1 bg-green-50 text-green-600 rounded text-xs font-bold border border-green-100">Success</span>;
-            case EscrowState.DISPUTED:
-                return <span className="px-2 py-1 bg-red-50 text-red-600 rounded text-xs font-bold border border-red-100">Disputed</span>;
-            default:
-                return <span className="px-2 py-1 bg-gray-50 text-gray-500 rounded text-xs font-bold border border-gray-100">{state}</span>;
-        }
+        const styles: Record<string, string> = {
+            [EscrowState.INITIALIZED]: 'bg-blue-100 text-blue-700',
+            [EscrowState.ONE_PARTY_FUNDED]: 'bg-amber-100 text-amber-700',
+            [EscrowState.COMPLETELY_FUNDED]: 'bg-violet-100 text-violet-700',
+            [EscrowState.RELEASED]: 'bg-emerald-100 text-emerald-700',
+            [EscrowState.DISPUTED]: 'bg-red-100 text-red-700',
+        };
+        return (
+            <span className={`text-[10px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full ${styles[state] || 'bg-slate-100 text-slate-600'}`}>
+                {state?.replace(/_/g, ' ')}
+            </span>
+        );
     };
 
     return (
-        <div className="min-h-screen bg-[#f6f8f6] p-8 font-display text-[#0d1b12]">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-6 lg:p-10">
             <div className="max-w-5xl mx-auto">
-                <div className="flex justify-between items-center mb-8">
-                    <h1 className="text-3xl font-bold">My Transactions</h1>
+                {/* Header */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+                    <div>
+                        <h1 className="text-3xl font-bold text-slate-900 tracking-tight">My Transactions</h1>
+                        <p className="text-slate-500 mt-1">View and manage your escrow transactions.</p>
+                    </div>
                     <Link
-                        href="/escrow/initiate"
-                        className="bg-[#13ec5b] hover:bg-[#10c94d] text-[#0d1b12] px-6 py-2.5 rounded-xl font-bold shadow-lg shadow-green-200 transition-all flex items-center gap-2"
+                        href="/trader/escrow/initiate"
+                        className="inline-flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-emerald-500/25 transition-all transform hover:scale-[1.02]"
                     >
-                        <Plus className="w-5 h-5" />
+                        <Plus className="w-4 h-4" />
                         New Transaction
                     </Link>
                 </div>
 
-                {/* Filters */}
-                <div className="bg-white p-1 rounded-xl inline-flex mb-8 border border-gray-100 shadow-sm">
+                {/* Filter Tabs */}
+                <div className="bg-white p-1.5 rounded-xl inline-flex mb-8 border border-slate-200 shadow-sm">
                     {(['all', 'buyer', 'seller'] as const).map((f) => (
                         <button
                             key={f}
                             onClick={() => setFilter(f)}
-                            className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${filter === f ? 'bg-[#0d1b12] text-white shadow-md' : 'text-gray-500 hover:bg-gray-50'}`}
+                            className={`px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${filter === f
+                                ? 'bg-slate-900 text-white shadow-md'
+                                : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'}`}
                         >
                             {f.charAt(0).toUpperCase() + f.slice(1)}
                         </button>
                     ))}
                 </div>
 
+                {/* Content */}
                 {loading ? (
-                    <div className="text-center py-12">Loading transactions...</div>
-                ) : error ? (
-                    <div className="text-center py-12 text-red-500">Failed to load transactions</div>
-                ) : escrows?.length === 0 ? (
-                    <div className="text-center py-20 bg-white rounded-2xl border border-gray-100 shadow-sm">
-                        <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <Wallet className="w-8 h-8 text-gray-400" />
+                    <div className="bg-white rounded-2xl border border-slate-200/60 p-12 text-center">
+                        <div className="animate-pulse flex flex-col items-center">
+                            <div className="w-12 h-12 bg-slate-100 rounded-full mb-4"></div>
+                            <p className="text-slate-400">Loading transactions...</p>
                         </div>
-                        <h3 className="text-xl font-bold text-gray-900 mb-2">No Transactions Found</h3>
-                        <p className="text-gray-500 mb-6">Start a new secure transaction today.</p>
+                    </div>
+                ) : error ? (
+                    <div className="bg-red-50 rounded-2xl p-8 text-center text-red-600 border border-red-100">
+                        Failed to load transactions. Please try again.
+                    </div>
+                ) : escrows?.length === 0 ? (
+                    <div className="bg-white rounded-2xl border border-slate-200/60 shadow-xl p-16 text-center">
+                        <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <Wallet className="w-10 h-10 text-slate-400" />
+                        </div>
+                        <h3 className="text-xl font-bold text-slate-900 mb-2">No Transactions Found</h3>
+                        <p className="text-slate-500 mb-6 max-w-sm mx-auto">
+                            Start a new secure escrow transaction today.
+                        </p>
                         <Link
-                            href="/escrow/initiate"
-                            className="text-[#13ec5b] font-bold hover:underline"
+                            href="/trader/escrow/initiate"
+                            className="inline-flex items-center gap-2 text-emerald-600 hover:text-emerald-700 font-bold"
                         >
-                            Create Escrow
+                            Create Escrow <ChevronRight className="w-4 h-4" />
                         </Link>
                     </div>
                 ) : (
                     <div className="space-y-4">
                         {escrows?.map((escrow: any) => {
-                            // Use hardcoded check for user role for now until auth context is fully robust in frontend
-                            // Assuming user is always viewing their own, we check if they are buyer or seller from the record
-                            // But we don't have user id here easily without context.
-                            // Logic: If I am Buyer and state is INITIALIZED -> Fund
-
-                            // Simplification: Always show details, but add "Action Required" indicator if funding needed
-                            const needsFunding = escrow.state === EscrowState.INITIALIZED;
-                            // Ideally check if *I* am the one who needs to fund. 
+                            const needsFunding = escrow.state === EscrowState.INITIALIZED || escrow.state === EscrowState.ONE_PARTY_FUNDED;
+                            const isCrypto = escrow.tradeType === 'CRYPTO_TO_CRYPTO';
 
                             return (
-                                <div key={escrow.id} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow flex items-center justify-between group">
-                                    <div className="flex items-center gap-6">
-                                        <div className="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center font-bold text-gray-400">
-                                            {escrow.buyCurrency.charAt(0)}
-                                        </div>
-                                        <div>
-                                            <div className="flex items-center gap-3 mb-1">
-                                                <h3 className="font-bold text-lg">
-                                                    {escrow.amount} {escrow.buyCurrency}
-                                                </h3>
-                                                {getStatusBadge(escrow.state)}
+                                <div
+                                    key={escrow.id}
+                                    className="bg-white p-6 rounded-2xl border border-slate-200/60 shadow-lg shadow-slate-200/30 hover:shadow-xl transition-all group"
+                                >
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                        <div className="flex items-center gap-4">
+                                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${isCrypto ? 'bg-violet-100 text-violet-600' : 'bg-blue-100 text-blue-600'}`}>
+                                                {isCrypto ? <Coins className="w-6 h-6" /> : <Banknote className="w-6 h-6" />}
                                             </div>
-                                            <p className="text-sm text-gray-500 flex items-center gap-2">
-                                                <span>{new Date(escrow.createdAt).toLocaleDateString()}</span>
-                                                <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
-                                                <span className="font-mono text-xs">{escrow.id.substring(0, 8)}</span>
-                                            </p>
+                                            <div>
+                                                <h3 className="font-bold text-slate-900 text-lg">
+                                                    {escrow.amount} <span className="text-slate-400 text-base">{escrow.buyCurrency}</span>
+                                                    <span className="text-slate-300 mx-2">→</span>
+                                                    <span className="text-slate-400 text-base">{escrow.sellCurrency}</span>
+                                                </h3>
+                                                <div className="flex items-center gap-2 text-sm text-slate-500 mt-1">
+                                                    <span>{new Date(escrow.createdAt).toLocaleDateString()}</span>
+                                                    <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
+                                                    <span className="font-mono text-xs">#{escrow.id.substring(0, 8)}</span>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div className="flex items-center gap-4">
-                                        {needsFunding && (
+                                        <div className="flex items-center gap-3">
+                                            {getStatusBadge(escrow.state)}
+                                            {needsFunding && (
+                                                <Link
+                                                    href={`/trader/escrow/${escrow.id}/fund`}
+                                                    className="px-4 py-2 bg-amber-100 hover:bg-amber-200 text-amber-700 text-sm font-bold rounded-xl border border-amber-200 transition-colors"
+                                                >
+                                                    Fund Now
+                                                </Link>
+                                            )}
                                             <Link
-                                                href={`/escrow/${escrow.id}/fund`}
-                                                className="px-4 py-2 bg-yellow-50 text-yellow-700 text-sm font-bold rounded-lg border border-yellow-200 hover:bg-yellow-100 transition-colors"
+                                                href={`/trader/escrow/${escrow.id}`}
+                                                className="w-10 h-10 rounded-xl border border-slate-200 flex items-center justify-center text-slate-400 group-hover:bg-emerald-500 group-hover:text-white group-hover:border-emerald-500 transition-all"
                                             >
-                                                Fund Now
+                                                <ArrowRight className="w-5 h-5" />
                                             </Link>
-                                        )}
-                                        <Link
-                                            href={`/escrow/${escrow.id}`}
-                                            className="w-10 h-10 rounded-full border border-gray-100 flex items-center justify-center text-gray-400 group-hover:bg-[#13ec5b] group-hover:text-[#0d1b12] group-hover:border-[#13ec5b] transition-all"
-                                        >
-                                            <ArrowRight className="w-5 h-5" />
-                                        </Link>
+                                        </div>
                                     </div>
                                 </div>
-                            )
+                            );
                         })}
                     </div>
                 )}

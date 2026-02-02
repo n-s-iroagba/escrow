@@ -1,112 +1,145 @@
 'use client';
 
+import { useState } from 'react';
 import { useGet } from '@/hooks/useApiQuery';
 import API_ROUTES from '@/constants/api-routes';
 import Link from 'next/link';
-import { Eye, Search, Filter } from 'lucide-react';
+import { Eye, Search, Filter, FileText, ChevronRight, X } from 'lucide-react';
 import { EscrowState } from '@/constants/enums';
 
 export default function AdminEscrowListPage() {
+    const [searchTerm, setSearchTerm] = useState('');
+    const [statusFilter, setStatusFilter] = useState<string | null>(null);
+
     const { data: escrows, loading, error } = useGet(API_ROUTES.ESCROWS.GET_ADMIN_ALL);
 
-    const getStatusStyle = (state: string) => {
-        switch (state) {
-            case EscrowState.INITIALIZED: return 'bg-blue-50 text-blue-600';
-            case EscrowState.ONE_PARTY_FUNDED: return 'bg-yellow-50 text-yellow-600';
-            case EscrowState.COMPLETELY_FUNDED: return 'bg-purple-50 text-purple-600';
-            case EscrowState.RELEASED: return 'bg-green-50 text-green-600';
-            case EscrowState.DISPUTED: return 'bg-red-50 text-red-600';
-            case EscrowState.CANCELLED: return 'bg-gray-50 text-gray-500';
-            default: return 'bg-gray-50 text-gray-500';
-        }
+    const filteredEscrows = (escrows || []).filter((e: any) => {
+        const matchesSearch = !searchTerm ||
+            e.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            e.buyerEmail?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            e.sellerEmail?.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesStatus = !statusFilter || e.state === statusFilter;
+        return matchesSearch && matchesStatus;
+    });
+
+    const statusOptions = [
+        { value: EscrowState.INITIALIZED, label: 'Initialized', color: 'bg-blue-100 text-blue-700' },
+        { value: EscrowState.ONE_PARTY_FUNDED, label: 'Partial', color: 'bg-amber-100 text-amber-700' },
+        { value: EscrowState.COMPLETELY_FUNDED, label: 'Funded', color: 'bg-violet-100 text-violet-700' },
+        { value: EscrowState.RELEASED, label: 'Released', color: 'bg-emerald-100 text-emerald-700' },
+        { value: EscrowState.DISPUTED, label: 'Disputed', color: 'bg-red-100 text-red-700' },
+    ];
+
+    const getStatusBadge = (state: string) => {
+        const option = statusOptions.find(o => o.value === state);
+        return (
+            <span className={`text-[10px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full ${option?.color || 'bg-slate-100 text-slate-600'}`}>
+                {state?.replace(/_/g, ' ')}
+            </span>
+        );
     };
 
     return (
-        <div className="min-h-screen bg-[#f6f8f6] p-8 font-display text-[#0d1b12]">
-            <div className="max-w-6xl mx-auto">
-                <div className="flex justify-between items-center mb-8">
-                    <h1 className="text-3xl font-bold">Escrow Management</h1>
-                    {/* Placeholder for future admin creation functionality if needed */}
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-6 lg:p-10">
+            <div className="max-w-7xl mx-auto">
+                {/* Header */}
+                <div className="mb-8">
+                    <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Escrow Management</h1>
+                    <p className="text-slate-500 mt-1">Monitor and manage all platform escrow transactions.</p>
                 </div>
 
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                    {/* Toolbar */}
-                    <div className="p-4 border-b border-gray-100 flex gap-4">
-                        <div className="relative flex-1">
-                            <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                            <input
-                                type="text"
-                                placeholder="Search by ID, email, or amount..."
-                                className="w-full pl-10 pr-4 py-2 bg-gray-50 rounded-lg border border-gray-200 outline-none focus:border-[#13ec5b]"
-                            />
-                        </div>
-                        <button className="px-4 py-2 border border-gray-200 rounded-lg flex items-center gap-2 hover:bg-gray-50">
-                            <Filter className="w-4 h-4 text-gray-500" />
-                            <span>Filter</span>
-                        </button>
+                {/* Toolbar */}
+                <div className="bg-white rounded-2xl border border-slate-200/60 shadow-lg shadow-slate-200/30 p-4 mb-6 flex flex-col lg:flex-row gap-4">
+                    <div className="relative flex-1">
+                        <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                        <input
+                            type="text"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            placeholder="Search by ID, email..."
+                            className="w-full pl-12 pr-4 py-3 bg-slate-50 rounded-xl border border-slate-200 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all"
+                        />
                     </div>
+                    <div className="flex gap-2 flex-wrap">
+                        {statusOptions.map(opt => (
+                            <button
+                                key={opt.value}
+                                onClick={() => setStatusFilter(statusFilter === opt.value ? null : opt.value)}
+                                className={`px-4 py-2 rounded-xl text-sm font-semibold border transition-all ${statusFilter === opt.value ? opt.color + ' border-current' : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'}`}
+                            >
+                                {opt.label}
+                            </button>
+                        ))}
+                        {statusFilter && (
+                            <button onClick={() => setStatusFilter(null)} className="p-2 text-slate-400 hover:text-slate-600">
+                                <X className="w-5 h-5" />
+                            </button>
+                        )}
+                    </div>
+                </div>
 
+                {/* Table */}
+                <div className="bg-white rounded-2xl border border-slate-200/60 shadow-xl shadow-slate-200/40 overflow-hidden">
                     {loading ? (
-                        <div className="p-8 text-center text-gray-500">Loading escrows...</div>
+                        <div className="p-12 text-center text-slate-400">Loading escrows...</div>
                     ) : error ? (
-                        <div className="p-8 text-center text-red-500">Error loading data</div>
+                        <div className="p-12 text-center text-red-500">Failed to load data</div>
+                    ) : filteredEscrows.length === 0 ? (
+                        <div className="p-16 text-center">
+                            <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <FileText className="w-10 h-10 text-slate-400" />
+                            </div>
+                            <h3 className="text-xl font-bold text-slate-900 mb-2">No Escrows Found</h3>
+                            <p className="text-slate-500">No transactions match your current filters.</p>
+                        </div>
                     ) : (
                         <div className="overflow-x-auto">
-                            <table className="w-full text-left">
-                                <thead className="bg-gray-50 text-xs uppercase text-gray-500 font-bold border-b border-gray-100">
+                            <table className="w-full">
+                                <thead className="bg-slate-50/80 text-xs text-slate-500 uppercase tracking-wider">
                                     <tr>
-                                        <th className="px-6 py-4">ID</th>
-                                        <th className="px-6 py-4">Created</th>
-                                        <th className="px-6 py-4">Initiator</th>
-                                        <th className="px-6 py-4">Amount</th>
-                                        <th className="px-6 py-4">Trade</th>
-                                        <th className="px-6 py-4">Status</th>
-                                        <th className="px-6 py-4">Actions</th>
+                                        <th className="text-left p-4 font-semibold">ID</th>
+                                        <th className="text-left p-4 font-semibold">Created</th>
+                                        <th className="text-left p-4 font-semibold">Initiator</th>
+                                        <th className="text-left p-4 font-semibold">Amount</th>
+                                        <th className="text-left p-4 font-semibold">Trade</th>
+                                        <th className="text-left p-4 font-semibold">Status</th>
+                                        <th className="text-left p-4 font-semibold">Action</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-gray-100">
-                                    {escrows?.map((escrow: any) => (
-                                        <tr key={escrow.id} className="hover:bg-gray-50 transition-colors">
-                                            <td className="px-6 py-4 font-mono text-xs text-gray-500">
-                                                {escrow.id.substring(0, 8)}...
+                                <tbody className="divide-y divide-slate-100">
+                                    {filteredEscrows.map((escrow: any) => (
+                                        <tr key={escrow.id} className="hover:bg-slate-50/50 transition-colors">
+                                            <td className="p-4">
+                                                <span className="font-mono text-sm text-slate-600">#{escrow.id.substring(0, 8)}</span>
                                             </td>
-                                            <td className="px-6 py-4 text-sm text-gray-600">
+                                            <td className="p-4 text-sm text-slate-500">
                                                 {new Date(escrow.createdAt).toLocaleDateString()}
                                             </td>
-                                            <td className="px-6 py-4 text-sm font-medium">
-                                                {escrow.isBuyerInitiated ? escrow.buyerEmail : escrow.sellerEmail}
-                                                <span className="text-xs text-gray-400 font-normal block">
-                                                    {escrow.isBuyerInitiated ? '(Buyer)' : '(Seller)'}
-                                                </span>
+                                            <td className="p-4">
+                                                <p className="font-medium text-slate-900 text-sm">{escrow.isBuyerInitiated ? escrow.buyerEmail : escrow.sellerEmail}</p>
+                                                <p className="text-xs text-slate-400">{escrow.isBuyerInitiated ? 'Buyer' : 'Seller'}</p>
                                             </td>
-                                            <td className="px-6 py-4 font-bold">
-                                                {escrow.amount} <span className="text-gray-400 font-normal text-sm">{escrow.buyCurrency}</span>
+                                            <td className="p-4">
+                                                <span className="font-bold text-slate-900">{escrow.amount}</span>
+                                                <span className="text-slate-400 ml-1 text-sm">{escrow.buyCurrency}</span>
                                             </td>
-                                            <td className="px-6 py-4 text-sm">
-                                                {escrow.tradeType === 'CRYPTO_TO_CRYPTO' ? 'Crypto ↔ Crypto' : 'Crypto ↔ Fiat'}
+                                            <td className="p-4 text-sm text-slate-600">
+                                                {escrow.tradeType === 'CRYPTO_TO_CRYPTO' ? 'C2C' : 'C2F'}
                                             </td>
-                                            <td className="px-6 py-4">
-                                                <span className={`px-2 py-1 rounded-md text-xs font-bold ${getStatusStyle(escrow.state)}`}>
-                                                    {escrow.state.replace(/_/g, ' ')}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4">
+                                            <td className="p-4">{getStatusBadge(escrow.state)}</td>
+                                            <td className="p-4">
                                                 <Link
                                                     href={`/admin/escrow/${escrow.id}`}
-                                                    className="p-2 text-gray-400 hover:text-[#13ec5b] hover:bg-green-50 rounded-lg inline-block transition-colors"
+                                                    className="inline-flex items-center gap-1 px-3 py-1.5 bg-slate-100 hover:bg-emerald-100 text-slate-600 hover:text-emerald-700 rounded-lg text-sm font-semibold transition-colors"
                                                 >
-                                                    <Eye className="w-5 h-5" />
+                                                    <Eye className="w-4 h-4" />
+                                                    View
                                                 </Link>
                                             </td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
-                            {escrows?.length === 0 && (
-                                <div className="p-12 text-center text-gray-400">
-                                    No transaction records found.
-                                </div>
-                            )}
                         </div>
                     )}
                 </div>

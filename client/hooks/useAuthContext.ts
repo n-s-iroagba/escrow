@@ -11,7 +11,11 @@ export const useAuthContext = () => {
 export const useRequiredAuth = () => {
   const context = useAuthContext();
   if (!context.user) {
-    return useAuthContext()
+    // Optionally redirect here if we had router access, 
+    // or just let the layout handle protection.
+    // For now, just return context as is, but this hook implies strict requirement.
+    // We could throw, but might break rendering. 
+    // Best to clean up the conditional call.
   }
-  return context
+  return context;
 };

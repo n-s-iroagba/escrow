@@ -1,5 +1,5 @@
 // src/lib/apiutils.ts
-import API_ROUTES  from '@/constants/api-routes';
+import API_ROUTES from '@/constants/api-routes';
 import axios, { AxiosResponse } from 'axios';
 const route = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'production' ? 'https://agfc_server_app.fly.dev/api' : 'http://localhost:5000/api');
 // Single axios instance
@@ -122,10 +122,10 @@ api.interceptors.response.use(
 
         const { data } = refreshResponse;
 
-        if (data.accessToken) {
-          setAccessToken(data.accessToken);
+        if (data.data?.accessToken) {
+          setAccessToken(data.data.accessToken);
 
-          originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
+          originalRequest.headers.Authorization = `Bearer ${data.data.accessToken}`;
           return api(originalRequest);
         }
       } catch (refreshError) {
