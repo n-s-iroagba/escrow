@@ -14,6 +14,8 @@ import {
   X
 } from "lucide-react";
 import { APP_NAME } from "@/constants/data";
+import { MiniChart, TickerTape } from "react-ts-tradingview-widgets";
+
 import { useState } from "react";
 
 export default function Home() {
@@ -75,6 +77,7 @@ export default function Home() {
           </div>
         )}
       </nav>
+      <TickerTape colorTheme="light" />
 
 
       {/* Hero Section */}
@@ -182,6 +185,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <MiniChart colorTheme="light" width="100%"></MiniChart>
+      +
 
       {/* Security Section */}
       <section className="px-6 py-6 max-w-7xl mx-auto">
