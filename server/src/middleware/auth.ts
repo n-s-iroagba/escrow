@@ -13,11 +13,12 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
         const authHeader = req.headers.authorization;
 
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            return ApiResponse.error(
+            ApiResponse.error(
                 res,
                 'Access token required',
                 401
             );
+            return;
         }
 
         const token = authHeader.substring(7); // Remove 'Bearer ' prefix
@@ -31,19 +32,21 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
 
             next();
         } catch (error) {
-            return ApiResponse.error(
+            ApiResponse.error(
                 res,
                 'Invalid or expired token',
                 401
             );
+            return;
         }
     } catch (error) {
         console.error('Authentication error:', error);
-        return ApiResponse.error(
+        ApiResponse.error(
             res,
             'Authentication failed',
             500
         );
+        return;
     }
 };
 
@@ -55,30 +58,33 @@ export const requireAdmin = async (req: Request, res: Response, next: NextFuncti
         const userId = (req as any).user?.id;
 
         if (!userId) {
-            return ApiResponse.error(
+            ApiResponse.error(
                 res,
                 'Authentication required',
                 401
             );
+            return;
         }
 
         const User = require('../models/User').default;
         const user = await User.findByPk(userId);
 
         if (!user) {
-            return ApiResponse.error(
+            ApiResponse.error(
                 res,
                 'User not found',
                 404
             );
+            return;
         }
 
         if (user.role !== 'ADMIN') {
-            return ApiResponse.error(
+            ApiResponse.error(
                 res,
                 'Admin access required',
                 403
             );
+            return;
         }
 
         // Attach full user to request for downstream use
@@ -87,10 +93,11 @@ export const requireAdmin = async (req: Request, res: Response, next: NextFuncti
         next();
     } catch (error) {
         console.error('Admin verification error:', error);
-        return ApiResponse.error(
+        ApiResponse.error(
             res,
             'Authorization failed',
             500
         );
+        return;
     }
 };

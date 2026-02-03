@@ -8,6 +8,7 @@ import logger from './config/logger';
 import { testConnection } from './config/database';
 import { verifyEmailConnection } from './config/mailer';
 import { errorHandler } from './utils/errorHandler';
+import { requestLogger } from './middlewares/requestLogger';
 import escrowRoutes from './routers/escrowRoutes';
 import kycRoutes from './routers/kycRoutes';
 import bankRoutes from './routers/bankRoutes';
@@ -41,6 +42,9 @@ class App {
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
     }));
+
+    // Request logging
+    this.app.use(requestLogger);
 
     // Rate limiting
     const limiter = rateLimit({
@@ -115,8 +119,8 @@ class App {
     this.app.use(errorHandler);
   }
 
-  public listen(): void {
-    this.app.listen(this.port, () => {
+  public listen() {
+    return this.app.listen(this.port, () => {
       logger.info(`
       🚀 Server started successfully!
       📍 Environment: ${env.NODE_ENV}

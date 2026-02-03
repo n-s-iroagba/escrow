@@ -4,9 +4,9 @@
   "description": "Centralized Crypto Escrow Platform Backend",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon -r module-alias/register index.ts",
+    "dev": "nodemon",
     "build": "tsc -p tsconfig.json",
-    "start": "node -r module-alias/register dist/index.js",
+    "start": "node dist/index.js",
     "migrate": "npx sequelize-cli db:migrate",
     "migrate:undo": "npx sequelize-cli db:migrate:undo",
     "seed": "npx sequelize-cli db:seed:all",
@@ -27,6 +27,7 @@
   "dependencies": {
     "bcrypt": "^6.0.0",
     "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^16.6.1",
     "express": "^4.22.1",

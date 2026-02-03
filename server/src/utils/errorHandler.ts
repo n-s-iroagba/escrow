@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import logger from '../config/logger';
 import ApiResponse from './apiResponse';
+import { logErrorToFile } from '../middlewares/requestLogger';
 
 export class AppError extends Error {
   statusCode: number;
@@ -36,6 +37,9 @@ export const errorHandler = (
     ip: req.ip,
     userAgent: req.get('User-Agent'),
   });
+
+  // Log to debug file
+  logErrorToFile(error, req);
 
   // Handle specific error types
   if (err.name === 'ValidationError') {

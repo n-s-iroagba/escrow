@@ -1,0 +1,321 @@
+
+> client@0.1.0 dev
+> next dev
+
+⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /home/udorakpuenyi/escrow/package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * /home/udorakpuenyi/escrow/client/package-lock.json
+
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.199:3000
+
+✓ Starting...
+✓ Ready in 76.4s
+○ Compiling /_not-found/page ...
+Error: Can't resolve 'tailwindcss' in '/home/udorakpuenyi/escrow'
+    [2m[at finishWithoutResolve (/home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:565:18)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:657:14][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m
+    [2m[at eval (eval at create (/home/udorakpuenyi/escrow/client/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m
+    [2m[at eval (eval at create (/home/udorakpuenyi/escrow/client/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:27:1)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/DescriptionFilePlugin.js:89:43][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m
+    [2m[at eval (eval at create (/home/udorakpuenyi/escrow/client/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m {
+  details: "resolve 'tailwindcss' in '/home/udorakpuenyi/escrow'\n" +
+    '  Parsed request is a module\n' +
+    '  using description file: /home/udorakpuenyi/escrow/package.json (relative path: .)\n' +
+    '    resolve as module\n' +
+    '      looking for modules in /home/udorakpuenyi/escrow/node_modules\n' +
+    '        single file module\n' +
+    '          using description file: /home/udorakpuenyi/escrow/package.json (relative path: ./node_modules/tailwindcss)\n' +
+    '            no extension\n' +
+    "              /home/udorakpuenyi/escrow/node_modules/tailwindcss doesn't exist\n" +
+    '            .css\n' +
+    "              /home/udorakpuenyi/escrow/node_modules/tailwindcss.css doesn't exist\n" +
+    "        /home/udorakpuenyi/escrow/node_modules/tailwindcss doesn't exist\n" +
+    "      /home/udorakpuenyi/node_modules doesn't exist or is not a directory\n" +
+    "      /home/node_modules doesn't exist or is not a directory\n" +
+    "      /node_modules doesn't exist or is not a directory"
+}
+✓ Finished writing to filesystem cache in 30.5s
+Error: Can't resolve 'tailwindcss' in '/home/udorakpuenyi/escrow'
+    [2m[at finishWithoutResolve (/home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:565:18)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:657:14][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m
+    [2m[at eval (eval at create (/home/udorakpuenyi/escrow/client/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m
+    [2m[at eval (eval at create (/home/udorakpuenyi/escrow/client/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:27:1)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/DescriptionFilePlugin.js:89:43][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m
+    [2m[at eval (eval at create (/home/udorakpuenyi/escrow/client/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m {
+  details: "resolve 'tailwindcss' in '/home/udorakpuenyi/escrow'\n" +
+    '  Parsed request is a module\n' +
+    '  using description file: /home/udorakpuenyi/escrow/package.json (relative path: .)\n' +
+    '    resolve as module\n' +
+    '      looking for modules in /home/udorakpuenyi/escrow/node_modules\n' +
+    '        single file module\n' +
+    '          using description file: /home/udorakpuenyi/escrow/package.json (relative path: ./node_modules/tailwindcss)\n' +
+    '            no extension\n' +
+    "              /home/udorakpuenyi/escrow/node_modules/tailwindcss doesn't exist\n" +
+    '            .css\n' +
+    "              /home/udorakpuenyi/escrow/node_modules/tailwindcss.css doesn't exist\n" +
+    "        /home/udorakpuenyi/escrow/node_modules/tailwindcss doesn't exist\n" +
+    "      /home/udorakpuenyi/node_modules doesn't exist or is not a directory\n" +
+    "      /home/node_modules doesn't exist or is not a directory\n" +
+    "      /node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in '/home/udorakpuenyi/escrow'
+    [2m[at finishWithoutResolve (/home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:565:18)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:657:14][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m
+    [2m[at eval (eval at create (/home/udorakpuenyi/escrow/client/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m
+    [2m[at eval (eval at create (/home/udorakpuenyi/escrow/client/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:27:1)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/DescriptionFilePlugin.js:89:43][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m
+    [2m[at eval (eval at create (/home/udorakpuenyi/escrow/client/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m {
+  details: "resolve 'tailwindcss' in '/home/udorakpuenyi/escrow'\n" +
+    '  Parsed request is a module\n' +
+    '  using description file: /home/udorakpuenyi/escrow/package.json (relative path: .)\n' +
+    '    resolve as module\n' +
+    '      looking for modules in /home/udorakpuenyi/escrow/node_modules\n' +
+    '        single file module\n' +
+    '          using description file: /home/udorakpuenyi/escrow/package.json (relative path: ./node_modules/tailwindcss)\n' +
+    '            no extension\n' +
+    "              /home/udorakpuenyi/escrow/node_modules/tailwindcss doesn't exist\n" +
+    '            .css\n' +
+    "              /home/udorakpuenyi/escrow/node_modules/tailwindcss.css doesn't exist\n" +
+    "        /home/udorakpuenyi/escrow/node_modules/tailwindcss doesn't exist\n" +
+    "      /home/udorakpuenyi/node_modules doesn't exist or is not a directory\n" +
+    "      /home/node_modules doesn't exist or is not a directory\n" +
+    "      /node_modules doesn't exist or is not a directory"
+}
+✓ Finished writing to filesystem cache in 71s
+Error: Can't resolve 'tailwindcss' in '/home/udorakpuenyi/escrow'
+    [2m[at finishWithoutResolve (/home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:565:18)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:657:14][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m
+    [2m[at eval (eval at create (/home/udorakpuenyi/escrow/client/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m
+    [2m[at eval (eval at create (/home/udorakpuenyi/escrow/client/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:27:1)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/DescriptionFilePlugin.js:89:43][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m
+    [2m[at eval (eval at create (/home/udorakpuenyi/escrow/client/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m {
+  details: "resolve 'tailwindcss' in '/home/udorakpuenyi/escrow'\n" +
+    '  Parsed request is a module\n' +
+    '  using description file: /home/udorakpuenyi/escrow/package.json (relative path: .)\n' +
+    '    resolve as module\n' +
+    '      looking for modules in /home/udorakpuenyi/escrow/node_modules\n' +
+    '        single file module\n' +
+    '          using description file: /home/udorakpuenyi/escrow/package.json (relative path: ./node_modules/tailwindcss)\n' +
+    '            no extension\n' +
+    "              /home/udorakpuenyi/escrow/node_modules/tailwindcss doesn't exist\n" +
+    '            .css\n' +
+    "              /home/udorakpuenyi/escrow/node_modules/tailwindcss.css doesn't exist\n" +
+    "        /home/udorakpuenyi/escrow/node_modules/tailwindcss doesn't exist\n" +
+    "      /home/udorakpuenyi/node_modules doesn't exist or is not a directory\n" +
+    "      /home/node_modules doesn't exist or is not a directory\n" +
+    "      /node_modules doesn't exist or is not a directory"
+}
+✓ Finished writing to filesystem cache in 28.3s
+✓ Finished writing to filesystem cache in 52s
+✓ Finished writing to filesystem cache in 23.6s
+Error: Can't resolve 'tailwindcss' in '/home/udorakpuenyi/escrow'
+    [2m[at finishWithoutResolve (/home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:565:18)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:657:14][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m
+    [2m[at eval (eval at create (/home/udorakpuenyi/escrow/client/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m
+    [2m[at eval (eval at create (/home/udorakpuenyi/escrow/client/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:27:1)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/DescriptionFilePlugin.js:89:43][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m
+    [2m[at eval (eval at create (/home/udorakpuenyi/escrow/client/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m {
+  details: "resolve 'tailwindcss' in '/home/udorakpuenyi/escrow'\n" +
+    '  Parsed request is a module\n' +
+    '  using description file: /home/udorakpuenyi/escrow/package.json (relative path: .)\n' +
+    '    resolve as module\n' +
+    '      looking for modules in /home/udorakpuenyi/escrow/node_modules\n' +
+    '        single file module\n' +
+    '          using description file: /home/udorakpuenyi/escrow/package.json (relative path: ./node_modules/tailwindcss)\n' +
+    '            no extension\n' +
+    "              /home/udorakpuenyi/escrow/node_modules/tailwindcss doesn't exist\n" +
+    '            .css\n' +
+    "              /home/udorakpuenyi/escrow/node_modules/tailwindcss.css doesn't exist\n" +
+    "        /home/udorakpuenyi/escrow/node_modules/tailwindcss doesn't exist\n" +
+    "      /home/udorakpuenyi/node_modules doesn't exist or is not a directory\n" +
+    "      /home/node_modules doesn't exist or is not a directory\n" +
+    "      /node_modules doesn't exist or is not a directory"
+}
+✓ Finished writing to filesystem cache in 10.9s
+Error: Can't resolve 'tailwindcss' in '/home/udorakpuenyi/escrow'
+    [2m[at finishWithoutResolve (/home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:565:18)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:657:14][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m
+    [2m[at eval (eval at create (/home/udorakpuenyi/escrow/client/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m
+    [2m[at eval (eval at create (/home/udorakpuenyi/escrow/client/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:27:1)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/DescriptionFilePlugin.js:89:43][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m
+    [2m[at eval (eval at create (/home/udorakpuenyi/escrow/client/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m {
+  details: "resolve 'tailwindcss' in '/home/udorakpuenyi/escrow'\n" +
+    '  Parsed request is a module\n' +
+    '  using description file: /home/udorakpuenyi/escrow/package.json (relative path: .)\n' +
+    '    resolve as module\n' +
+    '      looking for modules in /home/udorakpuenyi/escrow/node_modules\n' +
+    '        single file module\n' +
+    '          using description file: /home/udorakpuenyi/escrow/package.json (relative path: ./node_modules/tailwindcss)\n' +
+    '            no extension\n' +
+    "              /home/udorakpuenyi/escrow/node_modules/tailwindcss doesn't exist\n" +
+    '            .css\n' +
+    "              /home/udorakpuenyi/escrow/node_modules/tailwindcss.css doesn't exist\n" +
+    "        /home/udorakpuenyi/escrow/node_modules/tailwindcss doesn't exist\n" +
+    "      /home/udorakpuenyi/node_modules doesn't exist or is not a directory\n" +
+    "      /home/node_modules doesn't exist or is not a directory\n" +
+    "      /node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in '/home/udorakpuenyi/escrow'
+    [2m[at finishWithoutResolve (/home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:565:18)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:657:14][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m
+    [2m[at eval (eval at create (/home/udorakpuenyi/escrow/client/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m
+    [2m[at eval (eval at create (/home/udorakpuenyi/escrow/client/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:27:1)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/DescriptionFilePlugin.js:89:43][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m
+    [2m[at eval (eval at create (/home/udorakpuenyi/escrow/client/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m {
+  details: "resolve 'tailwindcss' in '/home/udorakpuenyi/escrow'\n" +
+    '  Parsed request is a module\n' +
+    '  using description file: /home/udorakpuenyi/escrow/package.json (relative path: .)\n' +
+    '    resolve as module\n' +
+    '      looking for modules in /home/udorakpuenyi/escrow/node_modules\n' +
+    '        single file module\n' +
+    '          using description file: /home/udorakpuenyi/escrow/package.json (relative path: ./node_modules/tailwindcss)\n' +
+    '            no extension\n' +
+    "              /home/udorakpuenyi/escrow/node_modules/tailwindcss doesn't exist\n" +
+    '            .css\n' +
+    "              /home/udorakpuenyi/escrow/node_modules/tailwindcss.css doesn't exist\n" +
+    "        /home/udorakpuenyi/escrow/node_modules/tailwindcss doesn't exist\n" +
+    "      /home/udorakpuenyi/node_modules doesn't exist or is not a directory\n" +
+    "      /home/node_modules doesn't exist or is not a directory\n" +
+    "      /node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in '/home/udorakpuenyi/escrow'
+    [2m[at finishWithoutResolve (/home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:565:18)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:657:14][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m
+    [2m[at eval (eval at create (/home/udorakpuenyi/escrow/client/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m
+    [2m[at eval (eval at create (/home/udorakpuenyi/escrow/client/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:27:1)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/DescriptionFilePlugin.js:89:43][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m
+    [2m[at eval (eval at create (/home/udorakpuenyi/escrow/client/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m {
+  details: "resolve 'tailwindcss' in '/home/udorakpuenyi/escrow'\n" +
+    '  Parsed request is a module\n' +
+    '  using description file: /home/udorakpuenyi/escrow/package.json (relative path: .)\n' +
+    '    resolve as module\n' +
+    '      looking for modules in /home/udorakpuenyi/escrow/node_modules\n' +
+    '        single file module\n' +
+    '          using description file: /home/udorakpuenyi/escrow/package.json (relative path: ./node_modules/tailwindcss)\n' +
+    '            no extension\n' +
+    "              /home/udorakpuenyi/escrow/node_modules/tailwindcss doesn't exist\n" +
+    '            .css\n' +
+    "              /home/udorakpuenyi/escrow/node_modules/tailwindcss.css doesn't exist\n" +
+    "        /home/udorakpuenyi/escrow/node_modules/tailwindcss doesn't exist\n" +
+    "      /home/udorakpuenyi/node_modules doesn't exist or is not a directory\n" +
+    "      /home/node_modules doesn't exist or is not a directory\n" +
+    "      /node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in '/home/udorakpuenyi/escrow'
+    [2m[at finishWithoutResolve (/home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:565:18)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:657:14][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m
+    [2m[at eval (eval at create (/home/udorakpuenyi/escrow/client/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m
+    [2m[at eval (eval at create (/home/udorakpuenyi/escrow/client/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:27:1)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/DescriptionFilePlugin.js:89:43][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m
+    [2m[at eval (eval at create (/home/udorakpuenyi/escrow/client/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m {
+  details: "resolve 'tailwindcss' in '/home/udorakpuenyi/escrow'\n" +
+    '  Parsed request is a module\n' +
+    '  using description file: /home/udorakpuenyi/escrow/package.json (relative path: .)\n' +
+    '    resolve as module\n' +
+    '      looking for modules in /home/udorakpuenyi/escrow/node_modules\n' +
+    '        single file module\n' +
+    '          using description file: /home/udorakpuenyi/escrow/package.json (relative path: ./node_modules/tailwindcss)\n' +
+    '            no extension\n' +
+    "              /home/udorakpuenyi/escrow/node_modules/tailwindcss doesn't exist\n" +
+    '            .css\n' +
+    "              /home/udorakpuenyi/escrow/node_modules/tailwindcss.css doesn't exist\n" +
+    "        /home/udorakpuenyi/escrow/node_modules/tailwindcss doesn't exist\n" +
+    "      /home/udorakpuenyi/node_modules doesn't exist or is not a directory\n" +
+    "      /home/node_modules doesn't exist or is not a directory\n" +
+    "      /node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in '/home/udorakpuenyi/escrow'
+    [2m[at finishWithoutResolve (/home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:565:18)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:657:14][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m
+    [2m[at eval (eval at create (/home/udorakpuenyi/escrow/client/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m
+    [2m[at eval (eval at create (/home/udorakpuenyi/escrow/client/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:27:1)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/DescriptionFilePlugin.js:89:43][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m
+    [2m[at eval (eval at create (/home/udorakpuenyi/escrow/client/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m {
+  details: "resolve 'tailwindcss' in '/home/udorakpuenyi/escrow'\n" +
+    '  Parsed request is a module\n' +
+    '  using description file: /home/udorakpuenyi/escrow/package.json (relative path: .)\n' +
+    '    resolve as module\n' +
+    '      looking for modules in /home/udorakpuenyi/escrow/node_modules\n' +
+    '        single file module\n' +
+    '          using description file: /home/udorakpuenyi/escrow/package.json (relative path: ./node_modules/tailwindcss)\n' +
+    '            no extension\n' +
+    "              /home/udorakpuenyi/escrow/node_modules/tailwindcss doesn't exist\n" +
+    '            .css\n' +
+    "              /home/udorakpuenyi/escrow/node_modules/tailwindcss.css doesn't exist\n" +
+    "        /home/udorakpuenyi/escrow/node_modules/tailwindcss doesn't exist\n" +
+    "      /home/udorakpuenyi/node_modules doesn't exist or is not a directory\n" +
+    "      /home/node_modules doesn't exist or is not a directory\n" +
+    "      /node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in '/home/udorakpuenyi/escrow'
+    [2m[at finishWithoutResolve (/home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:565:18)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:657:14][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m
+    [2m[at eval (eval at create (/home/udorakpuenyi/escrow/client/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m
+    [2m[at eval (eval at create (/home/udorakpuenyi/escrow/client/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:27:1)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/DescriptionFilePlugin.js:89:43][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m
+    [2m[at eval (eval at create (/home/udorakpuenyi/escrow/client/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /home/udorakpuenyi/escrow/client/node_modules/enhanced-resolve/lib/Resolver.js:718:5][0m {
+  details: "resolve 'tailwindcss' in '/home/udorakpuenyi/escrow'\n" +
+    '  Parsed request is a module\n' +
+    '  using description file: /home/udorakpuenyi/escrow/package.json (relative path: .)\n' +
+    '    resolve as module\n' +
+    '      looking for modules in /home/udorakpuenyi/escrow/node_modules\n' +
+    '        single file module\n' +
+    '          using description file: /home/udorakpuenyi/escrow/package.json (relative path: ./node_modules/tailwindcss)\n' +
+    '            no extension\n' +
+    "              /home/udorakpuenyi/escrow/node_modules/tailwindcss doesn't exist\n" +
+    '            .css\n' +
+    "              /home/udorakpuenyi/escrow/node_modules/tailwindcss.css doesn't exist\n" +
+    "        /home/udorakpuenyi/escrow/node_modules/tailwindcss doesn't exist\n" +
+    "      /home/udorakpuenyi/node_modules doesn't exist or is not a directory\n" +
+    "      /home/node_modules doesn't exist or is not a directory\n" +
+    "      /node_modules doesn't exist or is not a directory"
+}

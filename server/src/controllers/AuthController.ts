@@ -88,7 +88,7 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
     }, 'Login successful', 200);
 });
 
-export const logout = asyncHandler(async (req: Request, res: Response) => {
+export const logout = asyncHandler(async (_req: Request, res: Response) => {
     res.clearCookie('refreshToken', {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',

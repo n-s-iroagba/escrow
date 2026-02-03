@@ -8,7 +8,7 @@ export const createBank = asyncHandler(async (req: Request, res: Response) => {
     return ApiResponse.created(res, bank, 'Bank created successfully');
 });
 
-export const getBanks = asyncHandler(async (req: Request, res: Response) => {
+export const getBanks = asyncHandler(async (_req: Request, res: Response) => {
     const banks = await BankService.getAllBanks();
     return ApiResponse.success(res, banks, 'Banks retrieved successfully');
 });

@@ -17,31 +17,34 @@ export const verifyCustodialWalletAccess = async (
         const userId = (req as any).user?.id;
 
         if (!userId) {
-            return ApiResponse.error(
+            ApiResponse.error(
                 res,
                 'Authentication required',
                 401
             );
+            return;
         }
 
         // Get the user from database
         const user = await User.findByPk(userId);
 
         if (!user) {
-            return ApiResponse.error(
+            ApiResponse.error(
                 res,
                 'User not found',
                 404
             );
+            return;
         }
 
         // Check if user is admin
         if (user.role !== 'ADMIN') {
-            return ApiResponse.error(
+            ApiResponse.error(
                 res,
                 'Access denied. Admin privileges required.',
                 403
             );
+            return;
         }
 
         // Get the authorized super admin email from environment
@@ -49,21 +52,23 @@ export const verifyCustodialWalletAccess = async (
 
         if (!superAdminEmail) {
             console.error('⚠️ CUSTODIAL_WALLET_ADMIN_EMAIL not configured in environment');
-            return ApiResponse.error(
+            ApiResponse.error(
                 res,
                 'Custodial wallet management is not properly configured',
                 500
             );
+            return;
         }
 
         // Check if the admin's email matches the authorized email
         if (user.email !== superAdminEmail) {
             console.warn(`⚠️ Unauthorized custodial wallet access attempt by admin: ${user.email}`);
-            return ApiResponse.error(
+            ApiResponse.error(
                 res,
                 'Access denied. Only the designated super administrator can manage custodial wallets.',
                 403
             );
+            return;
         }
 
         // User is authorized - proceed
@@ -72,10 +77,11 @@ export const verifyCustodialWalletAccess = async (
 
     } catch (error) {
         console.error('Error in custodial wallet access verification:', error);
-        return ApiResponse.error(
+        ApiResponse.error(
             res,
             'Error verifying access permissions',
             500
         );
+        return;
     }
 };

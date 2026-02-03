@@ -1,0 +1,14 @@
+
+> client@0.1.0 cypress:run
+> cypress run
+
+It looks like this is your first time using Cypress: 13.17.0
+
+[STARTED] Task without title.
+[TITLE]  Verified Cypress!       /home/udorakpuenyi/.cache/Cypress/13.17.0/Cypress
+[SUCCESS]  Verified Cypress!       /home/udorakpuenyi/.cache/Cypress/13.17.0/Cypress
+
+Opening Cypress...
+
+DevTools listening on ws://127.0.0.1:41449/devtools/browser/82fe1f5c-14d1-40f9-9660-a67ab344df7f
+Missing baseUrl in compilerOptions. tsconfig-paths will be skipped

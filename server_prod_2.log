@@ -1,0 +1,21 @@
+
+> escrow-backend@1.0.0 start
+> node -r module-alias/register dist/index.js
+
+/home/udorakpuenyi/escrow/server/node_modules/sequelize-typescript/dist/sequelize/sequelize/sequelize-service.js:50
+                    throw new Error(`No default export defined for file "${fileName}" or ` +
+                    ^
+
+Error: No default export defined for file "associations" or export does not satisfy filename.
+    at /home/udorakpuenyi/escrow/server/node_modules/sequelize-typescript/dist/sequelize/sequelize/sequelize-service.js:50:27
+    at Array.map (<anonymous>)
+    at /home/udorakpuenyi/escrow/server/node_modules/sequelize-typescript/dist/sequelize/sequelize/sequelize-service.js:43:18
+    at Array.reduce (<anonymous>)
+    at getModels (/home/udorakpuenyi/escrow/server/node_modules/sequelize-typescript/dist/sequelize/sequelize/sequelize-service.js:35:20)
+    at Sequelize.addModels (/home/udorakpuenyi/escrow/server/node_modules/sequelize-typescript/dist/sequelize/sequelize/sequelize.js:36:58)
+    at new Sequelize (/home/udorakpuenyi/escrow/server/node_modules/sequelize-typescript/dist/sequelize/sequelize/sequelize.js:20:22)
+    at Object.<anonymous> (/home/udorakpuenyi/escrow/server/dist/config/database.js:35:19)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14)
+    at Object..js (node:internal/modules/cjs/loader:1895:10)
+
+Node.js v22.15.0

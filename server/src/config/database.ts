@@ -1,6 +1,6 @@
 import { Sequelize, SequelizeOptions } from 'sequelize-typescript';
 import env from './env';
-import path from 'path';
+
 
 // Database configuration
 const dbConfig: SequelizeOptions = {
@@ -17,7 +17,7 @@ const dbConfig: SequelizeOptions = {
     acquire: 30000,
     idle: 10000,
   },
-  models: [path.join(__dirname, '../models')],
+  // models: [path.join(__dirname, '../models')],
   define: {
     timestamps: true,
     underscored: true,
@@ -34,6 +34,10 @@ const sequelize = new Sequelize(dbConfig);
 export const testConnection = async (): Promise<void> => {
   try {
     await sequelize.authenticate();
+    if (env.NODE_ENV === 'development') {
+      await sequelize.sync({ alter: true });
+      console.log('✅ Database synchronized (alter: true)');
+    }
     console.log('✅ Database connection established successfully.');
   } catch (error) {
     console.error('❌ Unable to connect to the database:', error);

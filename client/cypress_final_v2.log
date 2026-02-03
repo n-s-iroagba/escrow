@@ -1,0 +1,323 @@
+
+> client@0.1.0 cypress:run
+> cypress run
+
+
+DevTools listening on ws://127.0.0.1:43891/devtools/browser/b37775d5-ad21-487f-bc86-ac22b931d111
+Missing baseUrl in compilerOptions. tsconfig-paths will be skipped
+
+================================================================================
+
+  (Run Starting)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Cypress:        13.17.0                                                                        │
+  │ Browser:        Electron 118 (headless)                                                        │
+  │ Node Version:   v22.15.0 (/home/udorakpuenyi/.nvm/versions/node/v22.15.0/bin/node)             │
+  │ Specs:          15 found (admin/bank-management.cy.ts, admin/dashboard.cy.ts, admin/escrow-man │
+  │                 agement.cy.ts, admin/wallet-management.cy.ts, auth/admin-signup.cy.ts, auth/em │
+  │                 ail-verification.cy.ts, auth/login.cy.ts, auth/password-reset.cy.ts, auth/sign │
+  │                 up.cy.ts, trader/dashbo...)                                                    │
+  │ Searched:       cypress/e2e/**/*.cy.{js,jsx,ts,tsx}                                            │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  admin/bank-management.cy.ts                                                    (1 of 15)
+Warning: terminator_CreateInstance: Failed to CreateInstance in ICD 2.  Skipping ICD.
+
+
+  Admin Bank Management
+    Bank List Page
+      (Attempt 1 of 3) should display bank list page
+      (Attempt 2 of 3) should display bank list page
+      1) "before each" hook for "should display bank list page"
+
+
+  0 passing (36s)
+  1 failing
+
+  1) Admin Bank Management
+       Bank List Page
+         "before each" hook for "should display bank list page":
+     CypressError: `cy.visit()` failed trying to load:
+
+http://localhost:3000/auth/login
+
+We attempted to make an http request to this URL but the request failed without a response.
+
+We received this error at the network level:
+
+  > Error: ESOCKETTIMEDOUT
+
+Common situations why this would fail:
+  - you don't have internet access
+  - you forgot to run / boot your web server
+  - your web server isn't accessible
+  - you have weird network configuration settings on your computer
+
+Because this error occurred during a `before each` hook we are skipping the remaining tests in the current suite: `Admin Bank Management`
+      at <unknown> (http://localhost:3000/__cypress/runner/cypress_runner.js:131607:74)
+      at visitFailedByErr (http://localhost:3000/__cypress/runner/cypress_runner.js:131006:12)
+      at <unknown> (http://localhost:3000/__cypress/runner/cypress_runner.js:131606:11)
+      at tryCatcher (http://localhost:3000/__cypress/runner/cypress_runner.js:1830:23)
+      at Promise._settlePromiseFromHandler (http://localhost:3000/__cypress/runner/cypress_runner.js:1542:31)
+      at Promise._settlePromise (http://localhost:3000/__cypress/runner/cypress_runner.js:1599:18)
+      at Promise._settlePromise0 (http://localhost:3000/__cypress/runner/cypress_runner.js:1644:10)
+      at Promise._settlePromises (http://localhost:3000/__cypress/runner/cypress_runner.js:1720:18)
+      at _drainQueueStep (http://localhost:3000/__cypress/runner/cypress_runner.js:2430:12)
+      at _drainQueue (http://localhost:3000/__cypress/runner/cypress_runner.js:2423:9)
+      at Async._drainQueues (http://localhost:3000/__cypress/runner/cypress_runner.js:2439:5)
+      at Async.drainQueues (http://localhost:3000/__cypress/runner/cypress_runner.js:2309:14)
+  From Your Spec Code:
+      at Context.eval (webpack://client/./cypress/support/commands.ts:27:0)
+  
+  From Node.js Internals:
+    Error: ESOCKETTIMEDOUT
+        at ClientRequest.<anonymous> (<embedded>:290:108477)
+        at Object.onceWrapper (node:events:628:28)
+        at ClientRequest.emit (node:events:514:28)
+        at Socket.emitRequestTimeout (node:_http_client:847:9)
+        at Object.onceWrapper (node:events:628:28)
+        at Socket.emit (node:events:526:35)
+        at Socket._onTimeout (node:net:571:8)
+        at listOnTimeout (node:internal/timers:569:17)
+        at process.processTimers (node:internal/timers:512:7)
+
+
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        21                                                                               │
+  │ Passing:      0                                                                                │
+  │ Failing:      1                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      20                                                                               │
+  │ Screenshots:  3                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     35 seconds                                                                       │
+  │ Spec Ran:     admin/bank-management.cy.ts                                                      │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+  (Screenshots)
+
+  -  /home/udorakpuenyi/escrow/client/cypress/screenshots/admin/bank-management.cy.ts     (1280x720)
+     /Admin Bank Management -- Bank List Page -- should display bank list page (faile               
+     d).png                                                                                         
+  -  /home/udorakpuenyi/escrow/client/cypress/screenshots/admin/bank-management.cy.ts     (1280x720)
+     /Admin Bank Management -- Bank List Page -- should display bank list page (faile               
+     d) (attempt 2).png                                                                             
+  -  /home/udorakpuenyi/escrow/client/cypress/screenshots/admin/bank-management.cy.ts     (1280x720)
+     /Admin Bank Management -- should display bank list page -- before each hook (fai               
+     led) (attempt 3).png                                                                           
+
+
+  (Video)
+
+  -  Video output: /home/udorakpuenyi/escrow/client/cypress/videos/admin/bank-management.cy.ts.mp4
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  admin/dashboard.cy.ts                                                          (2 of 15)
+
+
+  Admin Dashboard
+    Page Display
+      (Attempt 1 of 3) should display admin dashboard with sidebar
+      (Attempt 2 of 3) should display admin dashboard with sidebar
+      1) "before each" hook for "should display admin dashboard with sidebar"
+
+
+  0 passing (37s)
+  1 failing
+
+  1) Admin Dashboard
+       Page Display
+         "before each" hook for "should display admin dashboard with sidebar":
+     CypressError: `cy.visit()` failed trying to load:
+
+http://localhost:3000/auth/login
+
+We attempted to make an http request to this URL but the request failed without a response.
+
+We received this error at the network level:
+
+  > Error: ESOCKETTIMEDOUT
+
+Common situations why this would fail:
+  - you don't have internet access
+  - you forgot to run / boot your web server
+  - your web server isn't accessible
+  - you have weird network configuration settings on your computer
+
+Because this error occurred during a `before each` hook we are skipping the remaining tests in the current suite: `Admin Dashboard`
+      at <unknown> (http://localhost:3000/__cypress/runner/cypress_runner.js:131607:74)
+      at visitFailedByErr (http://localhost:3000/__cypress/runner/cypress_runner.js:131006:12)
+      at <unknown> (http://localhost:3000/__cypress/runner/cypress_runner.js:131606:11)
+      at tryCatcher (http://localhost:3000/__cypress/runner/cypress_runner.js:1830:23)
+      at Promise._settlePromiseFromHandler (http://localhost:3000/__cypress/runner/cypress_runner.js:1542:31)
+      at Promise._settlePromise (http://localhost:3000/__cypress/runner/cypress_runner.js:1599:18)
+      at Promise._settlePromise0 (http://localhost:3000/__cypress/runner/cypress_runner.js:1644:10)
+      at Promise._settlePromises (http://localhost:3000/__cypress/runner/cypress_runner.js:1720:18)
+      at _drainQueueStep (http://localhost:3000/__cypress/runner/cypress_runner.js:2430:12)
+      at _drainQueue (http://localhost:3000/__cypress/runner/cypress_runner.js:2423:9)
+      at Async._drainQueues (http://localhost:3000/__cypress/runner/cypress_runner.js:2439:5)
+      at Async.drainQueues (http://localhost:3000/__cypress/runner/cypress_runner.js:2309:14)
+  From Your Spec Code:
+      at Context.eval (webpack://client/./cypress/support/commands.ts:27:0)
+  
+  From Node.js Internals:
+    Error: ESOCKETTIMEDOUT
+        at ClientRequest.<anonymous> (<embedded>:290:108477)
+        at Object.onceWrapper (node:events:628:28)
+        at ClientRequest.emit (node:events:514:28)
+        at Socket.emitRequestTimeout (node:_http_client:847:9)
+        at Object.onceWrapper (node:events:628:28)
+        at Socket.emit (node:events:526:35)
+        at Socket._onTimeout (node:net:571:8)
+        at listOnTimeout (node:internal/timers:569:17)
+        at process.processTimers (node:internal/timers:512:7)
+
+
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        16                                                                               │
+  │ Passing:      0                                                                                │
+  │ Failing:      1                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      15                                                                               │
+  │ Screenshots:  3                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     37 seconds                                                                       │
+  │ Spec Ran:     admin/dashboard.cy.ts                                                            │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+  (Screenshots)
+
+  -  /home/udorakpuenyi/escrow/client/cypress/screenshots/admin/dashboard.cy.ts/Admin     (1280x720)
+      Dashboard -- Page Display -- should display admin dashboard with sidebar (faile               
+     d).png                                                                                         
+  -  /home/udorakpuenyi/escrow/client/cypress/screenshots/admin/dashboard.cy.ts/Admin     (1280x720)
+      Dashboard -- Page Display -- should display admin dashboard with sidebar (faile               
+     d) (attempt 2).png                                                                             
+  -  /home/udorakpuenyi/escrow/client/cypress/screenshots/admin/dashboard.cy.ts/Admin     (1280x720)
+      Dashboard -- should display admin dashboard with sidebar -- before each hook (f               
+     ailed) (attempt 3).png                                                                         
+
+
+  (Video)
+
+  -  Video output: /home/udorakpuenyi/escrow/client/cypress/videos/admin/dashboard.cy.ts.mp4
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  admin/escrow-management.cy.ts                                                  (3 of 15)
+
+
+  Admin Escrow Management
+    Escrow List Page
+      (Attempt 1 of 3) should display escrow management page
+      (Attempt 2 of 3) should display escrow management page
+      1) "before each" hook for "should display escrow management page"
+
+
+  0 passing (6m)
+  1 failing
+
+  1) Admin Escrow Management
+       Escrow List Page
+         "before each" hook for "should display escrow management page":
+     CypressError: `cy.visit()` failed trying to load:
+
+http://localhost:3000/auth/login
+
+We attempted to make an http request to this URL but the request failed without a response.
+
+We received this error at the network level:
+
+  > Error: ESOCKETTIMEDOUT
+
+Common situations why this would fail:
+  - you don't have internet access
+  - you forgot to run / boot your web server
+  - your web server isn't accessible
+  - you have weird network configuration settings on your computer
+
+Because this error occurred during a `before each` hook we are skipping the remaining tests in the current suite: `Admin Escrow Management`
+      at <unknown> (http://localhost:3000/__cypress/runner/cypress_runner.js:131607:74)
+      at visitFailedByErr (http://localhost:3000/__cypress/runner/cypress_runner.js:131006:12)
+      at <unknown> (http://localhost:3000/__cypress/runner/cypress_runner.js:131606:11)
+      at tryCatcher (http://localhost:3000/__cypress/runner/cypress_runner.js:1830:23)
+      at Promise._settlePromiseFromHandler (http://localhost:3000/__cypress/runner/cypress_runner.js:1542:31)
+      at Promise._settlePromise (http://localhost:3000/__cypress/runner/cypress_runner.js:1599:18)
+      at Promise._settlePromise0 (http://localhost:3000/__cypress/runner/cypress_runner.js:1644:10)
+      at Promise._settlePromises (http://localhost:3000/__cypress/runner/cypress_runner.js:1720:18)
+      at _drainQueueStep (http://localhost:3000/__cypress/runner/cypress_runner.js:2430:12)
+      at _drainQueue (http://localhost:3000/__cypress/runner/cypress_runner.js:2423:9)
+      at Async._drainQueues (http://localhost:3000/__cypress/runner/cypress_runner.js:2439:5)
+      at Async.drainQueues (http://localhost:3000/__cypress/runner/cypress_runner.js:2309:14)
+  From Your Spec Code:
+      at Context.eval (webpack://client/./cypress/support/commands.ts:27:0)
+  
+  From Node.js Internals:
+    Error: ESOCKETTIMEDOUT
+        at ClientRequest.<anonymous> (<embedded>:290:108477)
+        at Object.onceWrapper (node:events:628:28)
+        at ClientRequest.emit (node:events:514:28)
+        at Socket.emitRequestTimeout (node:_http_client:847:9)
+        at Object.onceWrapper (node:events:628:28)
+        at Socket.emit (node:events:526:35)
+        at Socket._onTimeout (node:net:571:8)
+        at listOnTimeout (node:internal/timers:569:17)
+        at process.processTimers (node:internal/timers:512:7)
+
+
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        32                                                                               │
+  │ Passing:      0                                                                                │
+  │ Failing:      1                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      31                                                                               │
+  │ Screenshots:  3                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     5 minutes, 52 seconds                                                            │
+  │ Spec Ran:     admin/escrow-management.cy.ts                                                    │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+  (Screenshots)
+
+  -  /home/udorakpuenyi/escrow/client/cypress/screenshots/admin/escrow-management.cy.     (1280x720)
+     ts/Admin Escrow Management -- Escrow List Page -- should display escrow manageme               
+     nt page (failed).png                                                                           
+  -  /home/udorakpuenyi/escrow/client/cypress/screenshots/admin/escrow-management.cy.     (1280x720)
+     ts/Admin Escrow Management -- Escrow List Page -- should display escrow manageme               
+     nt page (failed) (attempt 2).png                                                               
+  -  /home/udorakpuenyi/escrow/client/cypress/screenshots/admin/escrow-management.cy.     (1280x720)
+     ts/Admin Escrow Management -- should display escrow management page -- before ea               
+     ch hook (failed) (attempt 3).png                                                               
+
+
+  (Video)
+
+  -  Video output: /home/udorakpuenyi/escrow/client/cypress/videos/admin/escrow-management.cy.ts.mp4
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  admin/wallet-management.cy.ts                                                  (4 of 15)
+

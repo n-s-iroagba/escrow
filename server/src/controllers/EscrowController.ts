@@ -27,7 +27,7 @@ export const getUserEscrows = asyncHandler(async (req: Request, res: Response) =
     return ApiResponse.success(res, escrows, 'User escrows retrieved', 200);
 });
 
-export const getAllEscrows = asyncHandler(async (req: Request, res: Response) => {
+export const getAllEscrows = asyncHandler(async (_req: Request, res: Response) => {
     const escrows = await EscrowService.getAllEscrows();
     return ApiResponse.success(res, escrows, 'All escrows retrieved', 200);
 });

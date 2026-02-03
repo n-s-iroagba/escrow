@@ -34,82 +34,80 @@ class SellerBankAccount extends Model<ISellerBankAccount> implements ISellerBank
   public readonly updatedAt!: Date;
 
 }
-    SellerBankAccount.init(
-      {
-        id: {
-          type: DataTypes.UUID,
-          defaultValue: DataTypes.UUIDV4,
-          primaryKey: true,
-        },
-        sellerId: {
-          type: DataTypes.UUID,
-          allowNull: false,
-          field: 'seller_id',
-        },
-    
-        accountNumber: {
-          type: DataTypes.STRING,
-          allowNull: false,
-          field: 'account_number',
-        },
-        accountHolderName: {
-          type: DataTypes.STRING,
-          allowNull: false,
-          field: 'account_holder_name',
-        },
-        routingNumber: {
-          type: DataTypes.STRING,
-          allowNull: true,
-          field: 'routing_number',
-        },
-        iban: {
-          type: DataTypes.STRING,
-          allowNull: true,
-        },
-        swift: {
-          type: DataTypes.STRING,
-          allowNull: true,
-        },
-        isPrimary: {
-          type: DataTypes.BOOLEAN,
-          allowNull: false,
-          defaultValue: false,
-          field: 'is_primary',
-        },
-        isVerified: {
-          type: DataTypes.BOOLEAN,
-          allowNull: false,
-          defaultValue: false,
-          field: 'is_verified',
-        },
-        verifiedAt: {
-          type: DataTypes.DATE,
-          allowNull: true,
-          field: 'verified_at',
-        },
+SellerBankAccount.init(
+  {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
+    },
+    sellerId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      field: 'seller_id',
+    },
 
-          updatedAt: { type: DataTypes.DATE },
-          createdAt: { type: DataTypes.DATE }
+    accountNumber: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      field: 'account_number',
+    },
+    accountHolderName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      field: 'account_holder_name',
+    },
+    routingNumber: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      field: 'routing_number',
+    },
+    iban: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    swift: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    isPrimary: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+      field: 'is_primary',
+    },
+    isVerified: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+      field: 'is_verified',
+    },
+    verifiedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      field: 'verified_at',
+    },
+
+    updatedAt: { type: DataTypes.DATE },
+    createdAt: { type: DataTypes.DATE }
+  },
+  {
+    sequelize,
+    tableName: 'seller_bank_accounts',
+    timestamps: true,
+    indexes: [
+      {
+        fields: ['seller_id'],
+      },
+
+      {
+        fields: ['is_primary'],
       },
       {
-        sequelize,
-        tableName: 'seller_bank_accounts',
-        timestamps: true,
-        indexes: [
-          {
-            fields: ['seller_id'],
-          },
-          {
-            fields: ['bank_id'],
-          },
-          {
-            fields: ['is_primary'],
-          },
-          {
-            fields: ['is_verified'],
-          },
-        ],
-      }
-    );
+        fields: ['is_verified'],
+      },
+    ],
+  }
+);
 
 export default SellerBankAccount;

@@ -9,6 +9,8 @@ import Escrow from './Escrow';
 import EscrowBankBalance from './EscrowBankBalance';
 import EscrowCryptoWalletBalance from './EscrowCryptoWalletBalance';
 import KYCDocument from './KYCDocument';
+import SellerBankAccount from './SellerBankAccount';
+import SellerCryptoWallet from './SellerCryptoWallet';
 
 
 // Import associations
@@ -23,5 +25,7 @@ export {
   EscrowBankBalance,
   EscrowCryptoWalletBalance,
   KYCDocument,
+  SellerBankAccount,
+  SellerCryptoWallet,
 
 };

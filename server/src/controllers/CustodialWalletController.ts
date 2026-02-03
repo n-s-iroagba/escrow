@@ -8,7 +8,7 @@ export const createWallet = asyncHandler(async (req: Request, res: Response) => 
     return ApiResponse.created(res, wallet, 'Wallet created successfully');
 });
 
-export const getWallets = asyncHandler(async (req: Request, res: Response) => {
+export const getWallets = asyncHandler(async (_req: Request, res: Response) => {
     const wallets = await CustodialWalletService.getAllWallets();
     return ApiResponse.success(res, wallets, 'Wallets retrieved successfully');
 });
