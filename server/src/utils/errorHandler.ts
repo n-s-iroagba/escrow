@@ -19,7 +19,7 @@ export const errorHandler = (
   err: Error | AppError,
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ) => {
   let error = { ...err } as AppError;
   error.message = err.message;
@@ -61,7 +61,7 @@ export const errorHandler = (
 
   // If it's not an operational error (programming error), hide details in production
   const isOperational = error instanceof AppError && error.isOperational;
-  
+
   if (process.env.NODE_ENV === 'production' && !isOperational) {
     error.message = 'Something went wrong';
     error.statusCode = 500;
@@ -77,7 +77,7 @@ export const errorHandler = (
 };
 
 // Async handler wrapper
-export const asyncHandler = (fn: Function) => 
+export const asyncHandler = (fn: Function) =>
   (req: Request, res: Response, next: NextFunction) => {
     Promise.resolve(fn(req, res, next)).catch(next);
   };

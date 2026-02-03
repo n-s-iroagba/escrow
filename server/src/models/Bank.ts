@@ -1,5 +1,4 @@
 import { Model, DataTypes } from 'sequelize';
-import { BankAccountType } from '../utils/constants';
 import sequelize from '@/config/database';
 
 export interface IBank {

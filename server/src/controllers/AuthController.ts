@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import asyncHandler from '../utils/asyncHandler';
 import ApiResponse from '../utils/apiResponse';
 import User from '../models/User';
-import { sendVerificationEmail, sendPasswordResetEmail } from '../services/EmailService';
+import EmailService from '../services/EmailService';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
@@ -38,7 +38,7 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
         emailVerificationTokenExpires: verificationTokenExpires
     } as any);
 
-    await sendVerificationEmail(email, verificationToken);
+    await EmailService.sendVerificationEmail(email, verificationToken);
 
     // Don't send token immediately on register? Or do we auto-login?
     // Usually require verification first or allow limited access. 
@@ -86,7 +86,7 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
     }, 'Login successful', 200);
 });
 
-export const logout = asyncHandler(async (_req: Request, res: Response) => {
+export const logout = asyncHandler(async (req: Request, res: Response) => {
     res.clearCookie('refreshToken', {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
@@ -164,7 +164,7 @@ export const forgotPassword = asyncHandler(async (req: Request, res: Response) =
     user.passwordResetTokenExpires = new Date(Date.now() + 1 * 60 * 60 * 1000); // 1 hour
     await user.save();
 
-    await sendPasswordResetEmail(email, resetToken);
+    await EmailService.sendPasswordResetEmail(email, resetToken);
 
     return ApiResponse.success(res, null, 'If that email exists, a reset link has been sent.', 200);
 });

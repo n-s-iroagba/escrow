@@ -1,7 +1,7 @@
 import Escrow, { IEscrow } from '../models/Escrow';
 import EscrowRepository from '../repositories/EscrowRepository';
 import User from '../models/User';
-import sendEmail from '../config/mailer';
+import EmailService from './EmailService';
 import { TradeType, EscrowState } from '../utils/constants';
 import SellerBankAccountRepository from '../repositories/SellerBankAccountRepository';
 import SellerCryptoWalletRepository from '../repositories/SellerCryptoWalletRepository';
@@ -114,13 +114,13 @@ class EscrowService {
         });
 
         // 4. Send Notification
-        if (sendEmail) {
-            await sendEmail({
-                to: counterPartyEmail,
-                subject: 'You have a new Escrow Transaction',
-                text: `Hello, you have been invited to an escrow transaction by ${initiatorEmail}. Amount: ${amount} ${isBuyerInitiated ? buyCurrency : sellCurrency}. Please log in to view details.`
-            });
-        }
+        await EmailService.sendEscrowInvitation(
+            counterPartyEmail,
+            initiatorEmail,
+            Number(amount),
+            isBuyerInitiated ? buyCurrency! : sellCurrency!,
+            escrow.id
+        );
 
         return escrow;
     }
@@ -278,7 +278,7 @@ class EscrowService {
 
         // Handle Amount Change
         if (updates.amount && updates.amount !== escrow.amount) {
-            
+
             const newAmount = updates.amount;
 
             (escrow as any).amount = newAmount;

@@ -9,36 +9,73 @@ import {
   RefreshCcw,
 
   Gavel,
-  BadgeCheck
+  BadgeCheck,
+  Menu,
+  X
 } from "lucide-react";
 import { APP_NAME } from "@/constants/data";
+import { useState } from "react";
 
 export default function Home() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   return (
     <div className="min-h-screen bg-white font-display text-gray-900">
       {/* Navigation */}
-      <nav className="flex items-center justify-between px-6 py-6 max-w-7xl mx-auto">
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-6 bg-[#13ec5b] rounded text-xs flex items-center justify-center font-bold text-[#0d1b12]">X</div>
-          <span className="font-bold text-lg tracking-tight">{APP_NAME}</span>
-        </div>
-        <div className="hidden md:flex gap-8 text-sm font-bold text-gray-500">
-          <Link
-            href="/login"
-            className="bg-[#13ec5b] hover:bg-[#10c94d] text-[#0d1b12] px-6 py-2.5 rounded-full font-bold text-sm transition-colors"
-          >
-            Login
-          </Link>
+      <nav className="px-6 py-6 max-w-7xl mx-auto">
+        <div className="flex items-center justify-between">
+          {/* Logo */}
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-[#13ec5b] rounded text-xs flex items-center justify-center font-bold text-[#0d1b12]">X</div>
+            <span className="font-bold text-lg tracking-tight">{APP_NAME}</span>
+          </div>
 
-          <Link
-            href="/sign-up"
-            className="bg-[#13ec5b] hover:bg-[#10c94d] text-[#0d1b12] px-6 py-2.5 rounded-full font-bold text-sm transition-colors"
-          >
-            Get Started
-          </Link>
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex gap-4 text-sm font-bold">
+            <Link
+              href="/login"
+              className="bg-[#13ec5b] hover:bg-[#10c94d] text-[#0d1b12] px-6 py-2.5 rounded-full font-bold text-sm transition-colors"
+            >
+              Login
+            </Link>
+            <Link
+              href="/sign-up"
+              className="bg-[#13ec5b] hover:bg-[#10c94d] text-[#0d1b12] px-6 py-2.5 rounded-full font-bold text-sm transition-colors"
+            >
+              Get Started
+            </Link>
+          </div>
 
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 text-gray-600 hover:text-[#13ec5b] transition-colors"
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
         </div>
+
+        {/* Mobile Navigation */}
+        {mobileMenuOpen && (
+          <div className="md:hidden mt-4 pb-4 space-y-3 border-t border-gray-200 pt-4">
+            <Link
+              href="/login"
+              className="block w-full text-center bg-[#13ec5b] hover:bg-[#10c94d] text-[#0d1b12] px-6 py-3 rounded-full font-bold text-sm transition-colors"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Login
+            </Link>
+            <Link
+              href="/sign-up"
+              className="block w-full text-center bg-[#13ec5b] hover:bg-[#10c94d] text-[#0d1b12] px-6 py-3 rounded-full font-bold text-sm transition-colors"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Get Started
+            </Link>
+          </div>
+        )}
       </nav>
+
 
       {/* Hero Section */}
       <section className="px-6 pt-12 pb-4 md:pt-6 md:pb-12 max-w-7xl mx-auto">

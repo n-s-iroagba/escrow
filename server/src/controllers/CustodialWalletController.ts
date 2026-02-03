@@ -3,17 +3,17 @@ import asyncHandler from '../utils/asyncHandler';
 import ApiResponse from '../utils/apiResponse';
 import CustodialWalletService from '../services/CustodialWalletService';
 
-export const createWallet = asyncHandler(async (_req: Request, res: Response) => {
+export const createWallet = asyncHandler(async (req: Request, res: Response) => {
     const wallet = await CustodialWalletService.createWallet(req.body);
     return ApiResponse.created(res, wallet, 'Wallet created successfully');
 });
 
-export const getWallets = asyncHandler(async (_req: Request, res: Response) => {
+export const getWallets = asyncHandler(async (req: Request, res: Response) => {
     const wallets = await CustodialWalletService.getAllWallets();
     return ApiResponse.success(res, wallets, 'Wallets retrieved successfully');
 });
 
-export const getWallet = asyncHandler(async (_req: Request, res: Response) => {
+export const getWallet = asyncHandler(async (req: Request, res: Response) => {
     const { id } = req.params;
     const wallet = await CustodialWalletService.getWalletById(id);
     if (!wallet) {
@@ -22,7 +22,7 @@ export const getWallet = asyncHandler(async (_req: Request, res: Response) => {
     return ApiResponse.success(res, wallet, 'Wallet retrieved successfully');
 });
 
-export const updateWallet = asyncHandler(async (_req: Request, res: Response) => {
+export const updateWallet = asyncHandler(async (req: Request, res: Response) => {
     const { id } = req.params;
     const updatedWallet = await CustodialWalletService.updateWallet(id, req.body);
     if (!updatedWallet) {

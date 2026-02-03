@@ -89,7 +89,7 @@ class App {
     });
 
     // API routes will be added here
-    this.app.use(`/api/${env.API_VERSION}`, (req: Request, res: Response, next) => {
+    this.app.use(`/api/${env.API_VERSION}`, (_req: Request, _res: Response, next) => {
       // API routes will be mounted here
       next();
     });
@@ -103,7 +103,7 @@ class App {
 
 
     // 404 handler
-    this.app.use('*', (_req: Request, _res: Response) => {
+    this.app.use('*', (req: Request, res: Response) => {
       res.status(404).json({
         success: false,
         message: `Route ${req.originalUrl} not found`,
