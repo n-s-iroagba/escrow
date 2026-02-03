@@ -459,6 +459,59 @@ class EmailService {
             html
         });
     }
+
+    /**
+     * Send invitation to shadow user (new counterparty)
+     */
+    async sendShadowUserInvitation(email: string, invitedBy: string): Promise<boolean> {
+        const registerLink = `${this.frontendUrl}/auth/sign-up`;
+
+        const html = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <style>
+                    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                    .header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
+                    .content { background: #f9fafb; padding: 30px; border-radius: 0 0 8px 8px; }
+                    .button { display: inline-block; padding: 14px 28px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; text-decoration: none; border-radius: 8px; font-weight: bold; margin: 20px 0; }
+                    .footer { text-align: center; margin-top: 20px; color: #6b7280; font-size: 12px; }
+                    .highlight { background: #d1fae5; padding: 15px; border-radius: 8px; margin: 15px 0; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>🎉 You've Been Invited!</h1>
+                    </div>
+                    <div class="content">
+                        <p>Hello,</p>
+                        <div class="highlight">
+                            <strong>${invitedBy}</strong> has invited you to participate in a secure escrow transaction on our platform.
+                        </div>
+                        <p>To view and accept this transaction, you'll need to create an account on our platform.</p>
+                        <p><strong>What is Escrow?</strong></p>
+                        <p>Escrow is a secure way to trade where funds are held safely until both parties fulfill their obligations. This protects both buyers and sellers.</p>
+                        <p style="text-align: center;">
+                            <a href="${registerLink}" class="button">Create Your Account</a>
+                        </p>
+                        <p style="color: #6b7280; font-size: 14px;">Once registered, you'll be able to view and accept the escrow transaction.</p>
+                    </div>
+                    <div class="footer">
+                        <p>&copy; ${new Date().getFullYear()} Escrow Platform. All rights reserved.</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+        `;
+
+        return this.send({
+            to: email,
+            subject: `${invitedBy} invited you to an Escrow Transaction`,
+            html
+        });
+    }
 }
 
 export default new EmailService();

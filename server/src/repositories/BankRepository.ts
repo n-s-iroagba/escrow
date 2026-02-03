@@ -9,10 +9,14 @@ class BankRepository {
         return await Bank.findByPk(id);
     }
 
+    async findByCurrency(currency: string): Promise<Bank[]> {
+        return await Bank.findAll({ where: { currency } });
+    }
+
     async update(id: string, data: Partial<IBank>): Promise<[number, Bank[]]> {
         return await Bank.update(data, {
             where: { id },
-            returning: true, // For Postgres
+            returning: true,
         });
     }
 }

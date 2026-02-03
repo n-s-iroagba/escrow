@@ -1,11 +1,13 @@
 import { Router } from 'express';
-import { initiateEscrow, getEscrow, getUserEscrows, getAllEscrows, getFundingDetails, markAsFunded, adminUpdateEscrow } from '../controllers/EscrowController';
-// Add auth middleware if required. Assuming public for now or protected.
-// Usually user needs to be logged in to initiate.
-// import { protect } from '../middlewares/auth';
+import { initiateEscrow, getEscrow, getUserEscrows, getAllEscrows, getFundingDetails, markAsFunded, adminUpdateEscrow, validateCounterparty, getBanksByCurrency } from '../controllers/EscrowController';
 
 const router = Router();
 
+// Validation endpoints
+router.post('/validate-counterparty', validateCounterparty);
+router.get('/banks/:currency', getBanksByCurrency);
+
+// Escrow CRUD
 router.post('/initiate', initiateEscrow);
 router.get('/all', getAllEscrows);
 router.get('/my-escrows', getUserEscrows);

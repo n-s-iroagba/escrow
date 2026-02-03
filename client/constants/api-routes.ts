@@ -9,10 +9,12 @@ const API_ROUTES = {
         RESET_PASSWORD: '/auth/reset-password',
     },
     ESCROWS: {
-        GET_ALL: '/escrow', // Admin or cleanup
+        GET_ALL: '/escrow',
         GET_MY: '/escrow/my-escrows',
         CREATE: '/escrow/initiate',
         GET_ADMIN_ALL: '/escrow/all',
+        VALIDATE_COUNTERPARTY: '/escrow/validate-counterparty',
+        GET_BANKS_BY_CURRENCY: (currency: string) => `/escrow/banks/${currency}`,
         ADMIN_UPDATE: (id: string) => `/escrow/${id}/admin-update`,
         GET_ONE: (id: string) => `/escrow/${id}`,
         GET_FUNDING_DETAILS: (id: string) => `/escrow/${id}/funding-details`,
@@ -24,6 +26,7 @@ const API_ROUTES = {
         GET_ONE: (id: string) => `/banks/${id}`,
         UPDATE: (id: string) => `/banks/${id}`,
         DELETE: (id: string) => `/banks/${id}`,
+        GET_BY_CURRENCY: (currency: string) => `/banks/currency/${currency}`,
     },
     KYC: {
         STATUS: (userId?: string) => `/kyc/status/${userId}`,
@@ -31,6 +34,7 @@ const API_ROUTES = {
     },
     USERS: {
         GET_ALL: '/users',
+        VALIDATE_EMAIL: '/users/validate-email',
     },
     WALLETS: {
         GET_ALL: '/custodial-wallets',

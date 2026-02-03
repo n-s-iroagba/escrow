@@ -26,7 +26,9 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
         return ApiResponse.error(res, 'Email already in use', 400);
     }
 
-    const verificationToken = Math.floor(100000 + Math.random() * 900000).toString();
+    // In development, use fixed OTP for testing; in production use random
+    const isDevelopment = process.env.NODE_ENV !== 'production';
+    const verificationToken = isDevelopment ? '123456' : Math.floor(100000 + Math.random() * 900000).toString();
     const verificationTokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
 
     const user = await User.create({

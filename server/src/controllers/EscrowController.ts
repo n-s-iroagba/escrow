@@ -50,3 +50,25 @@ export const adminUpdateEscrow = asyncHandler(async (req: Request, res: Response
     const escrow = await EscrowService.adminUpdateEscrow(id, req.body);
     return ApiResponse.success(res, escrow, 'Escrow updated by admin', 200);
 });
+
+export const validateCounterparty = asyncHandler(async (req: Request, res: Response) => {
+    const { email } = req.body;
+
+    if (!email) {
+        return ApiResponse.error(res, 'Email is required', 400);
+    }
+
+    const UserService = require('../services/UserService').default;
+    const result = await UserService.validateUserByEmail(email);
+
+    return ApiResponse.success(res, result, 'Counterparty validation complete', 200);
+});
+
+export const getBanksByCurrency = asyncHandler(async (req: Request, res: Response) => {
+    const { currency } = req.params;
+
+    const BankRepository = require('../repositories/BankRepository').default;
+    const banks = await BankRepository.findByCurrency(currency);
+
+    return ApiResponse.success(res, banks, 'Banks retrieved', 200);
+});

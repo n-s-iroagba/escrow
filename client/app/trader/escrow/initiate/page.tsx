@@ -1,34 +1,55 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import API_ROUTES from '@/constants/api-routes';
 import { usePost, useGet } from '@/hooks/useApiQuery';
-import { TradeType, PaymentMethod } from '@/constants/enums';
-import { ArrowLeft, ArrowRight, Check, ShieldCheck, Coins, Banknote, Wallet } from 'lucide-react';
+import { TradeType, PaymentMethod, FeePayer, Currency } from '@/constants/enums';
+import { ArrowLeft, ArrowRight, Check, ShieldCheck, Coins, Banknote, Wallet, AlertCircle, UserCheck, Building2 } from 'lucide-react';
 import Link from 'next/link';
+
+// Define crypto and fiat currencies
+const CRYPTO_CURRENCIES = ['BTC', 'ETH', 'USDT', 'USDC', 'LTC', 'XRP'];
+const FIAT_CURRENCIES = ['USD', 'EUR', 'GBP'];
+
+// $60,000 threshold for payment method restrictions
+const WIRE_TRANSFER_THRESHOLD = 60000;
+
+interface Bank {
+    id: string;
+    name: string;
+    currency: string;
+    accountNumber?: string;
+}
+
+interface FormData {
+    isBuyerInitiated: boolean;
+    tradeType: typeof TradeType[keyof typeof TradeType];
+    buyCurrency: string;
+    sellCurrency: string;
+    amount: string;
+    counterPartyEmail: string;
+    paymentMethod: string;
+    feePayer: typeof FeePayer[keyof typeof FeePayer];
+    counterPartyConfirmationDeadline: string;
+    preferredBankId: string;
+    walletAddress: string;
+    walletNetwork: string;
+    bankAccountNumber: string;
+    bankAccountHolderName: string;
+    bankRoutingNumber: string;
+    bankIban: string;
+    bankSwift: string;
+}
 
 export default function InitiateEscrowPage() {
     const router = useRouter();
     const [step, setStep] = useState(1);
-
-    interface FormData {
-        isBuyerInitiated: boolean;
-        tradeType: typeof TradeType[keyof typeof TradeType];
-        buyCurrency: string;
-        sellCurrency: string;
-        amount: string;
-        counterPartyEmail: string;
-        paymentMethod: string;
-        counterPartyConfirmationDeadline: string;
-        walletAddress: string;
-        walletNetwork: string;
-        bankAccountNumber: string;
-        bankAccountHolderName: string;
-        bankRoutingNumber: string;
-        bankIban: string;
-        bankSwift: string;
-    }
+    const [counterpartyStatus, setCounterpartyStatus] = useState<{
+        checked: boolean;
+        exists: boolean;
+        message: string;
+    }>({ checked: false, exists: false, message: '' });
 
     const [formData, setFormData] = useState<FormData>({
         isBuyerInitiated: true,
@@ -37,8 +58,10 @@ export default function InitiateEscrowPage() {
         sellCurrency: 'USDT',
         amount: '',
         counterPartyEmail: '',
-        paymentMethod: '',
+        paymentMethod: PaymentMethod.CRYPTO,
+        feePayer: FeePayer.BUYER,
         counterPartyConfirmationDeadline: '24',
+        preferredBankId: '',
         walletAddress: '',
         walletNetwork: 'mainnet',
         bankAccountNumber: '',
@@ -48,17 +71,130 @@ export default function InitiateEscrowPage() {
         bankSwift: '',
     });
 
+    // Determine if trade involves fiat
+    const isCryptoToFiat = formData.tradeType === TradeType.CRYPTO_TO_FIAT;
+    const isBuyer = formData.isBuyerInitiated;
+    const amount = parseFloat(formData.amount) || 0;
+
+    // Determine available currencies based on trade type and role
+    const availableBuyCurrencies = useMemo(() => {
+        if (isCryptoToFiat) {
+            // Crypto to Fiat: Buyer receives Fiat, Seller receives Crypto
+            return isBuyer ? FIAT_CURRENCIES : CRYPTO_CURRENCIES;
+        }
+        // Crypto to Crypto: Both receive crypto
+        return CRYPTO_CURRENCIES;
+    }, [isCryptoToFiat, isBuyer]);
+
+    const availableSellCurrencies = useMemo(() => {
+        if (isCryptoToFiat) {
+            // Crypto to Fiat: Buyer sends Crypto, Seller sends Fiat
+            return isBuyer ? CRYPTO_CURRENCIES : FIAT_CURRENCIES;
+        }
+        // Crypto to Crypto: Both send crypto
+        return CRYPTO_CURRENCIES;
+    }, [isCryptoToFiat, isBuyer]);
+
+    // Determine available payment methods based on trade type and amount
+    const availablePaymentMethods = useMemo(() => {
+        if (!isCryptoToFiat || !isBuyer) {
+            return [{ value: PaymentMethod.CRYPTO, label: 'Cryptocurrency' }];
+        }
+
+        // Crypto to Fiat + Buyer
+        if (amount >= WIRE_TRANSFER_THRESHOLD) {
+            return [{ value: PaymentMethod.WIRE_TRANSFER, label: 'Wire Transfer (Required for amounts ≥$60,000)' }];
+        }
+
+        return [
+            { value: PaymentMethod.PAYPAL, label: 'PayPal' },
+            { value: PaymentMethod.WIRE_TRANSFER, label: 'Wire Transfer' },
+        ];
+    }, [isCryptoToFiat, isBuyer, amount]);
+
+    // Fetch banks by currency for buyer in Crypto to Fiat
+    const shouldFetchBanks = isCryptoToFiat && isBuyer && !!formData.buyCurrency;
+    const { data: banks } = useGet<Bank[]>(
+        shouldFetchBanks ? API_ROUTES.ESCROWS.GET_BANKS_BY_CURRENCY(formData.buyCurrency) : null,
+        { enabled: shouldFetchBanks }
+    );
+
+    // Validate counterparty
+    const { post: validateCounterparty, isPending: isValidating } = usePost<{ email: string }, { exists: boolean; userId?: string }>(
+        API_ROUTES.ESCROWS.VALIDATE_COUNTERPARTY
+    );
+
+    // Create escrow
     const { post, isPending, error } = usePost(API_ROUTES.ESCROWS.CREATE, {
-        onSuccess: (data) => router.push(`/trader/escrow/${data.id}`),
+        onSuccess: (data: any) => router.push(`/trader/escrow/${data.id}`),
     });
+
+    // Reset currencies when trade type or role changes
+    useEffect(() => {
+        if (isCryptoToFiat) {
+            if (isBuyer) {
+                setFormData(prev => ({
+                    ...prev,
+                    buyCurrency: 'USD',
+                    sellCurrency: 'BTC',
+                    paymentMethod: amount >= WIRE_TRANSFER_THRESHOLD ? PaymentMethod.WIRE_TRANSFER : PaymentMethod.PAYPAL
+                }));
+            } else {
+                setFormData(prev => ({
+                    ...prev,
+                    buyCurrency: 'BTC',
+                    sellCurrency: 'USD',
+                    paymentMethod: PaymentMethod.CRYPTO
+                }));
+            }
+        } else {
+            setFormData(prev => ({
+                ...prev,
+                buyCurrency: 'BTC',
+                sellCurrency: 'USDT',
+                paymentMethod: PaymentMethod.CRYPTO
+            }));
+        }
+    }, [formData.tradeType, formData.isBuyerInitiated]);
+
+    // Auto-restrict payment method for large amounts
+    useEffect(() => {
+        if (isCryptoToFiat && isBuyer && amount >= WIRE_TRANSFER_THRESHOLD) {
+            setFormData(prev => ({ ...prev, paymentMethod: PaymentMethod.WIRE_TRANSFER }));
+        }
+    }, [amount, isCryptoToFiat, isBuyer]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
+
+        // Reset counterparty status when email changes
+        if (name === 'counterPartyEmail') {
+            setCounterpartyStatus({ checked: false, exists: false, message: '' });
+        }
     };
 
     const handleRoleSelect = (role: 'buyer' | 'seller') => {
         setFormData(prev => ({ ...prev, isBuyerInitiated: role === 'buyer' }));
+    };
+
+    const handleFeePayerSelect = (payer: typeof FeePayer[keyof typeof FeePayer]) => {
+        setFormData(prev => ({ ...prev, feePayer: payer }));
+    };
+
+    const handleValidateCounterparty = async () => {
+        if (!formData.counterPartyEmail) return;
+
+        const result = await validateCounterparty({ email: formData.counterPartyEmail });
+        if (result) {
+            setCounterpartyStatus({
+                checked: true,
+                exists: result.exists,
+                message: result.exists
+                    ? 'User found! They will be notified of this escrow.'
+                    : 'User not registered. They will receive an invitation to join.'
+            });
+        }
     };
 
     const nextStep = () => setStep(step + 1);
@@ -66,6 +202,7 @@ export default function InitiateEscrowPage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
         const payload: any = {
             isBuyerInitiated: formData.isBuyerInitiated,
             tradeType: formData.tradeType,
@@ -74,14 +211,22 @@ export default function InitiateEscrowPage() {
             amount: parseFloat(formData.amount),
             counterPartyEmail: formData.counterPartyEmail,
             paymentMethod: formData.paymentMethod,
+            feePayer: formData.feePayer,
             counterPartyConfirmationDeadline: new Date(Date.now() + (parseInt(formData.counterPartyConfirmationDeadline || '24') * 60 * 60 * 1000)),
         };
 
-        const isCryptoFiat = formData.tradeType === TradeType.CRYPTO_TO_FIAT;
-        if (formData.isBuyerInitiated) {
+        // Add preferred bank for buyer in Crypto to Fiat
+        if (isCryptoToFiat && isBuyer && formData.preferredBankId) {
+            payload.preferredBankId = formData.preferredBankId;
+        }
+
+        // Add asset reception details
+        if (isBuyer) {
+            // Buyer receives crypto (or fiat in C2F - but handled differently)
             payload.walletDetails = { walletAddress: formData.walletAddress, network: formData.walletNetwork };
         } else {
-            if (isCryptoFiat) {
+            // Seller receives based on trade type
+            if (isCryptoToFiat) {
                 payload.bankDetails = {
                     accountNumber: formData.bankAccountNumber,
                     accountHolderName: formData.bankAccountHolderName,
@@ -93,6 +238,7 @@ export default function InitiateEscrowPage() {
                 payload.walletDetails = { walletAddress: formData.walletAddress, network: formData.walletNetwork };
             }
         }
+
         await post(payload);
     };
 
@@ -101,6 +247,16 @@ export default function InitiateEscrowPage() {
         { num: 2, label: 'Details' },
         { num: 3, label: 'Reception' },
     ];
+
+    // Determine deadline label based on role
+    const deadlineLabel = isBuyer
+        ? 'Seller Confirmation Deadline (Hours)'
+        : 'Buyer Confirmation Deadline (Hours)';
+
+    // Determine amount label based on role
+    const amountLabel = isBuyer
+        ? `Purchase Amount (${formData.buyCurrency})`
+        : `Sale Amount (${formData.sellCurrency})`;
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-6 lg:p-10">
@@ -186,36 +342,55 @@ export default function InitiateEscrowPage() {
                                         <label className="block text-sm font-semibold text-slate-700 mb-2">Buying (Receiving)</label>
                                         <select data-testid="buy-currency-select" name="buyCurrency" value={formData.buyCurrency} onChange={handleInputChange}
                                             className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 outline-none">
-                                            <option value="BTC">BTC</option>
-                                            <option value="ETH">ETH</option>
-                                            <option value="USDT">USDT</option>
-                                            {formData.tradeType === TradeType.CRYPTO_TO_FIAT && (
-                                                <>
-                                                    <option value="USD">USD</option>
-                                                    <option value="EUR">EUR</option>
-                                                </>
-                                            )}
+                                            {availableBuyCurrencies.map(c => (
+                                                <option key={c} value={c}>{c}</option>
+                                            ))}
                                         </select>
                                     </div>
                                     <div>
                                         <label className="block text-sm font-semibold text-slate-700 mb-2">Selling (Sending)</label>
                                         <select data-testid="sell-currency-select" name="sellCurrency" value={formData.sellCurrency} onChange={handleInputChange}
                                             className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 outline-none">
-                                            <option value="BTC">BTC</option>
-                                            <option value="ETH">ETH</option>
-                                            <option value="USDT">USDT</option>
+                                            {availableSellCurrencies.map(c => (
+                                                <option key={c} value={c}>{c}</option>
+                                            ))}
                                         </select>
                                     </div>
                                 </div>
 
                                 {/* Amount */}
                                 <div>
-                                    <label className="block text-sm font-semibold text-slate-700 mb-2">Transaction Amount</label>
+                                    <label className="block text-sm font-semibold text-slate-700 mb-2">{amountLabel}</label>
                                     <div className="relative">
                                         <input data-testid="amount-input" type="number" name="amount" value={formData.amount} onChange={handleInputChange}
                                             className="w-full h-14 px-4 pr-16 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none text-xl font-bold transition-all"
                                             placeholder="0.00" />
-                                        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-semibold">{formData.buyCurrency}</span>
+                                        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-semibold">
+                                            {isBuyer ? formData.buyCurrency : formData.sellCurrency}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                {/* Fee Payer Selection */}
+                                <div>
+                                    <label className="block text-sm font-semibold text-slate-700 mb-3">Escrow Fee Payer</label>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <button
+                                            data-testid="fee-buyer-button"
+                                            type="button"
+                                            onClick={() => handleFeePayerSelect(FeePayer.BUYER)}
+                                            className={`p-4 rounded-xl border-2 transition-all text-center ${formData.feePayer === FeePayer.BUYER ? 'border-violet-500 bg-violet-50' : 'border-slate-200 hover:border-slate-300'}`}
+                                        >
+                                            <p className={`font-bold ${formData.feePayer === FeePayer.BUYER ? 'text-violet-700' : 'text-slate-600'}`}>Buyer Pays Fee</p>
+                                        </button>
+                                        <button
+                                            data-testid="fee-seller-button"
+                                            type="button"
+                                            onClick={() => handleFeePayerSelect(FeePayer.SELLER)}
+                                            className={`p-4 rounded-xl border-2 transition-all text-center ${formData.feePayer === FeePayer.SELLER ? 'border-violet-500 bg-violet-50' : 'border-slate-200 hover:border-slate-300'}`}
+                                        >
+                                            <p className={`font-bold ${formData.feePayer === FeePayer.SELLER ? 'text-violet-700' : 'text-slate-600'}`}>Seller Pays Fee</p>
+                                        </button>
                                     </div>
                                 </div>
 
@@ -229,29 +404,102 @@ export default function InitiateEscrowPage() {
 
                         {step === 2 && (
                             <div className="space-y-6">
-                                {formData.isBuyerInitiated && formData.tradeType === TradeType.CRYPTO_TO_FIAT && (
+                                {/* Payment Method for Buyer in Crypto to Fiat */}
+                                {isCryptoToFiat && isBuyer && (
                                     <div>
                                         <label className="block text-sm font-semibold text-slate-700 mb-2">Payment Method</label>
-                                        <select name="paymentMethod" value={formData.paymentMethod} onChange={handleInputChange}
-                                            className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 outline-none">
-                                            <option value="">Select Method</option>
-                                            {parseFloat(formData.amount) < 60000 && <option value={PaymentMethod.PAYPAL}>PayPal</option>}
-                                            <option value={PaymentMethod.WIRE_TRANSFER}>Wire Transfer</option>
+                                        <select
+                                            data-testid="payment-method-select"
+                                            name="paymentMethod"
+                                            value={formData.paymentMethod}
+                                            onChange={handleInputChange}
+                                            disabled={amount >= WIRE_TRANSFER_THRESHOLD}
+                                            className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 outline-none disabled:opacity-60"
+                                        >
+                                            {availablePaymentMethods.map(pm => (
+                                                <option key={pm.value} value={pm.value}>{pm.label}</option>
+                                            ))}
+                                        </select>
+                                        {amount >= WIRE_TRANSFER_THRESHOLD && (
+                                            <p className="mt-2 text-amber-600 text-sm flex items-center gap-1">
+                                                <AlertCircle className="w-4 h-4" />
+                                                Wire Transfer is required for transactions ≥$60,000
+                                            </p>
+                                        )}
+                                    </div>
+                                )}
+
+                                {/* Preferred Bank for Buyer in Crypto to Fiat */}
+                                {isCryptoToFiat && isBuyer && banks && banks.length > 0 && (
+                                    <div>
+                                        <label className="block text-sm font-semibold text-slate-700 mb-2">
+                                            <span className="flex items-center gap-2">
+                                                <Building2 className="w-4 h-4" />
+                                                Preferred Bank (for receiving {formData.buyCurrency})
+                                            </span>
+                                        </label>
+                                        <select
+                                            data-testid="preferred-bank-select"
+                                            name="preferredBankId"
+                                            value={formData.preferredBankId}
+                                            onChange={handleInputChange}
+                                            className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 outline-none"
+                                        >
+                                            <option value="">Select a bank...</option>
+                                            {banks.map(bank => (
+                                                <option key={bank.id} value={bank.id}>{bank.name}</option>
+                                            ))}
                                         </select>
                                     </div>
                                 )}
+
+                                {/* Counterparty Email */}
                                 <div>
                                     <label className="block text-sm font-semibold text-slate-700 mb-2">Counterparty Email</label>
-                                    <input data-testid="counterparty-email-input" type="email" name="counterPartyEmail" value={formData.counterPartyEmail} onChange={handleInputChange}
-                                        className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none"
-                                        placeholder="trader@example.com" />
+                                    <div className="flex gap-2">
+                                        <input
+                                            data-testid="counterparty-email-input"
+                                            type="email"
+                                            name="counterPartyEmail"
+                                            value={formData.counterPartyEmail}
+                                            onChange={handleInputChange}
+                                            className="flex-1 h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none"
+                                            placeholder="trader@example.com"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={handleValidateCounterparty}
+                                            disabled={!formData.counterPartyEmail || isValidating}
+                                            className="px-4 rounded-xl bg-slate-100 text-slate-600 font-medium hover:bg-slate-200 disabled:opacity-50 transition-colors"
+                                        >
+                                            {isValidating ? 'Checking...' : 'Validate'}
+                                        </button>
+                                    </div>
+                                    {counterpartyStatus.checked && (
+                                        <div className={`mt-2 p-3 rounded-lg flex items-center gap-2 ${counterpartyStatus.exists ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}`}>
+                                            {counterpartyStatus.exists ? <UserCheck className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
+                                            <span className="text-sm">{counterpartyStatus.message}</span>
+                                        </div>
+                                    )}
                                 </div>
+
+                                {/* Confirmation Deadline */}
                                 <div>
-                                    <label className="block text-sm font-semibold text-slate-700 mb-2">Confirmation Deadline (Hours)</label>
-                                    <input type="number" name="counterPartyConfirmationDeadline" value={formData.counterPartyConfirmationDeadline} onChange={handleInputChange}
+                                    <label className="block text-sm font-semibold text-slate-700 mb-2">{deadlineLabel}</label>
+                                    <input
+                                        data-testid="deadline-input"
+                                        type="number"
+                                        name="counterPartyConfirmationDeadline"
+                                        value={formData.counterPartyConfirmationDeadline}
+                                        onChange={handleInputChange}
                                         className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 outline-none"
-                                        placeholder="24" />
+                                        placeholder="24"
+                                        min="1"
+                                        max="168"
+                                    />
+                                    <p className="mt-1 text-slate-400 text-xs">Time for counterparty to confirm the transaction (1-168 hours)</p>
                                 </div>
+
                                 <div className="flex justify-between pt-4">
                                     <button onClick={prevStep} type="button" className="px-6 py-3 bg-slate-100 text-slate-700 rounded-xl font-bold hover:bg-slate-200 transition-colors">Back</button>
                                     <button onClick={nextStep} type="button" className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-emerald-500/25">
@@ -268,51 +516,116 @@ export default function InitiateEscrowPage() {
                                         <Wallet className="w-6 h-6 text-violet-600" />
                                     </div>
                                     <div>
-                                        <h3 className="font-bold text-slate-900">Reception Details</h3>
-                                        <p className="text-sm text-slate-500">Where should you receive your assets?</p>
+                                        <h3 className="font-bold text-slate-900">Asset Reception Details</h3>
+                                        <p className="text-sm text-slate-500">
+                                            {isBuyer
+                                                ? `Where should you receive ${formData.buyCurrency}?`
+                                                : isCryptoToFiat
+                                                    ? `Where should you receive ${formData.sellCurrency}?`
+                                                    : `Where should you receive ${formData.buyCurrency}?`
+                                            }
+                                        </p>
                                     </div>
                                 </div>
 
-                                {(!formData.isBuyerInitiated && formData.tradeType === TradeType.CRYPTO_TO_FIAT) ? (
+                                {/* Bank Details for Seller in Crypto to Fiat */}
+                                {!isBuyer && isCryptoToFiat ? (
                                     <>
                                         <div>
                                             <label className="block text-sm font-semibold text-slate-700 mb-2">Account Holder Name</label>
-                                            <input type="text" name="bankAccountHolderName" value={formData.bankAccountHolderName} onChange={handleInputChange}
-                                                className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 outline-none" />
+                                            <input
+                                                data-testid="bank-holder-input"
+                                                type="text"
+                                                name="bankAccountHolderName"
+                                                value={formData.bankAccountHolderName}
+                                                onChange={handleInputChange}
+                                                className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 outline-none"
+                                            />
                                         </div>
                                         <div>
                                             <label className="block text-sm font-semibold text-slate-700 mb-2">Account Number</label>
-                                            <input type="text" name="bankAccountNumber" value={formData.bankAccountNumber} onChange={handleInputChange}
-                                                className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 outline-none font-mono" />
+                                            <input
+                                                data-testid="bank-account-input"
+                                                type="text"
+                                                name="bankAccountNumber"
+                                                value={formData.bankAccountNumber}
+                                                onChange={handleInputChange}
+                                                className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 outline-none font-mono"
+                                            />
                                         </div>
                                         <div className="grid grid-cols-2 gap-4">
                                             <div>
                                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Routing Number</label>
-                                                <input type="text" name="bankRoutingNumber" value={formData.bankRoutingNumber} onChange={handleInputChange}
-                                                    className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 outline-none font-mono" />
+                                                <input
+                                                    type="text"
+                                                    name="bankRoutingNumber"
+                                                    value={formData.bankRoutingNumber}
+                                                    onChange={handleInputChange}
+                                                    className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 outline-none font-mono"
+                                                />
                                             </div>
                                             <div>
                                                 <label className="block text-sm font-semibold text-slate-700 mb-2">SWIFT</label>
-                                                <input type="text" name="bankSwift" value={formData.bankSwift} onChange={handleInputChange}
-                                                    className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 outline-none font-mono uppercase" />
+                                                <input
+                                                    type="text"
+                                                    name="bankSwift"
+                                                    value={formData.bankSwift}
+                                                    onChange={handleInputChange}
+                                                    className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 outline-none font-mono uppercase"
+                                                />
                                             </div>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-slate-700 mb-2">IBAN (Optional)</label>
+                                            <input
+                                                type="text"
+                                                name="bankIban"
+                                                value={formData.bankIban}
+                                                onChange={handleInputChange}
+                                                className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 outline-none font-mono uppercase"
+                                            />
                                         </div>
                                     </>
                                 ) : (
-                                    <div>
-                                        <label className="block text-sm font-semibold text-slate-700 mb-2">Wallet Address</label>
-                                        <input data-testid="wallet-address-input" type="text" name="walletAddress" value={formData.walletAddress} onChange={handleInputChange}
-                                            className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 outline-none font-mono"
-                                            placeholder="0x..." />
-                                    </div>
+                                    /* Wallet Details for Buyer or Seller in Crypto to Crypto */
+                                    <>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-slate-700 mb-2">Wallet Address</label>
+                                            <input
+                                                data-testid="wallet-address-input"
+                                                type="text"
+                                                name="walletAddress"
+                                                value={formData.walletAddress}
+                                                onChange={handleInputChange}
+                                                className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 outline-none font-mono"
+                                                placeholder="0x..."
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-slate-700 mb-2">Network</label>
+                                            <select
+                                                name="walletNetwork"
+                                                value={formData.walletNetwork}
+                                                onChange={handleInputChange}
+                                                className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 outline-none"
+                                            >
+                                                <option value="mainnet">Mainnet</option>
+                                                <option value="testnet">Testnet</option>
+                                            </select>
+                                        </div>
+                                    </>
                                 )}
 
                                 {error && <div className="p-4 bg-red-50 text-red-700 rounded-xl text-sm border border-red-100">{error}</div>}
 
                                 <div className="flex justify-between pt-4 border-t border-slate-100">
                                     <button onClick={prevStep} type="button" className="px-6 py-3 bg-slate-100 text-slate-700 rounded-xl font-bold hover:bg-slate-200 transition-colors">Back</button>
-                                    <button data-testid="submit-escrow-button" type="submit" disabled={isPending}
-                                        className="px-8 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-emerald-500/25 hover:from-emerald-600 hover:to-emerald-700 transition-all disabled:opacity-50">
+                                    <button
+                                        data-testid="submit-escrow-button"
+                                        type="submit"
+                                        disabled={isPending}
+                                        className="px-8 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-emerald-500/25 hover:from-emerald-600 hover:to-emerald-700 transition-all disabled:opacity-50"
+                                    >
                                         <ShieldCheck className="w-5 h-5" />
                                         {isPending ? 'Creating...' : 'Initialize Escrow'}
                                     </button>
