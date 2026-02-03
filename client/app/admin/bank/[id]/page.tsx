@@ -31,6 +31,7 @@ export default function BankDetailsPage() {
                         <h1 className="text-2xl font-bold">Bank Details</h1>
                     </div>
                     <Link
+                        data-testid="edit-bank-link"
                         href={`/admin/bank/${id}/edit`}
                         className="flex items-center gap-2 px-4 py-2 border border-gray-200 bg-white rounded-lg text-sm font-semibold hover:bg-gray-50 transition-colors"
                     >
@@ -39,7 +40,7 @@ export default function BankDetailsPage() {
                     </Link>
                 </div>
 
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div data-testid="bank-details-container" className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                     <div className="p-8 border-b border-gray-100 flex items-center gap-6">
                         {bank.logoUrl ? (
                             <div className="w-24 h-24 rounded-xl border border-gray-100 p-4 flex items-center justify-center bg-gray-50">

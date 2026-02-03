@@ -91,11 +91,11 @@ export default function EscrowDetailsPage() {
                         </h1>
                     </div>
                     <div className="flex gap-3">
-                        <button className="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-[#0d1b12] font-bold rounded-xl transition-all">
+                        <button data-testid="cancel-escrow-button" className="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-[#0d1b12] font-bold rounded-xl transition-all">
                             Cancel
                         </button>
                         {/* Logic for action button based on state/role would go here */}
-                        <button className="px-6 py-2.5 bg-[#13ec5b] hover:bg-[#10c94d] text-[#0d1b12] font-bold rounded-xl shadow-lg shadow-green-200 transition-all flex items-center gap-2">
+                        <button data-testid="perform-action-button" className="px-6 py-2.5 bg-[#13ec5b] hover:bg-[#10c94d] text-[#0d1b12] font-bold rounded-xl shadow-lg shadow-green-200 transition-all flex items-center gap-2">
                             <ShieldCheck className="w-4 h-4" />
                             Perform Action
                         </button>
@@ -108,7 +108,7 @@ export default function EscrowDetailsPage() {
                     <div className="lg:col-span-2 space-y-8">
 
                         {/* Summary Card */}
-                        <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+                        <div data-testid="transaction-summary" className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
                             <h3 className="font-bold text-lg mb-6 flex items-center gap-2">
                                 <Briefcase className="w-5 h-5 text-gray-400" />
                                 Transaction Summary
@@ -136,7 +136,7 @@ export default function EscrowDetailsPage() {
                         </div>
 
                         {/* Trust & Counterparty Section */}
-                        <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+                        <div data-testid="counterparty-info" className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
                             <h3 className="font-bold text-lg mb-6 flex items-center gap-2">
                                 <User className="w-5 h-5 text-gray-400" />
                                 Counterparty Info
@@ -162,7 +162,7 @@ export default function EscrowDetailsPage() {
 
                     {/* Right Column: Asset Reception (Sensitive Info) */}
                     <div className="space-y-8">
-                        <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 h-full relative overflow-hidden">
+                        <div data-testid="reception-details" className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 h-full relative overflow-hidden">
                             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-[#13ec5b]"></div>
                             <h3 className="font-bold text-lg mb-6 flex items-center gap-2">
                                 {isCryptoToFiat ? <Building2 className="w-5 h-5 text-gray-400" /> : <Wallet className="w-5 h-5 text-gray-400" />}

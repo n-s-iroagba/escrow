@@ -15,7 +15,7 @@ class BankService {
     }
 
     async updateBank(id: string, data: Partial<IBank>): Promise<Bank | null> {
-        const [affectedCount, affectedRows] = await BankRepository.update(id, data);
+        const [affectedCount] = await BankRepository.update(id, data);
         if (affectedCount === 0) return null;
 
         // If returning is supported and we get rows back, return updated.

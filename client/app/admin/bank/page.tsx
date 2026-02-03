@@ -18,6 +18,7 @@ export default function BankListPage() {
                         <p className="text-slate-500 mt-1">Manage custodial fiat bank accounts for escrow settlements.</p>
                     </div>
                     <Link
+                        data-testid="add-bank-link"
                         href="/admin/bank/new"
                         className="inline-flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-emerald-500/25 transition-all transform hover:scale-[1.02]"
                     >
@@ -31,6 +32,7 @@ export default function BankListPage() {
                     <div className="relative max-w-md">
                         <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                         <input
+                            data-testid="search-banks-input"
                             type="text"
                             placeholder="Search banks..."
                             className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all shadow-sm"
@@ -55,6 +57,7 @@ export default function BankListPage() {
                         {banks.map((bank: any) => (
                             <div
                                 key={bank.id}
+                                data-testid="bank-card"
                                 className="bg-white rounded-2xl border border-slate-200/60 shadow-lg shadow-slate-200/30 hover:shadow-xl transition-all p-6 group"
                             >
                                 <div className="flex items-start justify-between mb-4">
@@ -80,6 +83,7 @@ export default function BankListPage() {
 
                                 <div className="flex items-center gap-2 pt-2">
                                     <Link
+                                        data-testid="view-bank-button"
                                         href={`/admin/bank/${bank.id}`}
                                         className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-semibold transition-colors"
                                     >
@@ -87,6 +91,7 @@ export default function BankListPage() {
                                         View
                                     </Link>
                                     <Link
+                                        data-testid="edit-bank-button"
                                         href={`/admin/bank/${bank.id}/edit`}
                                         className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-xl text-sm font-semibold transition-colors"
                                     >

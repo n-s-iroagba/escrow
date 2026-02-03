@@ -1,0 +1,23 @@
+{
+    "cryptoToCrypto": {
+        "tradeType": "CRYPTO_TO_CRYPTO",
+        "buyCurrency": "BTC",
+        "sellCurrency": "ETH",
+        "amount": "1.5",
+        "sellerEmail": "seller@test.com"
+    },
+    "cryptoToFiat": {
+        "tradeType": "CRYPTO_TO_FIAT",
+        "buyCurrency": "USD",
+        "sellCurrency": "BTC",
+        "amount": "50000",
+        "sellerEmail": "seller@test.com"
+    },
+    "fiatToCrypto": {
+        "tradeType": "FIAT_TO_CRYPTO",
+        "buyCurrency": "BTC",
+        "sellCurrency": "USD",
+        "amount": "2.0",
+        "sellerEmail": "seller@test.com"
+    }
+}

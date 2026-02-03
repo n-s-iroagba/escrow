@@ -9,7 +9,7 @@ export const isCryptoCurrency = (currency: string): boolean => {
     Currency.LTC,
     Currency.XRP,
   ];
-  return cryptoCurrencies.includes(currency as  Currency);
+  return cryptoCurrencies.includes(currency as any);
 };
 
 export const isFiatCurrency = (currency: string): boolean => {
@@ -18,7 +18,7 @@ export const isFiatCurrency = (currency: string): boolean => {
     Currency.EUR,
     Currency.GBP,
   ];
-  return fiatCurrencies.includes(currency as Currency);
+  return fiatCurrencies.includes(currency as any);
 };
 
 export const getCurrencyDecimals = (currency: string): number => {
@@ -33,14 +33,14 @@ export const getCurrencyDecimals = (currency: string): number => {
     [Currency.EUR]: 2,
     [Currency.GBP]: 2,
   };
-  
+
   return decimalMap[currency] || 2;
 };
 
 export const formatCurrency = (amount: number, currency: string): string => {
   const decimals = getCurrencyDecimals(currency);
   const formatted = amount.toFixed(decimals);
-  
+
   // Add currency symbol
   const symbolMap: Record<string, string> = {
     [Currency.USD]: '$',
@@ -49,7 +49,7 @@ export const formatCurrency = (amount: number, currency: string): string => {
     [Currency.BTC]: '₿',
     [Currency.ETH]: 'Ξ',
   };
-  
+
   const symbol = symbolMap[currency] || currency;
   return `${symbol} ${formatted}`;
 };

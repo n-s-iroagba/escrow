@@ -32,6 +32,7 @@ export default function AdminEscrowDetailsPage() {
                         <p className="text-gray-500 font-mono text-sm">ID: {escrow.id}</p>
                     </div>
                     <button
+                        data-testid="update-payment-button"
                         onClick={() => router.push(`/admin/escrow/${id}/update-payment`)}
                         className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-blue-200 flex items-center gap-2"
                     >

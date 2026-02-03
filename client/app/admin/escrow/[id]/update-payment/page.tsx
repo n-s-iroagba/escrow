@@ -69,10 +69,11 @@ export default function AdminUpdatePaymentPage() {
                         <p>Warning: Updating the amount here will force-update the associated Bank or Wallet Balance records. Use with caution.</p>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="space-y-8">
+                    <form data-testid="update-payment-form" onSubmit={handleSubmit} className="space-y-8">
                         <div>
                             <label className="block text-sm font-bold text-gray-700 mb-2">Transaction Amount ({escrow?.buyCurrency})</label>
                             <input
+                                data-testid="amount-input"
                                 type="number"
                                 value={amount}
                                 onChange={e => setAmount(e.target.value)}
@@ -107,6 +108,7 @@ export default function AdminUpdatePaymentPage() {
                         </div>
 
                         <button
+                            data-testid="submit-payment-button"
                             type="submit"
                             disabled={isPending}
                             className="w-full py-4 bg-gray-900 text-white font-bold rounded-xl hover:bg-black transition-all flex items-center justify-center gap-2"

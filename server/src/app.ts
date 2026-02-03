@@ -103,7 +103,7 @@ class App {
 
 
     // 404 handler
-    this.app.use('*', (req: Request, res: Response) => {
+    this.app.use('*', (_req: Request, _res: Response) => {
       res.status(404).json({
         success: false,
         message: `Route ${req.originalUrl} not found`,

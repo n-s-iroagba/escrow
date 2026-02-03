@@ -69,12 +69,13 @@ export default function LoginPage() {
                     <h2 className="text-3xl font-bold text-gray-900 mb-2">Log in to your account</h2>
                     <p className="text-gray-500 mb-8">Welcome back! Please enter your details.</p>
 
-                    {error && <div className="bg-red-50 text-red-600 p-4 rounded-xl mb-6 text-sm">{error}</div>}
+                    {error && <div data-testid="error-message" className="bg-red-50 text-red-600 p-4 rounded-xl mb-6 text-sm">{error}</div>}
 
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                    <form data-testid="login-form" onSubmit={handleSubmit} className="space-y-6">
                         <div>
                             <label className="block text-sm font-bold text-gray-900 mb-2">Email Address</label>
                             <input
+                                data-testid="email-input"
                                 type="email"
                                 required
                                 value={formData.email}
@@ -88,6 +89,7 @@ export default function LoginPage() {
                             <label className="block text-sm font-bold text-gray-900 mb-2">Password</label>
                             <div className="relative">
                                 <input
+                                    data-testid="password-input"
                                     type={showPassword ? "text" : "password"}
                                     required
                                     value={formData.password}
@@ -95,17 +97,18 @@ export default function LoginPage() {
                                     placeholder="••••••••"
                                     className="w-full h-12 px-4 rounded-xl border border-gray-200 focus:border-[#13ec5b] focus:ring-4 focus:ring-green-500/10 outline-none transition-all pr-12 text-lg tracking-widest"
                                 />
-                                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                <button data-testid="toggle-password-button" type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
                                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                                 </button>
                             </div>
                         </div>
 
                         <div className="flex justify-end">
-                            <Link href="/auth/forgot-password" className="text-sm font-bold text-[#13ec5b] hover:text-[#10c94d] hover:underline">Forgot Password?</Link>
+                            <Link data-testid="forgot-password-link" href="/auth/forgot-password" className="text-sm font-bold text-[#13ec5b] hover:text-[#10c94d] hover:underline">Forgot Password?</Link>
                         </div>
 
                         <button
+                            data-testid="login-button"
                             type="submit"
                             disabled={isPending}
                             className="w-full py-4 bg-[#0d1b12] hover:bg-black text-white font-bold rounded-xl shadow-lg transition-all text-lg flex items-center justify-center gap-2"
@@ -116,7 +119,7 @@ export default function LoginPage() {
                     </form>
 
                     <p className="text-center mt-8 text-gray-500">
-                        Don't have an account? <Link href="/auth/sign-up" className="text-[#13ec5b] font-bold hover:underline">Sign up</Link>
+                        Don't have an account? <Link data-testid="signup-link" href="/auth/sign-up" className="text-[#13ec5b] font-bold hover:underline">Sign up</Link>
                     </p>
 
                     <div className="mt-8 flex justify-center">

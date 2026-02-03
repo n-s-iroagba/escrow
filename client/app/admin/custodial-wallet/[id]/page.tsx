@@ -31,6 +31,7 @@ export default function CustodialWalletDetailsPage() {
                         <h1 className="text-2xl font-bold">Wallet Details</h1>
                     </div>
                     <Link
+                        data-testid="edit-wallet-link"
                         href={`/admin/custodial-wallet/${id}/edit`}
                         className="flex items-center gap-2 px-4 py-2 border border-gray-200 bg-white rounded-lg text-sm font-semibold hover:bg-gray-50 transition-colors"
                     >
@@ -39,7 +40,7 @@ export default function CustodialWalletDetailsPage() {
                     </Link>
                 </div>
 
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div data-testid="wallet-details-container" className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                     <div className="p-8 border-b border-gray-100 flex items-center gap-6">
                         <div className="w-16 h-16 rounded-full bg-[#13ec5b]/10 flex items-center justify-center text-[#13ec5b] font-bold text-2xl">
                             {wallet.currency}

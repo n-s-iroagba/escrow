@@ -62,12 +62,13 @@ export default function AdminSignUpPage() {
                         </p>
                     </div>
 
-                    {error && <div className="bg-red-50 text-red-600 p-4 rounded-xl mb-6 text-sm flex items-center gap-2 font-bold">{error}</div>}
+                    {error && <div data-testid="error-message" className="bg-red-50 text-red-600 p-4 rounded-xl mb-6 text-sm flex items-center gap-2 font-bold">{error}</div>}
 
-                    <form onSubmit={handleSubmit} className="space-y-5">
+                    <form data-testid="admin-signup-form" onSubmit={handleSubmit} className="space-y-5">
                         <div>
                             <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Work Email</label>
                             <input
+                                data-testid="email-input"
                                 type="email"
                                 required
                                 value={formData.email}
@@ -81,6 +82,7 @@ export default function AdminSignUpPage() {
                             <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Password</label>
                             <div className="relative">
                                 <input
+                                    data-testid="password-input"
                                     type={showPassword ? "text" : "password"}
                                     required
                                     value={formData.password}
@@ -97,6 +99,7 @@ export default function AdminSignUpPage() {
                         <div>
                             <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Confirm Password</label>
                             <input
+                                data-testid="confirm-password-input"
                                 type="password"
                                 required
                                 value={formData.confirmPassword}
@@ -107,6 +110,7 @@ export default function AdminSignUpPage() {
                         </div>
 
                         <button
+                            data-testid="admin-signup-button"
                             type="submit"
                             disabled={isPending}
                             className="w-full py-4 bg-[#0d1b12] hover:bg-black text-white font-bold rounded-xl shadow-lg transition-all text-sm uppercase tracking-widest mt-4 flex items-center justify-center gap-2"
@@ -116,7 +120,7 @@ export default function AdminSignUpPage() {
                     </form>
 
                     <p className="text-center mt-8 text-gray-500 text-xs">
-                        <Link href="/auth/login" className="text-gray-900 font-bold hover:underline">Return to Login</Link>
+                        <Link data-testid="login-link" href="/auth/login" className="text-gray-900 font-bold hover:underline">Return to Login</Link>
                     </p>
                 </div>
             </div>

@@ -122,6 +122,7 @@ export default function VerifyEmailPage() {
                     <div className="flex justify-center gap-3 mb-10">
                         {otp.map((digit, index) => (
                             <input
+                                data-testid={`otp-input-${index}`}
                                 key={index}
                                 ref={el => { inputRefs.current[index] = el; }}
                                 type="text"
@@ -137,9 +138,10 @@ export default function VerifyEmailPage() {
                         ))}
                     </div>
 
-                    {error && <div className="bg-red-50 text-red-600 p-4 rounded-xl mb-8 text-sm font-medium">{error}</div>}
+                    {error && <div data-testid="error-message" className="bg-red-50 text-red-600 p-4 rounded-xl mb-8 text-sm font-medium">{error}</div>}
 
                     <button
+                        data-testid="verify-button"
                         onClick={() => handleVerify(otp.join(''))}
                         disabled={isPending || otp.some(d => !d)}
                         className="w-full py-4 bg-[#13ec5b] hover:bg-[#10c94d] disabled:bg-opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl shadow-lg shadow-green-200 transition-all text-lg mb-8"
@@ -148,10 +150,10 @@ export default function VerifyEmailPage() {
                     </button>
 
                     <p className="text-sm text-gray-500 font-medium">
-                        Didn't receive the email? <button className="text-[#13ec5b] font-bold hover:underline">Resend code</button>
+                        Didn't receive the email? <button data-testid="resend-button" className="text-[#13ec5b] font-bold hover:underline">Resend code</button>
                     </p>
 
-                    <Link href="/auth/login" className="mt-8 flex items-center justify-center gap-2 text-gray-500 font-bold hover:text-gray-900 transition-colors">
+                    <Link data-testid="back-to-login-link" href="/auth/login" className="mt-8 flex items-center justify-center gap-2 text-gray-500 font-bold hover:text-gray-900 transition-colors">
                         <ArrowLeft className="w-4 h-4" /> Back to login
                     </Link>
                 </div>

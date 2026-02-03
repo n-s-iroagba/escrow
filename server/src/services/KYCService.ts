@@ -1,6 +1,6 @@
 import KYCDocument, { IKYCDocument } from '../models/KYCDocument';
 import KYCRepository from '../repositories/KYCRepository';
-import User from '../models/User';
+// import User from '../models/User';
 import { KYCStatus } from '../utils/constants';
 
 class KYCService {

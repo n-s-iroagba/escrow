@@ -136,7 +136,7 @@ export default function InitiateEscrowPage() {
                         </div>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="p-8">
+                    <form data-testid="initiate-escrow-form" onSubmit={handleSubmit} className="p-8">
                         {step === 1 && (
                             <div className="space-y-8">
                                 {/* Role Selection */}
@@ -144,6 +144,7 @@ export default function InitiateEscrowPage() {
                                     <label className="block text-sm font-semibold text-slate-700 mb-3">I am the...</label>
                                     <div className="grid grid-cols-2 gap-4">
                                         <button
+                                            data-testid="buyer-role-button"
                                             type="button"
                                             onClick={() => handleRoleSelect('buyer')}
                                             className={`p-6 rounded-xl border-2 transition-all text-center ${formData.isBuyerInitiated ? 'border-emerald-500 bg-emerald-50' : 'border-slate-200 hover:border-slate-300'}`}
@@ -155,6 +156,7 @@ export default function InitiateEscrowPage() {
                                             <p className="text-xs text-slate-400 mt-1">I'm purchasing assets</p>
                                         </button>
                                         <button
+                                            data-testid="seller-role-button"
                                             type="button"
                                             onClick={() => handleRoleSelect('seller')}
                                             className={`p-6 rounded-xl border-2 transition-all text-center ${!formData.isBuyerInitiated ? 'border-emerald-500 bg-emerald-50' : 'border-slate-200 hover:border-slate-300'}`}
@@ -171,7 +173,7 @@ export default function InitiateEscrowPage() {
                                 {/* Trade Type */}
                                 <div>
                                     <label className="block text-sm font-semibold text-slate-700 mb-2">Trade Type</label>
-                                    <select name="tradeType" value={formData.tradeType} onChange={handleInputChange}
+                                    <select data-testid="trade-type-select" name="tradeType" value={formData.tradeType} onChange={handleInputChange}
                                         className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all">
                                         <option value={TradeType.CRYPTO_TO_CRYPTO}>Crypto → Crypto</option>
                                         <option value={TradeType.CRYPTO_TO_FIAT}>Crypto → Fiat</option>
@@ -182,7 +184,7 @@ export default function InitiateEscrowPage() {
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
                                         <label className="block text-sm font-semibold text-slate-700 mb-2">Buying (Receiving)</label>
-                                        <select name="buyCurrency" value={formData.buyCurrency} onChange={handleInputChange}
+                                        <select data-testid="buy-currency-select" name="buyCurrency" value={formData.buyCurrency} onChange={handleInputChange}
                                             className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 outline-none">
                                             <option value="BTC">BTC</option>
                                             <option value="ETH">ETH</option>
@@ -197,7 +199,7 @@ export default function InitiateEscrowPage() {
                                     </div>
                                     <div>
                                         <label className="block text-sm font-semibold text-slate-700 mb-2">Selling (Sending)</label>
-                                        <select name="sellCurrency" value={formData.sellCurrency} onChange={handleInputChange}
+                                        <select data-testid="sell-currency-select" name="sellCurrency" value={formData.sellCurrency} onChange={handleInputChange}
                                             className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 outline-none">
                                             <option value="BTC">BTC</option>
                                             <option value="ETH">ETH</option>
@@ -210,7 +212,7 @@ export default function InitiateEscrowPage() {
                                 <div>
                                     <label className="block text-sm font-semibold text-slate-700 mb-2">Transaction Amount</label>
                                     <div className="relative">
-                                        <input type="number" name="amount" value={formData.amount} onChange={handleInputChange}
+                                        <input data-testid="amount-input" type="number" name="amount" value={formData.amount} onChange={handleInputChange}
                                             className="w-full h-14 px-4 pr-16 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none text-xl font-bold transition-all"
                                             placeholder="0.00" />
                                         <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-semibold">{formData.buyCurrency}</span>
@@ -240,7 +242,7 @@ export default function InitiateEscrowPage() {
                                 )}
                                 <div>
                                     <label className="block text-sm font-semibold text-slate-700 mb-2">Counterparty Email</label>
-                                    <input type="email" name="counterPartyEmail" value={formData.counterPartyEmail} onChange={handleInputChange}
+                                    <input data-testid="counterparty-email-input" type="email" name="counterPartyEmail" value={formData.counterPartyEmail} onChange={handleInputChange}
                                         className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none"
                                         placeholder="trader@example.com" />
                                 </div>
@@ -299,7 +301,7 @@ export default function InitiateEscrowPage() {
                                 ) : (
                                     <div>
                                         <label className="block text-sm font-semibold text-slate-700 mb-2">Wallet Address</label>
-                                        <input type="text" name="walletAddress" value={formData.walletAddress} onChange={handleInputChange}
+                                        <input data-testid="wallet-address-input" type="text" name="walletAddress" value={formData.walletAddress} onChange={handleInputChange}
                                             className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 outline-none font-mono"
                                             placeholder="0x..." />
                                     </div>
@@ -309,7 +311,7 @@ export default function InitiateEscrowPage() {
 
                                 <div className="flex justify-between pt-4 border-t border-slate-100">
                                     <button onClick={prevStep} type="button" className="px-6 py-3 bg-slate-100 text-slate-700 rounded-xl font-bold hover:bg-slate-200 transition-colors">Back</button>
-                                    <button type="submit" disabled={isPending}
+                                    <button data-testid="submit-escrow-button" type="submit" disabled={isPending}
                                         className="px-8 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-emerald-500/25 hover:from-emerald-600 hover:to-emerald-700 transition-all disabled:opacity-50">
                                         <ShieldCheck className="w-5 h-5" />
                                         {isPending ? 'Creating...' : 'Initialize Escrow'}

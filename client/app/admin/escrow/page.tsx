@@ -53,6 +53,7 @@ export default function AdminEscrowListPage() {
                     <div className="relative flex-1">
                         <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                         <input
+                            data-testid="search-escrows-input"
                             type="text"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
@@ -94,7 +95,7 @@ export default function AdminEscrowListPage() {
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
-                            <table className="w-full">
+                            <table data-testid="escrows-table" className="w-full">
                                 <thead className="bg-slate-50/80 text-xs text-slate-500 uppercase tracking-wider">
                                     <tr>
                                         <th className="text-left p-4 font-semibold">ID</th>
@@ -129,6 +130,7 @@ export default function AdminEscrowListPage() {
                                             <td className="p-4">{getStatusBadge(escrow.state)}</td>
                                             <td className="p-4">
                                                 <Link
+                                                    data-testid="view-escrow-button"
                                                     href={`/admin/escrow/${escrow.id}`}
                                                     className="inline-flex items-center gap-1 px-3 py-1.5 bg-slate-100 hover:bg-emerald-100 text-slate-600 hover:text-emerald-700 rounded-lg text-sm font-semibold transition-colors"
                                                 >

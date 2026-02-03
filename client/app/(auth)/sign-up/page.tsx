@@ -121,12 +121,13 @@ export default function SignUpPage() {
                         </div>
                     </div>
 
-                    {error && <div className="bg-red-50 text-red-600 p-4 rounded-xl mb-6 text-sm flex items-center gap-2"><div className="w-2 h-2 bg-red-500 rounded-full"></div>{error}</div>}
+                    {error && <div data-testid="error-message" className="bg-red-50 text-red-600 p-4 rounded-xl mb-6 text-sm flex items-center gap-2"><div className="w-2 h-2 bg-red-500 rounded-full"></div>{error}</div>}
 
-                    <form onSubmit={handleSubmit} className="space-y-5">
+                    <form data-testid="signup-form" onSubmit={handleSubmit} className="space-y-5">
                         <div>
                             <label className="block text-sm font-bold text-gray-900 mb-2">Email Address</label>
                             <input
+                                data-testid="email-input"
                                 type="email"
                                 required
                                 value={formData.email}
@@ -140,6 +141,7 @@ export default function SignUpPage() {
                             <label className="block text-sm font-bold text-gray-900 mb-2">Password</label>
                             <div className="relative">
                                 <input
+                                    data-testid="password-input"
                                     type={showPassword ? "text" : "password"}
                                     required
                                     value={formData.password}
@@ -156,6 +158,7 @@ export default function SignUpPage() {
                         <div>
                             <label className="block text-sm font-bold text-gray-900 mb-2">Confirm Password</label>
                             <input
+                                data-testid="confirm-password-input"
                                 type="password"
                                 required
                                 value={formData.confirmPassword}
@@ -183,6 +186,7 @@ export default function SignUpPage() {
                         <label className="flex items-start gap-3 cursor-pointer group pt-2">
                             <div className="relative flex items-center">
                                 <input
+                                    data-testid="terms-checkbox"
                                     type="checkbox"
                                     checked={acceptedTerms}
                                     onChange={e => setAcceptedTerms(e.target.checked)}
@@ -200,6 +204,7 @@ export default function SignUpPage() {
                         </label>
 
                         <button
+                            data-testid="signup-button"
                             type="submit"
                             disabled={isPending || !hasMinLength || !hasSymbolOrNumber || !acceptedTerms}
                             className="w-full py-4 bg-[#13ec5b] hover:bg-[#10c94d] disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl shadow-lg shadow-green-500/30 transition-all text-lg mb-4"
@@ -209,7 +214,7 @@ export default function SignUpPage() {
                     </form>
 
                     <p className="text-center mt-6 text-gray-500 text-sm font-medium">
-                        Already have an account? <Link href="/auth/login" className="text-[#13ec5b] font-bold hover:underline">Log in</Link>
+                        Already have an account? <Link data-testid="login-link" href="/auth/login" className="text-[#13ec5b] font-bold hover:underline">Log in</Link>
                     </p>
 
                     <div className="mt-12 flex justify-center">

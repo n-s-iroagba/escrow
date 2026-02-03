@@ -114,11 +114,13 @@ class EscrowService {
         });
 
         // 4. Send Notification
-        await sendEmail({
-            to: counterPartyEmail,
-            subject: 'You have a new Escrow Transaction',
-            text: `Hello, you have been invited to an escrow transaction by ${initiatorEmail}. Amount: ${amount} ${isBuyerInitiated ? buyCurrency : sellCurrency}. Please log in to view details.`
-        });
+        if (sendEmail) {
+            await sendEmail({
+                to: counterPartyEmail,
+                subject: 'You have a new Escrow Transaction',
+                text: `Hello, you have been invited to an escrow transaction by ${initiatorEmail}. Amount: ${amount} ${isBuyerInitiated ? buyCurrency : sellCurrency}. Please log in to view details.`
+            });
+        }
 
         return escrow;
     }
@@ -276,7 +278,7 @@ class EscrowService {
 
         // Handle Amount Change
         if (updates.amount && updates.amount !== escrow.amount) {
-            const oldAmount = escrow.amount;
+            
             const newAmount = updates.amount;
 
             (escrow as any).amount = newAmount;

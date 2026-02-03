@@ -65,11 +65,12 @@ export default function EditCustodialWalletPage() {
                 </div>
 
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                    <form data-testid="edit-wallet-form" onSubmit={handleSubmit} className="space-y-6">
 
                         <div>
                             <label className="block text-sm font-medium mb-1.5 text-gray-700">Currency</label>
                             <select
+                                data-testid="currency-select"
                                 name="currency"
                                 value={formData.currency}
                                 onChange={handleInputChange}
@@ -87,6 +88,7 @@ export default function EditCustodialWalletPage() {
                         <div>
                             <label className="block text-sm font-medium mb-1.5 text-gray-700">Wallet Address</label>
                             <input
+                                data-testid="wallet-address-input"
                                 type="text"
                                 name="address"
                                 value={formData.address}
@@ -137,6 +139,7 @@ export default function EditCustodialWalletPage() {
                                 Cancel
                             </Link>
                             <button
+                                data-testid="submit-wallet-button"
                                 type="submit"
                                 disabled={isPending}
                                 className="px-8 py-3 rounded-xl bg-[#13ec5b] text-[#0d1b12] text-sm font-bold shadow-[0_4px_14px_0_rgba(19,236,91,0.3)] hover:shadow-[0_6px_20px_rgba(19,236,91,0.23)] hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"

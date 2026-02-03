@@ -3,17 +3,17 @@ import asyncHandler from '../utils/asyncHandler';
 import ApiResponse from '../utils/apiResponse';
 import BankService from '../services/BankService';
 
-export const createBank = asyncHandler(async (req: Request, res: Response) => {
+export const createBank = asyncHandler(async (_req: Request, res: Response) => {
     const bank = await BankService.createBank(req.body);
     return ApiResponse.created(res, bank, 'Bank created successfully');
 });
 
-export const getBanks = asyncHandler(async (req: Request, res: Response) => {
+export const getBanks = asyncHandler(async (_req: Request, res: Response) => {
     const banks = await BankService.getAllBanks();
     return ApiResponse.success(res, banks, 'Banks retrieved successfully');
 });
 
-export const getBank = asyncHandler(async (req: Request, res: Response) => {
+export const getBank = asyncHandler(async (_req: Request, res: Response) => {
     const { id } = req.params;
     const bank = await BankService.getBankById(id);
     if (!bank) {
@@ -22,7 +22,7 @@ export const getBank = asyncHandler(async (req: Request, res: Response) => {
     return ApiResponse.success(res, bank, 'Bank retrieved successfully');
 });
 
-export const updateBank = asyncHandler(async (req: Request, res: Response) => {
+export const updateBank = asyncHandler(async (_req: Request, res: Response) => {
     const { id } = req.params;
     const updatedBank = await BankService.updateBank(id, req.body);
     if (!updatedBank) {

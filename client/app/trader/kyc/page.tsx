@@ -98,6 +98,7 @@ export default function KYCPage() {
                     <p className="text-gray-500 mb-8">Your account is fully verified. You can now engage in escrow transactions.</p>
 
                     <button
+                        data-testid="initiate-escrow-button"
                         onClick={() => router.push('/trader/escrow/initiate')}
                         className="w-full py-4 bg-[#13ec5b] hover:bg-[#10c94d] text-[#0d1b12] font-bold rounded-xl shadow-lg shadow-green-200 transition-all"
                     >
@@ -126,6 +127,7 @@ export default function KYCPage() {
                     </div>
 
                     <button
+                        data-testid="dashboard-button"
                         onClick={() => router.push('/trader/dashboard')}
                         className="w-full py-4 border border-gray-200 text-gray-600 font-bold rounded-xl hover:bg-gray-50 transition-all"
                     >
@@ -152,11 +154,12 @@ export default function KYCPage() {
                     </div>
                 )}
 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form data-testid="kyc-form" onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label className="block text-sm font-bold text-gray-700 mb-2">Full Name</label>
                             <input
+                                data-testid="full-name-input"
                                 type="text"
                                 required
                                 value={formData.fullName}
@@ -167,6 +170,7 @@ export default function KYCPage() {
                         <div>
                             <label className="block text-sm font-bold text-gray-700 mb-2">Document Type</label>
                             <select
+                                data-testid="document-type-select"
                                 value={formData.documentType}
                                 onChange={e => setFormData({ ...formData, documentType: e.target.value })}
                                 className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-[#13ec5b]"
@@ -179,6 +183,7 @@ export default function KYCPage() {
                         <div className="col-span-2">
                             <label className="block text-sm font-bold text-gray-700 mb-2">Document Number</label>
                             <input
+                                data-testid="document-number-input"
                                 type="text"
                                 required
                                 value={formData.documentNumber}
@@ -213,6 +218,7 @@ export default function KYCPage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {/* Front Side */}
                             <div
+                                data-testid="document-front-upload"
                                 onClick={() => frontInputRef.current?.click()}
                                 className={`bg-gray-50 border-2 border-dashed ${formData.documentFrontUrl ? 'border-[#13ec5b] bg-green-50' : 'border-gray-200'} rounded-xl p-8 text-center hover:bg-gray-100 transition-colors cursor-pointer relative overflow-hidden`}
                             >
@@ -238,6 +244,7 @@ export default function KYCPage() {
 
                             {/* Back Side */}
                             <div
+                                data-testid="document-back-upload"
                                 onClick={() => backInputRef.current?.click()}
                                 className={`bg-gray-50 border-2 border-dashed ${formData.documentBackUrl ? 'border-[#13ec5b] bg-green-50' : 'border-gray-200'} rounded-xl p-8 text-center hover:bg-gray-100 transition-colors cursor-pointer relative overflow-hidden`}
                             >
@@ -264,6 +271,7 @@ export default function KYCPage() {
                     </div>
 
                     <button
+                        data-testid="submit-kyc-button"
                         type="submit"
                         disabled={isSubmitting || uploading.front || uploading.back}
                         className={`w-full py-4 font-bold rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 

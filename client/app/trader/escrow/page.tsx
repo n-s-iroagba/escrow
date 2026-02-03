@@ -39,6 +39,7 @@ export default function EscrowListPage() {
                         <p className="text-slate-500 mt-1">View and manage your escrow transactions.</p>
                     </div>
                     <Link
+                        data-testid="new-transaction-link"
                         href="/trader/escrow/initiate"
                         className="inline-flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-emerald-500/25 transition-all transform hover:scale-[1.02]"
                     >
@@ -52,6 +53,7 @@ export default function EscrowListPage() {
                     {(['all', 'buyer', 'seller'] as const).map((f) => (
                         <button
                             key={f}
+                            data-testid={`filter-${f}-button`}
                             onClick={() => setFilter(f)}
                             className={`px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${filter === f
                                 ? 'bg-slate-900 text-white shadow-md'
@@ -99,6 +101,7 @@ export default function EscrowListPage() {
                             return (
                                 <div
                                     key={escrow.id}
+                                    data-testid="escrow-card"
                                     className="bg-white p-6 rounded-2xl border border-slate-200/60 shadow-lg shadow-slate-200/30 hover:shadow-xl transition-all group"
                                 >
                                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -124,6 +127,7 @@ export default function EscrowListPage() {
                                             {getStatusBadge(escrow.state)}
                                             {needsFunding && (
                                                 <Link
+                                                    data-testid="fund-escrow-button"
                                                     href={`/trader/escrow/${escrow.id}/fund`}
                                                     className="px-4 py-2 bg-amber-100 hover:bg-amber-200 text-amber-700 text-sm font-bold rounded-xl border border-amber-200 transition-colors"
                                                 >
@@ -131,6 +135,7 @@ export default function EscrowListPage() {
                                                 </Link>
                                             )}
                                             <Link
+                                                data-testid="view-escrow-button"
                                                 href={`/trader/escrow/${escrow.id}`}
                                                 className="w-10 h-10 rounded-xl border border-slate-200 flex items-center justify-center text-slate-400 group-hover:bg-emerald-500 group-hover:text-white group-hover:border-emerald-500 transition-all"
                                             >

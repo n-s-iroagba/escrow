@@ -73,6 +73,7 @@ export default function AdminDashboardPage() {
                         <p className="text-slate-500 mt-1">Monitor system activity and manage platform operations.</p>
                     </div>
                     <button
+                        data-testid="new-escrow-button"
                         onClick={() => router.push('/trader/escrow/initiate')}
                         className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white px-6 py-3.5 rounded-xl font-bold shadow-lg shadow-emerald-500/25 flex items-center gap-2 transition-all transform hover:scale-[1.02]"
                     >
@@ -87,7 +88,7 @@ export default function AdminDashboardPage() {
                         title="Total Users"
                         value={isLoading ? '—' : allUsers.length.toLocaleString()}
                         icon={<Users className="w-5 h-5" />}
-                        trend="+12%"
+
                         trendUp
                         color="blue"
                     />
@@ -95,7 +96,7 @@ export default function AdminDashboardPage() {
                         title="Active Escrows"
                         value={isLoading ? '—' : pendingEscrows.length.toLocaleString()}
                         icon={<ShieldCheck className="w-5 h-5" />}
-                        trend="+8%"
+
                         trendUp
                         color="emerald"
                     />
@@ -103,7 +104,7 @@ export default function AdminDashboardPage() {
                         title="Total Volume"
                         value={isLoading ? '—' : `$${(totalVolume / 1000).toFixed(1)}K`}
                         icon={<TrendingUp className="w-5 h-5" />}
-                        trend="+23%"
+
                         trendUp
                         color="violet"
                     />
@@ -111,7 +112,7 @@ export default function AdminDashboardPage() {
                         title="Completed"
                         value={isLoading ? '—' : allEscrows.filter((e: any) => e.state === 'COMPLETED').length.toLocaleString()}
                         icon={<FileText className="w-5 h-5" />}
-                        trend="+5%"
+
                         trendUp
                         color="amber"
                     />
@@ -123,13 +124,13 @@ export default function AdminDashboardPage() {
                     <div className="xl:col-span-2 bg-white rounded-2xl border border-slate-200/60 shadow-xl shadow-slate-200/40 overflow-hidden">
                         <div className="flex items-center justify-between p-6 border-b border-slate-100">
                             <h2 className="font-bold text-lg text-slate-900">Recent Escrows</h2>
-                            <Link href="/admin/escrow" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 flex items-center gap-1">
+                            <Link data-testid="view-all-escrows-link" href="/admin/escrow" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 flex items-center gap-1">
                                 View All <ChevronRight className="w-4 h-4" />
                             </Link>
                         </div>
 
                         <div className="overflow-x-auto">
-                            <table className="w-full">
+                            <table data-testid="recent-escrows-table" className="w-full">
                                 <thead className="bg-slate-50/80 text-xs text-slate-500 uppercase tracking-wider">
                                     <tr>
                                         <th className="text-left p-4 font-semibold">ID</th>
@@ -225,8 +226,8 @@ function NavItem({ icon, label, href, active }: { icon: React.ReactNode; label: 
     );
 }
 
-function StatCard({ title, value, icon, trend, trendUp, color }: {
-    title: string; value: string | number; icon: React.ReactNode; trend: string; trendUp: boolean; color: string;
+function StatCard({ title, value, icon, trendUp, color }: {
+    title: string; value: string | number; icon: React.ReactNode; trendUp: boolean; color: string;
 }) {
     const colorClasses: Record<string, { bg: string; icon: string; trend: string }> = {
         blue: { bg: 'bg-blue-50', icon: 'text-blue-600', trend: 'text-blue-600 bg-blue-100' },
@@ -242,9 +243,7 @@ function StatCard({ title, value, icon, trend, trendUp, color }: {
                 <div className={`p-3 rounded-xl ${classes.bg}`}>
                     <span className={classes.icon}>{icon}</span>
                 </div>
-                <span className={`text-xs font-bold px-2 py-1 rounded-full ${classes.trend}`}>
-                    {trendUp ? '↑' : '↓'} {trend}
-                </span>
+
             </div>
             <p className="text-sm text-slate-500 font-medium mb-1">{title}</p>
             <p className="text-3xl font-bold text-slate-900 tracking-tight">{value}</p>

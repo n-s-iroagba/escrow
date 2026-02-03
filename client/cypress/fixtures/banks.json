@@ -1,0 +1,9 @@
+{
+    "sampleBank": {
+        "name": "Test Bank",
+        "accountNumber": "1234567890",
+        "accountName": "Test Account",
+        "bankCode": "123",
+        "swiftCode": "TESTUS33"
+    }
+}

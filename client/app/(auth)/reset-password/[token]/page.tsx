@@ -41,13 +41,14 @@ export default function ResetPasswordPage() {
                     <p className="text-gray-500">Your new password must be different to previously used passwords.</p>
                 </div>
 
-                {error && <div className="bg-red-50 text-red-600 p-4 rounded-xl mb-6 text-sm">{error}</div>}
+                {error && <div data-testid="error-message" className="bg-red-50 text-red-600 p-4 rounded-xl mb-6 text-sm">{error}</div>}
 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form data-testid="reset-password-form" onSubmit={handleSubmit} className="space-y-6">
                     <div>
                         <label className="block text-sm font-bold text-gray-900 mb-2">New Password</label>
                         <div className="relative">
                             <input
+                                data-testid="new-password-input"
                                 type={showPassword ? "text" : "password"}
                                 required
                                 value={formData.newPassword}
@@ -64,6 +65,7 @@ export default function ResetPasswordPage() {
                     <div>
                         <label className="block text-sm font-bold text-gray-900 mb-2">Confirm Password</label>
                         <input
+                            data-testid="confirm-password-input"
                             type="password"
                             required
                             value={formData.confirmPassword}
@@ -74,6 +76,7 @@ export default function ResetPasswordPage() {
                     </div>
 
                     <button
+                        data-testid="reset-password-button"
                         type="submit"
                         disabled={isPending}
                         className="w-full py-4 bg-[#13ec5b] hover:bg-[#10c94d] text-[#0d1b12] font-bold rounded-xl shadow-lg shadow-green-200 transition-all"

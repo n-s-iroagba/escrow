@@ -26,6 +26,7 @@ export default function CustodialWalletListPage() {
                         <p className="text-slate-500 mt-1">Manage platform custody wallets for crypto escrow.</p>
                     </div>
                     <Link
+                        data-testid="add-wallet-link"
                         href="/admin/custodial-wallet/new"
                         className="inline-flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-emerald-500/25 transition-all transform hover:scale-[1.02]"
                     >

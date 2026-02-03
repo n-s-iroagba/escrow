@@ -3,14 +3,15 @@
 import Link from "next/link";
 import {
   ShieldCheck,
-  ArrowRight,
+
   FileText,
   Lock,
   RefreshCcw,
-  CheckCircle,
+
   Gavel,
   BadgeCheck
 } from "lucide-react";
+import { APP_NAME } from "@/constants/data";
 
 export default function Home() {
   return (
@@ -19,23 +20,28 @@ export default function Home() {
       <nav className="flex items-center justify-between px-6 py-6 max-w-7xl mx-auto">
         <div className="flex items-center gap-2">
           <div className="w-6 h-6 bg-[#13ec5b] rounded text-xs flex items-center justify-center font-bold text-[#0d1b12]">X</div>
-          <span className="font-bold text-lg tracking-tight">X-ESCROW</span>
+          <span className="font-bold text-lg tracking-tight">{APP_NAME}</span>
         </div>
-        <div className="hidden md:flex items-center gap-8 text-sm font-bold text-gray-500">
-          <Link href="#" className="hover:text-gray-900">HOW IT WORKS</Link>
-          <Link href="#" className="hover:text-gray-900">SECURITY</Link>
-          <Link href="#" className="hover:text-gray-900">INSTITUTIONAL</Link>
+        <div className="hidden md:flex gap-8 text-sm font-bold text-gray-500">
+          <Link
+            href="/login"
+            className="bg-[#13ec5b] hover:bg-[#10c94d] text-[#0d1b12] px-6 py-2.5 rounded-full font-bold text-sm transition-colors"
+          >
+            Login
+          </Link>
+
+          <Link
+            href="/sign-up"
+            className="bg-[#13ec5b] hover:bg-[#10c94d] text-[#0d1b12] px-6 py-2.5 rounded-full font-bold text-sm transition-colors"
+          >
+            Get Started
+          </Link>
+
         </div>
-        <Link
-          href="/auth/sign-up"
-          className="bg-[#13ec5b] hover:bg-[#10c94d] text-[#0d1b12] px-6 py-2.5 rounded-full font-bold text-sm transition-colors"
-        >
-          Get Started
-        </Link>
       </nav>
 
       {/* Hero Section */}
-      <section className="px-6 pt-12 pb-24 md:pt-24 md:pb-32 max-w-7xl mx-auto">
+      <section className="px-6 pt-12 pb-4 md:pt-6 md:pb-12 max-w-7xl mx-auto">
         <div className="flex flex-col lg:flex-row items-center gap-16">
           <div className="lg:w-1/2">
             <div className="inline-block bg-green-50 text-green-800 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-8">
@@ -48,19 +54,19 @@ export default function Home() {
               </span>
             </h1>
             <p className="text-gray-500 text-lg md:text-xl leading-relaxed mb-10 max-w-lg">
-              X-Escrow provides the world's most secure digital asset custody.
+              {APP_NAME} provides the world's most secure digital asset custody.
               Backed by the vision of global innovation, we ensure every transaction is ironclad, transparent, and instantaneous.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 mb-16">
               <Link
-                href="/trader/escrow/initiate"
+                href="/sign-up"
                 className="bg-[#0d1b12] text-white px-8 py-4 rounded-full font-bold text-sm hover:bg-black transition-all flex items-center justify-center gap-2 shadow-xl shadow-green-900/20"
               >
                 Initiate Secure Escrow
               </Link>
-              <button className="bg-white border border-gray-200 text-gray-900 px-8 py-4 rounded-full font-bold text-sm hover:bg-gray-50 transition-colors">
-                View Demo
-              </button>
+              <Link href="/login" className="text-center bg-white border border-gray-200 text-gray-900 px-8 py-4 rounded-full font-bold text-sm hover:bg-gray-50 transition-colors">
+                Login
+              </Link>
             </div>
 
             <div className="flex items-center gap-12 border-t border-gray-100 pt-8">
@@ -77,16 +83,16 @@ export default function Home() {
 
           {/* Hero Graphic */}
           <div className="lg:w-1/2 relative w-full">
-            <div className="relative z-10 bg-[#0d1b12] rounded-[40px] p-12 text-white shadow-2xl aspect-square flex flex-col items-center justify-center text-center">
-              <div className="border border-white/20 p-12 mb-8">
-                <div className="text-6xl mb-4">♡</div>
-                <p className="font-serif text-2xl tracking-widest uppercase">Visionary</p>
-                <p className="text-[10px] uppercase tracking-[0.3em] text-gray-400 mt-2">Leadership</p>
+            <div className="relative z-10 bg-[#0d1b12] rounded-3xl p-8 text-white shadow-2xl flex flex-col items-center justify-center text-center">
+              <div className="border border-white/20 p-6 mb-4 rounded-lg">
+                <div className="text-5xl mb-2">♡</div>
+                <p className="font-serif text-xl tracking-widest uppercase">Visionary</p>
+                <p className="text-[10px] uppercase tracking-[0.3em] text-gray-400 mt-1">Leadership</p>
               </div>
 
-              <div className="bg-[#f0fdf4] text-[#0d1b12] p-6 rounded-xl text-left w-full max-w-sm transform translate-y-8 shadow-lg">
+              <div className="bg-[#f0fdf4] text-[#0d1b12] p-4 rounded-xl text-left w-full max-w-sm shadow-lg">
                 <p className="text-[10px] font-bold text-green-600 uppercase mb-2">Founder's Vision</p>
-                <p className="font-serif italic text-lg leading-snug">
+                <p className="font-serif italic text-base leading-snug">
                   "Trust is the ultimate currency of the future. We've built the vault to hold it."
                 </p>
               </div>
@@ -97,8 +103,9 @@ export default function Home() {
         </div>
       </section>
 
+
       {/* Workflow Section */}
-      <section className="bg-gray-50 py-24 px-6">
+      <section className="bg-gray-50 py-3 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold font-serif mb-4">Precision-Engineered Workflow</h2>
@@ -112,7 +119,7 @@ export default function Home() {
               {
                 icon: <FileText className="w-6 h-6" />,
                 title: "1. Agreement Setup",
-                desc: "Both parties define terms and conditions through our secure smart-contract interface. Minimal, legal-grade documentation."
+                desc: "Both parties define terms and conditions."
               },
               {
                 icon: <Lock className="w-6 h-6" />,
@@ -140,7 +147,7 @@ export default function Home() {
       </section>
 
       {/* Security Section */}
-      <section className="px-6 py-24 max-w-7xl mx-auto">
+      <section className="px-6 py-6 max-w-7xl mx-auto">
         <div className="bg-[#0d1b12] rounded-[40px] p-8 md:p-16 relative overflow-hidden text-white flex flex-col md:flex-row gap-16">
           <div className="md:w-1/2 relative z-10">
             <h2 className="text-4xl md:text-5xl font-bold font-serif mb-12 leading-tight">
@@ -206,7 +213,7 @@ export default function Home() {
       </section>
 
       {/* Footer CTA */}
-      <section className="py-24 px-6 text-center max-w-4xl mx-auto">
+      <section className="py-4 px-6 text-center max-w-4xl mx-auto">
         <h2 className="text-4xl md:text-5xl font-bold font-serif mb-6">
           Ready to Trade with Absolute <br /> Certainty?
         </h2>

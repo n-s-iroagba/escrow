@@ -177,6 +177,7 @@ export default function FundEscrowPage() {
                         <div>
                             <label className="block text-sm font-bold text-gray-700 mb-2">Wire Reference / Confirmation Code</label>
                             <input
+                                data-testid="wire-reference-input"
                                 type="text"
                                 value={wireRef}
                                 onChange={(e) => setWireRef(e.target.value)}
@@ -186,6 +187,7 @@ export default function FundEscrowPage() {
                         </div>
 
                         <button
+                            data-testid="confirm-wire-button"
                             onClick={handleWireSubmit}
                             disabled={isFunding || !wireRef}
                             className={`w-full py-4 font-bold rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 ${!wireRef ? 'bg-gray-100 text-gray-400' : 'bg-[#13ec5b] hover:bg-[#10c94d] text-[#0d1b12] shadow-green-200'}`}
@@ -200,7 +202,7 @@ export default function FundEscrowPage() {
                     <div className="space-y-6">
                         <div className="bg-white p-4 text-center">
                             <p className="text-gray-600 mb-6 font-medium">Click below to pay via PayPal securely.</p>
-                            <div id="paypal-button-container" className="min-h-[150px]"></div>
+                            <div data-testid="paypal-button-container" id="paypal-button-container" className="min-h-[150px]"></div>
                         </div>
                         <div className="text-xs text-center text-gray-400">
                             Your payment is held in escrow until terms are met.
@@ -233,6 +235,7 @@ export default function FundEscrowPage() {
                         <div>
                             <label className="block text-sm font-bold text-gray-700 mb-2">Transaction Hash (TxID)</label>
                             <input
+                                data-testid="crypto-tx-hash-input"
                                 type="text"
                                 value={cryptoTxHash}
                                 onChange={(e) => setCryptoTxHash(e.target.value)}
@@ -242,6 +245,7 @@ export default function FundEscrowPage() {
                         </div>
 
                         <button
+                            data-testid="confirm-crypto-button"
                             onClick={handleCryptoSubmit}
                             disabled={isFunding || !cryptoTxHash}
                             className={`w-full py-4 font-bold rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 ${!cryptoTxHash ? 'bg-gray-100 text-gray-400' : 'bg-[#13ec5b] hover:bg-[#10c94d] text-[#0d1b12] shadow-green-200'}`}

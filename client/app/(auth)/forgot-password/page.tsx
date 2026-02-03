@@ -40,12 +40,13 @@ export default function ForgotPasswordPage() {
                     <p className="text-gray-500">No worries, we'll send you reset instructions.</p>
                 </div>
 
-                {error && <div className="bg-red-50 text-red-600 p-4 rounded-xl mb-6 text-sm">{error}</div>}
+                {error && <div data-testid="error-message" className="bg-red-50 text-red-600 p-4 rounded-xl mb-6 text-sm">{error}</div>}
 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form data-testid="forgot-password-form" onSubmit={handleSubmit} className="space-y-6">
                     <div>
                         <label className="block text-sm font-bold text-gray-900 mb-2">Email Address</label>
                         <input
+                            data-testid="email-input"
                             type="email"
                             required
                             value={email}
@@ -56,6 +57,7 @@ export default function ForgotPasswordPage() {
                     </div>
 
                     <button
+                        data-testid="reset-password-button"
                         type="submit"
                         disabled={isPending}
                         className="w-full py-4 bg-[#13ec5b] hover:bg-[#10c94d] text-[#0d1b12] font-bold rounded-xl shadow-lg shadow-green-500/20 transition-all text-lg"
@@ -65,7 +67,7 @@ export default function ForgotPasswordPage() {
                 </form>
 
                 <div className="mt-8 text-center">
-                    <Link href="/auth/login" className="inline-flex items-center gap-2 text-gray-500 font-bold hover:text-gray-900">
+                    <Link data-testid="back-to-login-link" href="/auth/login" className="inline-flex items-center gap-2 text-gray-500 font-bold hover:text-gray-900">
                         <ArrowLeft className="w-4 h-4" /> Back to login
                     </Link>
                 </div>

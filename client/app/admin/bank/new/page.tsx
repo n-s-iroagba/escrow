@@ -88,7 +88,7 @@ export default function NewBankPage() {
                         </div>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="p-8 space-y-8">
+                    <form data-testid="new-bank-form" onSubmit={handleSubmit} className="p-8 space-y-8">
                         {/* Logo Upload */}
                         <div className="flex items-center gap-6">
                             {logoPreview ? (
@@ -103,7 +103,7 @@ export default function NewBankPage() {
                                     </button>
                                 </div>
                             ) : (
-                                <label className="w-20 h-20 rounded-xl border-2 border-dashed border-slate-200 hover:border-emerald-400 bg-slate-50 flex flex-col items-center justify-center cursor-pointer transition-colors">
+                                <label data-testid="logo-upload-area" className="w-20 h-20 rounded-xl border-2 border-dashed border-slate-200 hover:border-emerald-400 bg-slate-50 flex flex-col items-center justify-center cursor-pointer transition-colors">
                                     <input type="file" accept="image/*" onChange={handleLogoUpload} disabled={uploading} className="hidden" />
                                     <Upload className="w-5 h-5 text-slate-400 mb-1" />
                                     <span className="text-[10px] text-slate-400 font-semibold">{uploading ? '...' : 'Logo'}</span>
@@ -119,6 +119,7 @@ export default function NewBankPage() {
                             <div className="col-span-2">
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Bank Name *</label>
                                 <input
+                                    data-testid="bank-name-input"
                                     type="text" name="name" value={formData.name} onChange={handleInputChange} required
                                     className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 focus:bg-white transition-all outline-none"
                                     placeholder="e.g. Chase Bank"
@@ -127,6 +128,7 @@ export default function NewBankPage() {
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Account Number *</label>
                                 <input
+                                    data-testid="account-number-input"
                                     type="text" name="accountNumber" value={formData.accountNumber} onChange={handleInputChange} required
                                     className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 focus:bg-white transition-all outline-none font-mono"
                                 />
@@ -134,6 +136,7 @@ export default function NewBankPage() {
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Currency *</label>
                                 <select
+                                    data-testid="currency-select"
                                     name="currency" value={formData.currency} onChange={handleInputChange}
                                     className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 focus:bg-white transition-all outline-none appearance-none"
                                 >
@@ -192,6 +195,7 @@ export default function NewBankPage() {
                                 Cancel
                             </Link>
                             <button
+                                data-testid="submit-bank-button"
                                 type="submit"
                                 disabled={isPending || uploading}
                                 className="px-8 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white text-sm font-bold shadow-lg shadow-emerald-500/25 transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"

@@ -103,7 +103,7 @@ export default function EditBankPage() {
                 </div>
 
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                    <form data-testid="edit-bank-form" onSubmit={handleSubmit} className="space-y-6">
                         {/* Logo Upload */}
                         <div>
                             <label className="block text-sm font-medium mb-2 text-gray-700">Bank Logo</label>
@@ -151,6 +151,7 @@ export default function EditBankPage() {
                             <div className="col-span-2">
                                 <label className="block text-sm font-medium mb-1.5 text-gray-700">Bank Name</label>
                                 <input
+                                    data-testid="bank-name-input"
                                     type="text"
                                     name="name"
                                     value={formData.name}
@@ -265,6 +266,7 @@ export default function EditBankPage() {
                                 Cancel
                             </Link>
                             <button
+                                data-testid="submit-bank-button"
                                 type="submit"
                                 disabled={isPending || uploading}
                                 className="px-8 py-3 rounded-xl bg-[#13ec5b] text-[#0d1b12] text-sm font-bold shadow-[0_4px_14px_0_rgba(19,236,91,0.3)] hover:shadow-[0_6px_20px_rgba(19,236,91,0.23)] hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"

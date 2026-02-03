@@ -1,5 +1,5 @@
 import { User } from '../models';
-import { IUser } from '../models/User';
+// import { IUser } from '../models/User';
 
 class UserRepository {
     async findAll(): Promise<User[]> {
