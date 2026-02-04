@@ -6,6 +6,7 @@ describe('Sign Up Flow', () => {
 
     it('should display sign up form', () => {
         cy.getByTestId('signup-form').should('be.visible');
+        cy.getByTestId('username-input').should('be.visible');
         cy.getByTestId('email-input').should('be.visible');
         cy.getByTestId('password-input').should('be.visible');
         cy.getByTestId('confirm-password-input').should('be.visible');
@@ -15,6 +16,7 @@ describe('Sign Up Flow', () => {
 
     it('should validate password requirements', () => {
         cy.getByTestId('email-input').type('newuser@test.com');
+        cy.getByTestId('username-input').type('newuser');
 
         // Test short password
         cy.getByTestId('password-input').type('short');
@@ -33,6 +35,7 @@ describe('Sign Up Flow', () => {
 
     it('should show error for mismatched passwords', () => {
         cy.getByTestId('email-input').type('newuser@test.com');
+        cy.getByTestId('username-input').type('newuser');
         cy.getByTestId('password-input').type('ValidPass123!');
         cy.getByTestId('confirm-password-input').type('DifferentPass123!');
         cy.getByTestId('terms-checkbox').check();
@@ -46,6 +49,7 @@ describe('Sign Up Flow', () => {
 
     it('should require terms acceptance', () => {
         cy.getByTestId('email-input').type('newuser@test.com');
+        cy.getByTestId('username-input').type('newuser');
         cy.getByTestId('password-input').type('ValidPass123!');
         cy.getByTestId('confirm-password-input').type('ValidPass123!');
 
@@ -58,16 +62,17 @@ describe('Sign Up Flow', () => {
     });
 
     it('should successfully register a new user', () => {
-        cy.fixture('users').then((users: any) => {
-            cy.getByTestId('email-input').type(users.newUser.email);
-            cy.getByTestId('password-input').type(users.newUser.password);
-            cy.getByTestId('confirm-password-input').type(users.newUser.password);
-            cy.getByTestId('terms-checkbox').check();
-            cy.getByTestId('signup-button').click();
+        // Use unique email/username to avoid conflict with seed
+        const timestamp = Date.now();
+        cy.getByTestId('email-input').type(`trader${timestamp}@test.com`);
+        cy.getByTestId('username-input').type(`trader_${timestamp}`);
+        cy.getByTestId('password-input').type('UserPass123!');
+        cy.getByTestId('confirm-password-input').type('UserPass123!');
+        cy.getByTestId('terms-checkbox').check();
+        cy.getByTestId('signup-button').click();
 
-            // Should redirect to email verification
-            cy.url().should('include', '/auth/verify-email');
-        });
+        // Should redirect to email verification
+        cy.url().should('include', '/auth/verify-email/123456');
     });
 
     it('should navigate to login page', () => {
@@ -77,13 +82,16 @@ describe('Sign Up Flow', () => {
 
     it('should show error for duplicate email', () => {
         cy.fixture('users').then((users: any) => {
-            cy.getByTestId('email-input').type(users.trader.email); // Existing user
+            // Using seed user that definitely exists
+            cy.getByTestId('email-input').type('trader@greenwealth.com');
+            cy.getByTestId('username-input').type('unique_trader_user');
             cy.getByTestId('password-input').type('ValidPass123!');
             cy.getByTestId('confirm-password-input').type('ValidPass123!');
             cy.getByTestId('terms-checkbox').check();
             cy.getByTestId('signup-button').click();
 
-            cy.getByTestId('error-message').should('be.visible');
+            cy.getByTestId('error-message').should('be.visible')
+                .and('contain', 'user with this email already exists');
         });
     });
 });

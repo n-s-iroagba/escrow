@@ -1,0 +1,170 @@
+
+DevTools listening on ws://127.0.0.1:41181/devtools/browser/a3eaf04d-fb35-4cf8-9834-01a57bf07436
+Missing baseUrl in compilerOptions. tsconfig-paths will be skipped
+
+================================================================================
+
+  (Run Starting)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Cypress:        13.17.0                                                                        │
+  │ Browser:        Electron 118 (headless)                                                        │
+  │ Node Version:   v22.15.0 (/home/udorakpuenyi/.nvm/versions/node/v22.15.0/bin/node)             │
+  │ Specs:          6 found (admin-signup.cy.ts, email-verification.cy.ts, invite-signup.cy.ts, lo │
+  │                 gin.cy.ts, password-reset.cy.ts, signup.cy.ts)                                 │
+  │ Searched:       cypress/e2e/auth/**/*.cy.ts                                                    │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  admin-signup.cy.ts                                                              (1 of 6)
+
+
+  Admin Sign Up Flow
+    ✓ should display admin sign up form (12533ms)
+    ✓ should display warning banner for authorized personnel (5259ms)
+    ✓ should validate password match (10170ms)
+    ✓ should successfully create admin account (21041ms)
+    ✓ should navigate back to login (6439ms)
+    ✓ should show error for duplicate admin email (11631ms)
+    ✓ should validate email format (9616ms)
+Warning: terminator_CreateInstance: Failed to CreateInstance in ICD 2.  Skipping ICD.
+    (Attempt 1 of 3) should validate username format and length
+    (Attempt 2 of 3) should validate username format and length
+    1) should validate username format and length
+
+
+  7 passing (2m)
+  1 failing
+
+  1) Admin Sign Up Flow
+       should validate username format and length:
+     AssertionError: expected true to be false
+      at Context.eval (webpack://client/./cypress/e2e/auth/admin-signup.cy.ts:70:0)
+
+
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        8                                                                                │
+  │ Passing:      7                                                                                │
+  │ Failing:      1                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  3                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     2 minutes, 0 seconds                                                             │
+  │ Spec Ran:     admin-signup.cy.ts                                                               │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+  (Screenshots)
+
+  -  /home/udorakpuenyi/escrow/client/cypress/screenshots/admin-signup.cy.ts/Admin Si     (1280x720)
+     gn Up Flow -- should validate username format and length (failed).png                          
+  -  /home/udorakpuenyi/escrow/client/cypress/screenshots/admin-signup.cy.ts/Admin Si     (1280x720)
+     gn Up Flow -- should validate username format and length (failed) (attempt 2).pn               
+     g                                                                                              
+  -  /home/udorakpuenyi/escrow/client/cypress/screenshots/admin-signup.cy.ts/Admin Si     (1280x720)
+     gn Up Flow -- should validate username format and length (failed) (attempt 3).pn               
+     g                                                                                              
+
+
+  (Video)
+
+  -  Video output: /home/udorakpuenyi/escrow/client/cypress/videos/admin-signup.cy.ts.mp4
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  email-verification.cy.ts                                                        (2 of 6)
+
+
+  Email Verification Flow
+    ✓ should display OTP input fields (5906ms)
+    ✓ should auto-fill OTP from URL token (4405ms)
+    ✓ should allow manual OTP entry (10594ms)
+    ✓ should auto-focus next input on digit entry (10885ms)
+    ✓ should handle backspace navigation (10003ms)
+    ✓ should handle paste functionality (9596ms)
+    ✓ should successfully verify email with valid OTP (12503ms)
+    ✓ should show error for invalid OTP (9429ms)
+    ✓ should disable verify button when OTP is incomplete (9783ms)
+    ✓ should handle resend button timer state (8619ms)
+    ✓ should show error if resend clicked without email (8657ms)
+    ✓ should navigate back to login (9737ms)
+    ✓ should only accept numeric input (9888ms)
+
+
+  13 passing (2m)
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        13                                                                               │
+  │ Passing:      13                                                                               │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     2 minutes, 5 seconds                                                             │
+  │ Spec Ran:     email-verification.cy.ts                                                         │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+  (Video)
+
+  -  Video output: /home/udorakpuenyi/escrow/client/cypress/videos/email-verification.cy.ts.mp4
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  invite-signup.cy.ts                                                             (3 of 6)
+
+
+  Invite Sign Up Flow
+    ✓ should display invite sign up form with pre-filled email (18509ms)
+    ✓ should successfully register invited user (auto-verified) (16116ms)
+    ✓ should show error if invited email is already registered (17377ms)
+
+
+  3 passing (54s)
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        3                                                                                │
+  │ Passing:      3                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     53 seconds                                                                       │
+  │ Spec Ran:     invite-signup.cy.ts                                                              │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+  (Video)
+
+  -  Video output: /home/udorakpuenyi/escrow/client/cypress/videos/invite-signup.cy.ts.mp4
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  login.cy.ts                                                                     (4 of 6)
+
+
+  Login Flow
+    ✓ should display login form (5064ms)
+    ✓ should show error message for invalid credentials (6405ms)
+    (Attempt 1 of 3) should successfully login as trader and redirect to trader dashboard
+    (Attempt 2 of 3) should successfully login as trader and redirect to trader dashboard
+    1) should successfully login as trader and redirect to trader dashboard
+    (Attempt 1 of 3) should successfully login as admin and redirect to admin dashboard

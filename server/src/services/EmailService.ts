@@ -512,6 +512,69 @@ class EmailService {
             html
         });
     }
+    /**
+     * Send welcome email with funding instructions for invited users
+     */
+    async sendWelcomeWithFundingInstructions(email: string, escrows: any[], firstName?: string): Promise<boolean> {
+        const dashboardLink = `${this.frontendUrl}/dashboard`;
+
+        const escrowListHtml = escrows.map(escrow => `
+            <div style="background: white; padding: 10px; margin: 10px 0; border: 1px solid #e5e7eb; border-radius: 4px;">
+                <div style="font-weight: bold;">Escrow ID: ${escrow.id}</div>
+                <div>Amount: ${escrow.amount} ${escrow.buyCurrency || escrow.sellCurrency}</div>
+                <a href="${this.frontendUrl}/trader/escrow/${escrow.id}" style="color: #10b981; text-decoration: none; font-size: 12px;">View Details</a>
+            </div>
+        `).join('');
+
+        const html = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <style>
+                    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                    .header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
+                    .content { background: #f9fafb; padding: 30px; border-radius: 0 0 8px 8px; }
+                    .button { display: inline-block; background: #10b981; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 20px 0; }
+                    .footer { text-align: center; margin-top: 20px; color: #6b7280; font-size: 12px; }
+                    .escrow-list { background: #f3f4f6; padding: 15px; border-radius: 8px; margin: 20px 0; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>Welcome to GreenWealth!</h1>
+                    </div>
+                    <div class="content">
+                        <p>Hello ${firstName || 'there'},</p>
+                        <p>Your account has been successfully created and verified.</p>
+                        <p>You have pending escrow transactions waiting for your attention. Here are your funding instructions:</p>
+                        
+                        <div class="escrow-list">
+                            <strong>Your Pending Escrows:</strong>
+                            ${escrowListHtml}
+                        </div>
+
+                        <p>To fund these transactions or view more details, please visit your dashboard.</p>
+
+                        <p style="text-align: center;">
+                            <a href="${dashboardLink}" class="button">Go to Dashboard</a>
+                        </p>
+                    </div>
+                    <div class="footer">
+                        <p>&copy; ${new Date().getFullYear()} Escrow Platform. All rights reserved.</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+        `;
+
+        return this.send({
+            to: email,
+            subject: 'Welcome! Funding Instructions for Your Escrows',
+            html
+        });
+    }
 }
 
 export default new EmailService();

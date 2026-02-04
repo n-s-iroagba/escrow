@@ -38,4 +38,31 @@ beforeEach(() => {
     // Clear cookies and local storage before each test
     cy.clearCookies();
     cy.clearLocalStorage();
+
+    // Capture console logs during tests
+    cy.window().then((win: any) => {
+        cy.spy(win.console, 'log').as('consoleLog');
+        cy.spy(win.console, 'error').as('consoleError');
+        cy.spy(win.console, 'warn').as('consoleWarn');
+    });
+});
+
+// Global after hook
+// @ts-ignore - Using function context for Mocha
+afterEach(function () {
+    // Log test outcome
+    const testState = (this as any).currentTest?.state || 'unknown';
+    const testTitle = (this as any).currentTest?.fullTitle() || 'Unknown test';
+
+    cy.task('log', `Test "${testTitle}" - ${testState.toUpperCase()}`);
+
+    // If test failed, log additional debugging info
+    if (testState === 'failed') {
+        cy.task('logError', {
+            test: testTitle,
+            state: testState,
+            error: (this as any).currentTest?.err?.message || 'No error message',
+            timestamp: new Date().toISOString()
+        });
+    }
 });

@@ -1,0 +1,61 @@
+[0;34m========================================[0m
+[0;34mAuthentication E2E Test Runner[0m
+[0;34m========================================[0m
+
+[0;34mStarting server...[0m
+Waiting for server to start on port 5000...
+..........................
+[0;32mServer started successfully![0m
+[0;34mStarting client...[0m
+Waiting for client to start on port 3000...
+
+[0;32mClient started successfully![0m
+
+[0;34m========================================[0m
+[0;34mTest Attempt 1 of 10[0m
+[0;34m========================================[0m
+
+Terminated
+[1;33mCleaning up processes...[0m
+Stopping server on port 5000...
+
+[0;31m✗ Tests failed on attempt 1[0m
+
+[1;33mRecent errors:[0m
+
+  Email Verification Flow
+[2026-02-03T16:08:34.422Z] Test "Email Verification Flow should allow manual OTP entry" - PASSED
+    ✓ should allow manual OTP entry (119993ms)
+[2026-02-03T16:08:59.154Z] Test "Email Verification Flow should display OTP input fields" - PASSED
+    ✓ should display OTP input fields (55664ms)
+[2026-02-03T16:09:54.233Z] Test "Email Verification Flow should auto-fill OTP from URL token" - PASSED
+    ✓ should auto-fill OTP from URL token (53857ms)
+[2026-02-03T16:10:23.620Z] Test "Email Verification Flow should auto-focus next input on digit entry" - PASSED
+    ✓ should auto-focus next input on digit entry (108588ms)
+[2026-02-03T16:11:44.856Z] Test "Email Verification Flow should allow manual OTP entry" - PASSED
+    ✓ should allow manual OTP entry (109920ms)
+    (Attempt 1 of 3) should handle backspace navigation
+[2026-02-03T16:12:18.471Z] Test "Email Verification Flow should handle backspace navigation" - FAILED
+[2026-02-03T16:13:23.103Z] Test "Email Verification Flow should auto-focus next input on digit entry" - PASSED
+    ✓ should auto-focus next input on digit entry (97730ms)
+    (Attempt 2 of 3) should handle backspace navigation
+[2026-02-03T16:14:21.350Z] Test "Email Verification Flow should handle backspace navigation" - FAILED
+    (Attempt 1 of 3) should handle backspace navigation
+[2026-02-03T16:15:17.810Z] Test "Email Verification Flow should handle backspace navigation" - FAILED
+    1) should handle backspace navigation
+[2026-02-03T16:16:20.821Z] Test "Email Verification Flow should handle backspace navigation" - FAILED
+    (Attempt 2 of 3) should handle backspace navigation
+[2026-02-03T16:17:15.002Z] Test "Email Verification Flow should handle backspace navigation" - FAILED
+[2026-02-03T16:18:06.162Z] Test "Email Verification Flow should handle paste functionality" - PASSED
+    ✓ should handle paste functionality (103521ms)
+    1) should handle backspace navigation
+[2026-02-03T16:19:09.298Z] Test "Email Verification Flow should handle backspace navigation" - FAILED
+    (Attempt 1 of 3) should successfully verify email with valid OTP
+[2026-02-03T16:19:12.713Z] Test "Email Verification Flow should successfully verify email with valid OTP" - FAILED
+
+[1;33mRetrying in 5 seconds...[0m
+
+[0;34m========================================[0m
+[0;34mTest Attempt 2 of 10[0m
+[0;34m========================================[0m
+

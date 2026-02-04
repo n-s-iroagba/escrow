@@ -1,0 +1,19 @@
+[0;34m========================================[0m
+[0;34mAuthentication E2E Test Runner[0m
+[0;34m========================================[0m
+
+[0;34mStarting server...[0m
+Waiting for server to start on port 5000...
+..............................[0;31mServer failed to start after 60 seconds[0m
+Server logs:
+=== Authentication Test Run - Tue Feb  3 05:20:17 PM WAT 2026 ===
+
+> escrow-backend@1.0.0 dev
+> nodemon
+
+[33m[nodemon] 3.1.11[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): src/**/*[39m
+[33m[nodemon] watching extensions: ts,js,json[39m
+[32m[nodemon] starting `ts-node src/index.ts`[39m
+[1;33mCleaning up processes...[0m

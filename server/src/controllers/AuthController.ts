@@ -19,12 +19,35 @@ const generateTokens = (userId: string) => {
 };
 
 export const register = asyncHandler(async (req: Request, res: Response) => {
-    const { email, password, role } = req.body;
+    const { email, username, password, role } = req.body;
+    const { Op } = require('sequelize');
+    const Escrow = require('../models/Escrow').default; // Dynamic import to avoid circular dependency issues if any, or just standard require
 
-    const existingUser = await User.findOne({ where: { email } });
-    if (existingUser) {
-        return ApiResponse.error(res, 'Email already in use', 400);
+    // Check for existing email
+    const existingUserByEmail = await User.findOne({ where: { email } });
+    if (existingUserByEmail) {
+        return ApiResponse.error(res, 'user with this email already exists', 400);
     }
+
+    // Check for existing username
+    if (username) {
+        const existingUserByUsername = await User.findOne({ where: { username } });
+        if (existingUserByUsername) {
+            return ApiResponse.error(res, 'user with this username already exists', 400);
+        }
+    }
+
+    // Check if user has any associated escrows (Pending Invite)
+    const existingEscrows = await Escrow.findAll({
+        where: {
+            [Op.or]: [
+                { buyerEmail: email },
+                { sellerEmail: email }
+            ]
+        }
+    });
+
+    const isInvitedUser = existingEscrows.length > 0;
 
     // In development, use fixed OTP for testing; in production use random
     const isDevelopment = process.env.NODE_ENV !== 'production';
@@ -33,20 +56,42 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
 
     const user = await User.create({
         email,
+        username,
         password,
-        role: role || 'CLIENT', // Default to client if not specified, or validate allowed roles
-        emailVerified: false,
-        emailVerificationToken: verificationToken,
-        emailVerificationTokenExpires: verificationTokenExpires
+        role: role || 'CLIENT', // Default to client if not specified
+        emailVerified: isInvitedUser, // Auto-verify if invited
+        emailVerificationToken: isInvitedUser ? null : verificationToken,
+        emailVerificationTokenExpires: isInvitedUser ? null : verificationTokenExpires
     } as any);
 
-    await EmailService.sendVerificationEmail(email, verificationToken);
+    if (isInvitedUser) {
+        // Link user to escrows
+        for (const escrow of existingEscrows) {
+            if (escrow.buyerEmail === email) {
+                escrow.buyerId = user.id;
+            }
+            if (escrow.sellerEmail === email) {
+                escrow.sellerId = user.id;
+            }
+            await escrow.save();
+        }
 
-    // Don't send token immediately on register? Or do we auto-login?
-    // Usually require verification first or allow limited access. 
-    // For now, let's just return success message.
+        // Send Welcome Email with funding instructions
+        await EmailService.sendWelcomeWithFundingInstructions(email, existingEscrows, username);
+    } else {
+        // Standard flow
+        await EmailService.sendVerificationEmail(email, verificationToken, username);
+    }
 
-    return ApiResponse.success(res, { id: user.id, email: user.email }, 'Registration successful. Please check your email to verify your account.', 201);
+    // Return response
+    return ApiResponse.success(res, {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        emailVerified: user.emailVerified, // Frontend needs this to decide redirect
+        role: user.role,
+        verificationToken: isInvitedUser ? null : verificationToken
+    }, isInvitedUser ? 'Registration successful. Welcome aboard!' : 'Registration successful. Please check your email to verify your account.', 201);
 });
 
 export const login = asyncHandler(async (req: Request, res: Response) => {
@@ -161,7 +206,10 @@ export const forgotPassword = asyncHandler(async (req: Request, res: Response) =
         return ApiResponse.success(res, null, 'If that email exists, a reset link has been sent.', 200);
     }
 
-    const resetToken = crypto.randomBytes(32).toString('hex');
+    const isDevelopment = process.env.NODE_ENV !== 'production';
+    // Use fixed token 'abcdef' in development for testing
+    const resetToken = isDevelopment ? 'abcdef' : crypto.randomBytes(32).toString('hex');
+
     user.passwordResetToken = resetToken;
     user.passwordResetTokenExpires = new Date(Date.now() + 1 * 60 * 60 * 1000); // 1 hour
     await user.save();
@@ -183,7 +231,54 @@ export const resetPassword = asyncHandler(async (req: Request, res: Response) =>
     user.password = newPassword; // Hook will hash it
     user.passwordResetToken = undefined;
     user.passwordResetTokenExpires = undefined;
+    // Update last login
+    user.lastLoginAt = new Date();
     await user.save();
 
-    return ApiResponse.success(res, null, 'Password reset successfully', 200);
+    // Generate tokens for auto-login
+    const { accessToken, refreshToken } = generateTokens(user.id);
+
+    // Set Refresh Token Cookie
+    res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    });
+
+    return ApiResponse.success(res, {
+        user: {
+            id: user.id,
+            email: user.email,
+            role: user.role,
+            emailVerified: user.emailVerified,
+        },
+        accessToken
+    }, 'Password reset successfully', 200);
+});
+
+export const resendVerification = asyncHandler(async (req: Request, res: Response) => {
+    const { email } = req.body;
+    const user = await User.findOne({ where: { email } });
+
+    if (!user) {
+        return ApiResponse.error(res, 'User not found', 404);
+    }
+
+    if (user.emailVerified) {
+        return ApiResponse.error(res, 'Email already verified', 400);
+    }
+
+    // Generate new token
+    const isDevelopment = process.env.NODE_ENV !== 'production';
+    const verificationToken = isDevelopment ? '123456' : Math.floor(100000 + Math.random() * 900000).toString();
+    const verificationTokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+    user.emailVerificationToken = verificationToken;
+    user.emailVerificationTokenExpires = verificationTokenExpires;
+    await user.save();
+
+    await EmailService.sendVerificationEmail(email, verificationToken, user.username);
+
+    return ApiResponse.success(res, null, 'Verification email sent successfully', 200);
 });

@@ -5,6 +5,7 @@ import sequelize from '@/config/database';
 export interface IUser {
   id: string;
   email: string;
+  username?: string;
   password: string;
   role: string;
   emailVerified: boolean;
@@ -21,6 +22,7 @@ export interface IUser {
 class User extends Model<IUser> implements IUser {
   public id!: string;
   public email!: string;
+  public username?: string;
   public password!: string;
   public role!: string;
   public emailVerified!: boolean;
@@ -58,6 +60,15 @@ User.init(
       unique: true,
       validate: {
         isEmail: true,
+      },
+    },
+    username: {
+      type: DataTypes.STRING,
+      allowNull: true, // Allow null for backward compatibility
+      unique: true,
+      validate: {
+        len: [3, 30],
+        is: /^[a-zA-Z0-9_-]+$/i, // Alphanumeric, underscores, hyphens only
       },
     },
     password: {

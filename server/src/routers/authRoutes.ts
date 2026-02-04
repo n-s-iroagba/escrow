@@ -6,7 +6,8 @@ import {
     refreshAccessToken,
     verifyEmail,
     forgotPassword,
-    resetPassword
+    resetPassword,
+    resendVerification
 } from '../controllers/AuthController';
 
 const router = Router();
@@ -18,5 +19,6 @@ router.post('/refresh-token', refreshAccessToken);
 router.post('/verify-email', verifyEmail);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);
+router.post('/resend-verification', resendVerification);
 
 export default router;

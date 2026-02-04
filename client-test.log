@@ -1,0 +1,10 @@
+=== Client Log - Tue Feb  3 05:26:03 PM WAT 2026 ===
+ GET / 200 in 2.8s (compile: 1410ms, render: 1365ms)
+ GET /auth/sign-up/admin 200 in 1386ms (compile: 725ms, render: 661ms)
+ GET /auth/sign-up/admin? 200 in 8.9s (compile: 3.9s, render: 5.0s)
+ GET /auth/sign-up/admin 200 in 7.1s (compile: 5.5s, render: 1600ms)
+ GET /auth/sign-up/admin 200 in 148ms (compile: 6ms, render: 143ms)
+
+> client@0.1.0 dev
+> next dev
+

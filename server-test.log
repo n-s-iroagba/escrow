@@ -1,0 +1,32 @@
+=== Authentication Test Run - Tue Feb  3 05:26:03 PM WAT 2026 ===
+Executing (default): ALTER TABLE `seller_bank_accounts` CHANGE `is_primary` `is_primary` TINYINT(1) NOT NULL DEFAULT false;
+Executing (default): ALTER TABLE `seller_bank_accounts` CHANGE `is_verified` `is_verified` TINYINT(1) NOT NULL DEFAULT false;
+Executing (default): ALTER TABLE `seller_bank_accounts` CHANGE `verified_at` `verified_at` DATETIME;
+Executing (default): ALTER TABLE `seller_bank_accounts` CHANGE `updated_at` `updated_at` DATETIME NOT NULL;
+Executing (default): ALTER TABLE `seller_bank_accounts` CHANGE `created_at` `created_at` DATETIME NOT NULL;
+Executing (default): SHOW INDEX FROM `seller_bank_accounts` FROM `escrow`
+Executing (default): SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME = 'seller_crypto_wallets' AND TABLE_SCHEMA = 'escrow'
+Executing (default): SHOW FULL COLUMNS FROM `seller_crypto_wallets`;
+Executing (default): SELECT CONSTRAINT_NAME as constraint_name,CONSTRAINT_NAME as constraintName,CONSTRAINT_SCHEMA as constraintSchema,CONSTRAINT_SCHEMA as constraintCatalog,TABLE_NAME as tableName,TABLE_SCHEMA as tableSchema,TABLE_SCHEMA as tableCatalog,COLUMN_NAME as columnName,REFERENCED_TABLE_SCHEMA as referencedTableSchema,REFERENCED_TABLE_SCHEMA as referencedTableCatalog,REFERENCED_TABLE_NAME as referencedTableName,REFERENCED_COLUMN_NAME as referencedColumnName FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE where TABLE_NAME = 'seller_crypto_wallets' AND CONSTRAINT_NAME!='PRIMARY' AND CONSTRAINT_SCHEMA='escrow' AND REFERENCED_TABLE_NAME IS NOT NULL;
+Executing (default): SELECT CONSTRAINT_CATALOG AS constraintCatalog, CONSTRAINT_NAME AS constraintName, CONSTRAINT_SCHEMA AS constraintSchema, CONSTRAINT_TYPE AS constraintType, TABLE_NAME AS tableName, TABLE_SCHEMA AS tableSchema from INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE table_name='seller_crypto_wallets' AND constraint_name = 'seller_crypto_wallets_ibfk_1' AND TABLE_SCHEMA = 'escrow';
+Executing (default): ALTER TABLE `seller_crypto_wallets` DROP FOREIGN KEY `seller_crypto_wallets_ibfk_1`;
+Executing (default): ALTER TABLE `seller_crypto_wallets` ADD FOREIGN KEY (`seller_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+> escrow-backend@1.0.0 dev
+> nodemon
+
+Executing (default): ALTER TABLE `seller_crypto_wallets` CHANGE `currency` `currency` ENUM('BTC', 'ETH', 'USDT', 'USDC', 'LTC', 'XRP') NOT NULL;
+Executing (default): ALTER TABLE `seller_crypto_wallets` CHANGE `wallet_address` `wallet_address` VARCHAR(255) NOT NULL;
+[33m[nodemon] 3.1.11[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): src/**/*[39m
+[33m[nodemon] watching extensions: ts,js,json[39m
+[32m[nodemon] starting `ts-node src/index.ts`[39m
+Executing (default): ALTER TABLE `seller_crypto_wallets` CHANGE `network` `network` VARCHAR(255) NOT NULL DEFAULT 'mainnet';
+Executing (default): ALTER TABLE `seller_crypto_wallets` CHANGE `updated_at` `updated_at` DATETIME NOT NULL;
+Executing (default): ALTER TABLE `seller_crypto_wallets` CHANGE `created_at` `created_at` DATETIME NOT NULL;
+Executing (default): SHOW INDEX FROM `seller_crypto_wallets` FROM `escrow`
+Executing (default): SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME = 'buyer_crypto_wallets' AND TABLE_SCHEMA = 'escrow'
+Executing (default): SHOW FULL COLUMNS FROM `buyer_crypto_wallets`;
+Executing (default): SELECT CONSTRAINT_NAME as constraint_name,CONSTRAINT_NAME as constraintName,CONSTRAINT_SCHEMA as constraintSchema,CONSTRAINT_SCHEMA as constraintCatalog,TABLE_NAME as tableName,TABLE_SCHEMA as tableSchema,TABLE_SCHEMA as tableCatalog,COLUMN_NAME as columnName,REFERENCED_TABLE_SCHEMA as referencedTableSchema,REFERENCED_TABLE_SCHEMA as referencedTableCatalog,REFERENCED_TABLE_NAME as referencedTableName,REFERENCED_COLUMN_NAME as referencedColumnName FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE where TABLE_NAME = 'buyer_crypto_wallets' AND CONSTRAINT_NAME!='PRIMARY' AND CONSTRAINT_SCHEMA='escrow' AND REFERENCED_TABLE_NAME IS NOT NULL;
+Executing (default): ALTER TABLE `buyer_crypto_wallets` CHANGE `buyer_id` `buyer_id` CHAR(36) BINARY NOT NULL;

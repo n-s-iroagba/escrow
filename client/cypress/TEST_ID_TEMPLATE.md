@@ -1,4 +1,4 @@
-# Test ID Addition Template
+
 
 This template provides a quick reference for adding test IDs to the remaining pages.
 
