@@ -8,6 +8,7 @@ import API_ROUTES from '@/constants/api-routes';
 import { useAuthContext } from '@/hooks/useAuthContext';
 import { Eye, EyeOff, Lock, ArrowRight } from 'lucide-react';
 import { setAccessToken } from '@/lib/axios';
+import { APP_NAME } from '@/constants/data';
 
 export default function LoginPage() {
     const router = useRouter();
@@ -43,11 +44,9 @@ export default function LoginPage() {
             {/* Left Side (Hidden on mobile) */}
             <div className="hidden lg:flex w-1/2 bg-[#0d1b12] flex-col p-12 relative overflow-hidden justify-between text-white">
                 <div>
-                    <div className="flex items-center gap-3 mb-12">
-                        <div className="w-8 h-8 bg-[#13ec5b] rounded-lg flex items-center justify-center">
-                            <span className="text-[#0d1b12] font-bold text-xs">GW</span>
-                        </div>
-                        <span className="font-bold text-xl">GreenWealth</span>
+                    <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 bg-[#13ec5b] rounded text-xs flex items-center justify-center font-bold text-[#0d1b12]">X</div>
+                        <span className="font-bold text-lg tracking-tight">{APP_NAME}</span>
                     </div>
                 </div>
 

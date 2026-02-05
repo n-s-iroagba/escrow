@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { usePost } from '@/hooks/useApiQuery';
 import API_ROUTES from '@/constants/api-routes';
 import { CheckCircle, Eye, EyeOff, Lock } from 'lucide-react';
+import { APP_NAME } from '@/constants/data';
 
 export default function SignUpPage() {
     const router = useRouter();
@@ -54,11 +55,9 @@ export default function SignUpPage() {
             {/* Left Side - Hero Content */}
             <div className="hidden lg:flex w-1/2 bg-[#f8fbfa] flex-col p-12 relative overflow-hidden justify-between">
                 <div>
-                    <div className="flex items-center gap-3 mb-12">
-                        <div className="w-8 h-8 bg-[#13ec5b] rounded-lg flex items-center justify-center">
-                            <span className="text-white font-bold text-xs">GW</span>
-                        </div>
-                        <span className="font-bold text-xl text-gray-900">GreenWealth</span>
+                    <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 bg-[#13ec5b] rounded text-xs flex items-center justify-center font-bold text-[#0d1b12]">X</div>
+                        <span className="font-bold text-lg tracking-tight">{APP_NAME}</span>
                     </div>
                 </div>
 
@@ -102,27 +101,15 @@ export default function SignUpPage() {
             {/* Right Side - Form */}
             <div className="w-full lg:w-1/2 flex flex-col justify-center p-8 lg:p-24 overflow-y-auto">
                 <div className="max-w-md w-full mx-auto">
-                    <h2 className="text-3xl font-bold text-gray-900 mb-2">Create your secure account</h2>
-                    <p className="text-gray-500 mb-8">Join GreenWealth and start growing your future.</p>
-
-                    <div className="grid grid-cols-2 gap-4 mb-8">
-                        <button className="flex items-center justify-center gap-2 py-3 border border-gray-200 rounded-xl font-bold text-gray-700 hover:bg-gray-50 transition-colors text-sm">
-                            <img src="https://www.svgrepo.com/show/475656/google-color.svg" className="w-5 h-5" alt="Google" />
-                            Google
-                        </button>
-                        <button className="flex items-center justify-center gap-2 py-3 border border-gray-200 rounded-xl font-bold text-gray-700 hover:bg-gray-50 transition-colors text-sm">
-                            <img src="https://www.svgrepo.com/show/448234/apple.svg" className="w-5 h-5" alt="Apple" />
-                            Apple ID
-                        </button>
+                    <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 bg-[#13ec5b] rounded text-xs flex items-center justify-center font-bold text-[#0d1b12]">X</div>
+                        <span className="font-bold text-lg tracking-tight">{APP_NAME}</span>
                     </div>
-
                     <div className="relative mb-8">
                         <div className="absolute inset-0 flex items-center">
                             <div className="w-full border-t border-gray-100"></div>
                         </div>
-                        <div className="relative flex justify-center text-[10px] uppercase tracking-widest font-bold">
-                            <span className="bg-white px-4 text-gray-400">Or with email</span>
-                        </div>
+
                     </div>
 
                     {error && <div data-testid="error-message" className="bg-red-50 text-red-600 p-4 rounded-xl mb-6 text-sm flex items-center gap-2"><div className="w-2 h-2 bg-red-500 rounded-full"></div>{error}</div>}
@@ -204,25 +191,7 @@ export default function SignUpPage() {
                             </div>
                         </div>
 
-                        <label className="flex items-start gap-3 cursor-pointer group pt-2">
-                            <div className="relative flex items-center">
-                                <input
-                                    data-testid="terms-checkbox"
-                                    type="checkbox"
-                                    checked={acceptedTerms}
-                                    onChange={e => setAcceptedTerms(e.target.checked)}
-                                    className="peer h-5 w-5 cursor-pointer appearance-none rounded border border-gray-300 transition-all checked:border-[#13ec5b] checked:bg-[#13ec5b]"
-                                />
-                                <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 peer-checked:opacity-100">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" stroke="currentColor" strokeWidth="1">
-                                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"></path>
-                                    </svg>
-                                </div>
-                            </div>
-                            <span className="text-sm text-gray-500 leading-snug group-hover:text-gray-700 transition-colors">
-                                I agree to the <Link href="#" className="text-[#13ec5b] font-bold hover:underline">Terms of Service</Link> and <Link href="#" className="text-[#13ec5b] font-bold hover:underline">Privacy Policy</Link>.
-                            </span>
-                        </label>
+
 
                         <button
                             data-testid="signup-button"

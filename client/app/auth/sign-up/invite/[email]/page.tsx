@@ -8,6 +8,7 @@ import { ShieldCheck, Eye, EyeOff, Mail, User, AlertCircle, ArrowRight, Lock } f
 import Link from 'next/link';
 import { setAccessToken } from '@/lib/axios';
 import { useAuthContext } from '@/hooks/useAuthContext';
+import { APP_NAME } from '@/constants/data';
 
 export default function InviteSignUpPage() {
     const params = useParams();
@@ -56,6 +57,10 @@ export default function InviteSignUpPage() {
 
     return (
         <div className="min-h-screen flex bg-[#f6f8f6] font-display items-center justify-center p-4">
+            <div className="flex items-center gap-2">
+                <div className="w-6 h-6 bg-[#13ec5b] rounded text-xs flex items-center justify-center font-bold text-[#0d1b12]">X</div>
+                <span className="font-bold text-lg tracking-tight">{APP_NAME}</span>
+            </div>
             <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-gray-100">
                 <div className="bg-[#0d1b12] p-8 text-center relative overflow-hidden">
                     <div className="relative z-10">
@@ -70,6 +75,7 @@ export default function InviteSignUpPage() {
                     {/* Background Pattern */}
                     <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
                 </div>
+
 
                 <div className="p-8">
                     {/* Email Display */}
