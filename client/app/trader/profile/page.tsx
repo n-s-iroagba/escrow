@@ -13,7 +13,7 @@ import {
     Landmark,
     CheckCircle2,
     AlertCircle,
-    ArrowLeft
+
 } from 'lucide-react';
 
 export default function ProfilePage() {

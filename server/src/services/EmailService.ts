@@ -1,4 +1,4 @@
-import { sendEmail } from '../config/mailer';
+import { sendEmail, SenderType } from '../config/mailer';
 import env from '../config/env';
 
 interface EmailOptions {
@@ -6,6 +6,7 @@ interface EmailOptions {
     subject: string;
     html: string;
     text?: string;
+    sender?: SenderType;
 }
 
 /**
@@ -31,7 +32,8 @@ class EmailService {
                     to: recipient,
                     subject: options.subject,
                     html: options.html,
-                    text: options.text || this.stripHtml(options.html)
+                    text: options.text || this.stripHtml(options.html),
+                    sender: options.sender
                 });
             }
 
@@ -96,7 +98,8 @@ class EmailService {
         return this.send({
             to: email,
             subject: 'Verify Your Email Address',
-            html
+            html,
+            sender: 'AUTH'
         });
     }
 
@@ -148,7 +151,8 @@ class EmailService {
         return this.send({
             to: email,
             subject: 'Reset Your Password',
-            html
+            html,
+            sender: 'AUTH'
         });
     }
 
@@ -206,7 +210,8 @@ class EmailService {
         return this.send({
             to: email,
             subject: 'New Escrow Transaction Invitation',
-            html
+            html,
+            sender: 'INFO'
         });
     }
 
@@ -250,7 +255,8 @@ class EmailService {
         return this.send({
             to: email,
             subject: 'KYC Documents Submitted Successfully',
-            html
+            html,
+            sender: 'INFO'
         });
     }
 
@@ -300,7 +306,8 @@ class EmailService {
         return this.send({
             to: email,
             subject: 'KYC Verification Approved',
-            html
+            html,
+            sender: 'INFO'
         });
     }
 
@@ -351,7 +358,8 @@ class EmailService {
         return this.send({
             to: email,
             subject: 'KYC Verification Update Required',
-            html
+            html,
+            sender: 'INFO'
         });
     }
 
@@ -409,7 +417,8 @@ class EmailService {
         return this.send({
             to: email,
             subject: `Escrow ${escrowId} Status Update`,
-            html
+            html,
+            sender: 'INFO'
         });
     }
 
@@ -456,7 +465,8 @@ class EmailService {
         return this.send({
             to: adminEmail,
             subject: `[Admin Alert] ${subject}`,
-            html
+            html,
+            sender: 'INFO'
         });
     }
 
@@ -509,7 +519,8 @@ class EmailService {
         return this.send({
             to: email,
             subject: `${invitedBy} invited you to an Escrow Transaction`,
-            html
+            html,
+            sender: 'INFO'
         });
     }
     /**
@@ -572,7 +583,8 @@ class EmailService {
         return this.send({
             to: email,
             subject: 'Welcome! Funding Instructions for Your Escrows',
-            html
+            html,
+            sender: 'INFO'
         });
     }
 }

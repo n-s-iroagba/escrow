@@ -26,8 +26,15 @@ const envSchema = z.object({
   // Email
   SMTP_HOST: z.string().optional(),
   SMTP_PORT: z.string().optional(),
-  SMTP_USER: z.string().optional(),
-  SMTP_PASS: z.string().optional(),
+
+  // Auth Email (donotreply)
+  SMTP_AUTH_USER: z.string().default('donotreply@muskxsecureescrow.com'),
+  SMTP_AUTH_PASS: z.string().default('12345678'),
+
+  // Info Email (info)
+  SMTP_INFO_USER: z.string().default('info@muskxsecureescrow.com'),
+  SMTP_INFO_PASS: z.string().default('12345678'),
+
   SMTP_FROM: z.string().default('noreply@escrowplatform.com'),
 
   // Frontend
