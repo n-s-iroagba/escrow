@@ -58,6 +58,8 @@ export default function InitiateEscrowPage() {
         message: string;
     }>({ checked: false, exists: false, message: '' });
 
+    const [convertedAmount, setConvertedAmount] = useState<number | null>(null);
+
     const [formData, setFormData] = useState<FormData>({
         isBuyerInitiated: true,
         tradeType: TradeType.CRYPTO_TO_CRYPTO,
@@ -175,6 +177,35 @@ export default function InitiateEscrowPage() {
             setFormData(prev => ({ ...prev, paymentMethod: PaymentMethod.WIRE_TRANSFER }));
         }
     }, [amount, isCryptoToFiat, isBuyer]);
+
+    // Fetch conversion rate for visual feedback
+    useEffect(() => {
+        const fetchConversion = async () => {
+            if (!amount || amount <= 0) {
+                setConvertedAmount(null);
+                return;
+            }
+
+            const from = isBuyer ? formData.buyCurrency : formData.sellCurrency;
+            const to = isBuyer ? formData.sellCurrency : formData.buyCurrency;
+
+            try {
+                const res = await fetch(`https://api.coinconvert.net/convert/${from.toLowerCase()}/${to.toLowerCase()}?amount=${amount}`);
+                const data = await res.json();
+                if (data.status === 'success' && data[to]) {
+                    setConvertedAmount(parseFloat(data[to]));
+                } else {
+                    setConvertedAmount(null);
+                }
+            } catch (err) {
+                console.error("Conversion error", err);
+                setConvertedAmount(null);
+            }
+        };
+
+        const timeout = setTimeout(fetchConversion, 800);
+        return () => clearTimeout(timeout);
+    }, [amount, isBuyer, formData.buyCurrency, formData.sellCurrency]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -390,6 +421,12 @@ export default function InitiateEscrowPage() {
                                             {isBuyer ? formData.buyCurrency : formData.sellCurrency}
                                         </span>
                                     </div>
+                                    {amount > 0 && convertedAmount !== null && (
+                                        <div className="mt-2 text-sm text-slate-500 flex justify-between px-1">
+                                            <span>Your Deposit: <span className="font-semibold text-slate-700">{amount} {isBuyer ? formData.buyCurrency : formData.sellCurrency}</span></span>
+                                            <span>Counterparty Deposit: <span className="font-semibold text-emerald-600">~{convertedAmount} {isBuyer ? formData.sellCurrency : formData.buyCurrency}</span></span>
+                                        </div>
+                                    )}
                                 </div>
 
                                 {/* Fee Payer Selection */}

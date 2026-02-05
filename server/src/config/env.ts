@@ -18,6 +18,7 @@ const envSchema = z.object({
   DB_NAME: z.string().default('escrow'),
   DB_USER: z.string().default('root'),
   DB_PASSWORD: z.string().default('97chocho'),
+  DATABASE_URL: z.string().optional(),
 
   // JWT
   JWT_SECRET: z.string().min(32, 'JWT secret must be at least 32 characters'),

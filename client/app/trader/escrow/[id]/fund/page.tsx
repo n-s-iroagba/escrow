@@ -44,6 +44,12 @@ export default function FundEscrowPage() {
         }
     );
 
+    const isBuyer = user?.id === escrow.buyerId;
+    const isSeller = user?.id === escrow.sellerId;
+
+    // Determine amount to pay based on role
+    const amountToPay = isBuyer ? (escrow as any).buyerDepositAmount : (escrow as any).sellerDepositAmount;
+
     // Initialize PayPal Buttons when SDK is ready and it's a PayPal transaction
     useEffect(() => {
         if (paypalLoaded && window.paypal && escrow?.paymentMethod === 'PAYPAL' && !escrow?.buyerConfirmedFunding) {
@@ -56,7 +62,7 @@ export default function FundEscrowPage() {
                             purchase_units: [{
                                 description: `Escrow Transaction #${id}`,
                                 amount: {
-                                    value: escrow.amount.toString() // Ensure string/decimal format
+                                    value: amountToPay.toString() // Ensure string/decimal format
                                 }
                             }]
                         });
@@ -67,7 +73,7 @@ export default function FundEscrowPage() {
                         // Call Backend to Mark as Funded
                         await fundEscrow({
                             transactionHash: order.id,
-                            amount: escrow.amount
+                            amount: amountToPay
                         });
                     },
                     onError: (err: any) => {
@@ -78,7 +84,7 @@ export default function FundEscrowPage() {
                 console.error("PayPal button render failed", e);
             }
         }
-    }, [paypalLoaded, escrow, id, fundEscrow]);
+    }, [paypalLoaded, escrow, id, fundEscrow, amountToPay]);
 
 
     if (loadingDetails || loadingEscrow) return <div className="p-12 text-center text-gray-500">Loading funding options...</div>;
@@ -93,7 +99,7 @@ export default function FundEscrowPage() {
         await fundEscrow({
             wireReference: wireRef,
             bankId: fundingDetails.adminBank?.id,
-            amount: escrow.amount
+            amount: amountToPay
         });
     };
 
@@ -101,15 +107,12 @@ export default function FundEscrowPage() {
         if (!cryptoTxHash) return;
         await fundEscrow({
             transactionHash: cryptoTxHash,
-            amount: escrow.amount
+            amount: amountToPay
         });
     };
 
     const isWire = escrow.tradeType === TradeType.CRYPTO_TO_FIAT && (escrow as any).paymentMethod === PaymentMethod.WIRE_TRANSFER;
     const isPayPal = escrow.tradeType === TradeType.CRYPTO_TO_FIAT && (escrow as any).paymentMethod === PaymentMethod.PAYPAL;
-
-    const isBuyer = user?.id === escrow.buyerId;
-    const isSeller = user?.id === escrow.sellerId;
 
     // Logic for what to show based on User Role & Trade Type (User Rules)
     let showCrypto = false;
@@ -184,7 +187,7 @@ export default function FundEscrowPage() {
                 <div className="text-center mb-8">
                     <h1 className="text-2xl font-bold mb-2">Secure Funding</h1>
                     <p className="text-gray-500">
-                        Please proceed with the payment of <strong className="text-gray-900">{escrow.amount} {paymentCurrency || escrow.buyCurrency}</strong>
+                        Please proceed with the payment of <strong className="text-gray-900">{amountToPay} {paymentCurrency || escrow.buyCurrency}</strong>
                     </p>
                     <div className="flex justify-center mt-2">
                         <span className="bg-blue-50 text-blue-700 text-xs px-3 py-1 rounded-full border border-blue-100 font-bold flex items-center gap-1">

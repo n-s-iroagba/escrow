@@ -33,6 +33,21 @@ interface IInitiateEscrowPayload extends Partial<IEscrow> {
 }
 
 class EscrowService {
+    private async fetchConvertedAmount(from: string, to: string, amount: number): Promise<number> {
+        try {
+            const response = await fetch(`https://api.coinconvert.net/convert/${from.toLowerCase()}/${to.toLowerCase()}?amount=${amount}`);
+            const data: any = await response.json();
+
+            if (data.status === 'success' && data[to.toUpperCase()]) {
+                return parseFloat(data[to.toUpperCase()]);
+            }
+            return 0;
+        } catch (error) {
+            console.error('Error converting currency:', error);
+            return 0;
+        }
+    }
+
     async initiateEscrow(data: IInitiateEscrowPayload, initiatorEmail: string): Promise<Escrow> {
         const {
             tradeType,
@@ -47,6 +62,26 @@ class EscrowService {
             isBuyerInitiated,
             ...rest
         } = data;
+
+        // Calculate Deposit Amounts
+        let buyerDepositAmount = 0;
+        let sellerDepositAmount = 0;
+
+        if (isBuyerInitiated) {
+            buyerDepositAmount = Number(amount);
+            sellerDepositAmount = await this.fetchConvertedAmount(buyCurrency, sellCurrency, buyerDepositAmount);
+        } else {
+            sellerDepositAmount = Number(amount);
+            buyerDepositAmount = await this.fetchConvertedAmount(sellCurrency, buyCurrency, sellerDepositAmount);
+        }
+
+        // Apply 1% Fee to Fee Payer
+        if (data.feePayer === 'buyer') {
+            buyerDepositAmount = buyerDepositAmount * 1.01;
+        } else if (data.feePayer === 'seller') {
+            sellerDepositAmount = sellerDepositAmount * 1.01;
+        }
+
         console.log(paymentMethod)
         // 1. Resolve Users
         let initiator = await User.findOne({ where: { email: initiatorEmail } });
@@ -137,6 +172,8 @@ class EscrowService {
             amount,
             buyCurrency,
             sellCurrency,
+            buyerDepositAmount,
+            sellerDepositAmount,
             paymentMethod: paymentMethod || 'CRYPTO', // Default for C2C if not explicit
             isBuyerInitiated,
             buyerEmail,

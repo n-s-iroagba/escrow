@@ -25,6 +25,8 @@ export interface IEscrow {
   sellerDepositWalletId?: string;
   sellerBankId?: string;
   buyerDepositBankId?: string;
+  buyerDepositAmount?: number;
+  sellerDepositAmount?: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -52,6 +54,8 @@ class Escrow extends Model<IEscrow> implements IEscrow {
   declare public sellerDepositWalletId?: string;
   declare public sellerBankId?: string;
   declare public buyerDepositBankId?: string;
+  declare public buyerDepositAmount?: number;
+  declare public sellerDepositAmount?: number;
   declare public readonly createdAt: Date;
   declare public readonly updatedAt: Date;
 }
@@ -159,6 +163,16 @@ Escrow.init(
       type: DataTypes.UUID,
       allowNull: true,
       field: 'buyer_deposit_bank_id',
+    },
+    buyerDepositAmount: {
+      type: DataTypes.DECIMAL(20, 8),
+      allowNull: true,
+      field: 'buyer_deposit_amount',
+    },
+    sellerDepositAmount: {
+      type: DataTypes.DECIMAL(20, 8),
+      allowNull: true,
+      field: 'seller_deposit_amount',
     },
     sellerDepositWalletId: {
       type: DataTypes.UUID,

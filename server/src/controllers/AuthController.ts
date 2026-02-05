@@ -62,7 +62,7 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
         emailVerified: isInvitedUser, // Auto-verify if invited
         emailVerificationToken: isInvitedUser ? null : verificationToken,
         emailVerificationTokenExpires: isInvitedUser ? null : verificationTokenExpires,
-        kycStatus: role === 'ADMIN' ? 'APPROVED' : 'NOT_STARTED'
+        kycStatus: role === 'ADMIN' ? 'VERIFIED' : 'NOT_SUBMITTED'
     } as any);
 
     let accessToken = undefined;

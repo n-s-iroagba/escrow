@@ -28,14 +28,44 @@ const dbConfig: SequelizeOptions = {
 };
 
 // Create Sequelize instance
-const sequelize = new Sequelize(dbConfig);
+let sequelize: Sequelize;
+
+if (env.DATABASE_URL) {
+  // Use connection string (Production/Fly.io)
+  sequelize = new Sequelize(env.DATABASE_URL, {
+    dialect: 'mysql',
+    logging: env.NODE_ENV === 'development' ? console.log : false,
+    pool: {
+      max: 10,
+      min: 0,
+      acquire: 30000,
+      idle: 10000,
+    },
+    define: {
+      timestamps: true,
+      underscored: true,
+      createdAt: 'created_at',
+      updatedAt: 'updated_at',
+    },
+    timezone: '+00:00',
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
+    }
+  });
+} else {
+  // Use individual params (Development/Local)
+  sequelize = new Sequelize(dbConfig);
+}
 
 // Test database connection
 export const testConnection = async (): Promise<void> => {
   try {
     await sequelize.authenticate();
     if (env.NODE_ENV === 'development') {
-      await sequelize.sync({ alter: true });
+      await sequelize.sync({ force: true });
       console.log('✅ Database synchronized (alter: true)');
     }
     console.log('✅ Database connection established successfully.');

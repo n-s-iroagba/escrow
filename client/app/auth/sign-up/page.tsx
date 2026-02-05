@@ -17,7 +17,7 @@ export default function SignUpPage() {
         confirmPassword: ''
     });
     const [showPassword, setShowPassword] = useState(false);
-    const [acceptedTerms, setAcceptedTerms] = useState(false);
+
 
     const { post: register, isPending, error, data } = usePost<{ username: string, email: string, password: string }, { data: { token: string } }>(API_ROUTES.AUTH.REGISTER, {
         onSuccess: (data: any) => {
@@ -35,10 +35,7 @@ export default function SignUpPage() {
             alert("Passwords do not match");
             return;
         }
-        if (!acceptedTerms) {
-            alert("Please accept the Terms of Service");
-            return;
-        }
+
 
         await register({
             username: formData.username,
@@ -196,7 +193,7 @@ export default function SignUpPage() {
                         <button
                             data-testid="signup-button"
                             type="submit"
-                            disabled={isPending || !hasMinLength || !hasSymbolOrNumber || !acceptedTerms}
+                            disabled={isPending || !hasMinLength || !hasSymbolOrNumber}
                             className="w-full py-4 bg-[#13ec5b] hover:bg-[#10c94d] disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl shadow-lg shadow-green-500/30 transition-all text-lg mb-4"
                         >
                             {isPending ? 'Creating Account...' : 'Create Account'}

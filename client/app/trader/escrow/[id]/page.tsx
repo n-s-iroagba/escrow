@@ -14,7 +14,8 @@ import {
     Wallet,
     ShieldCheck,
 
-    User
+    User,
+    Banknote
 } from 'lucide-react';
 import { useRequiredAuth } from '@/hooks/useAuthContext';
 
@@ -230,6 +231,79 @@ export default function EscrowDetailsPage() {
                             {!(escrow as any).bankBalance && (!(escrow as any).cryptoBalances || (escrow as any).cryptoBalances.length === 0) && (
                                 <p className="text-gray-400 text-sm text-center py-4 italic">No funds currently held in escrow.</p>
                             )}
+                        </div>
+
+                        {/* Deposit Requirements Card */}
+                        <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+                            <h3 className="font-bold text-lg mb-6 flex items-center gap-2">
+                                <Banknote className="w-5 h-5 text-gray-400" />
+                                Deposit Requirements
+                            </h3>
+                            <div className="space-y-6">
+                                {/* Buyer Requirement */}
+                                <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                    <div className="flex justify-between items-center mb-2">
+                                        <span className="font-bold text-slate-700">Buyer Deposit</span>
+                                        <span className="text-slate-500 text-xs font-mono">{escrow.buyCurrency}</span>
+                                    </div>
+
+                                    {escrow.feePayer === 'BUYER' ? (
+                                        <div className="space-y-1 text-sm">
+                                            <div className="flex justify-between text-slate-500">
+                                                <span>Base Amount</span>
+                                                <span className="font-mono">{Number((Number((escrow as any).buyerDepositAmount) / 1.01).toFixed(8))}</span>
+                                            </div>
+                                            <div className="flex justify-between text-slate-500">
+                                                <span>Escrow Fee (1%)</span>
+                                                <span className="font-mono text-emerald-600">
+                                                    + {Number((Number((escrow as any).buyerDepositAmount) - (Number((escrow as any).buyerDepositAmount) / 1.01)).toFixed(8))}
+                                                </span>
+                                            </div>
+                                            <div className="border-t border-slate-200 mt-2 pt-2 flex justify-between font-bold text-slate-900">
+                                                <span>Total Required</span>
+                                                <span className="font-mono">{Number((escrow as any).buyerDepositAmount)}</span>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="flex justify-between font-bold text-slate-900">
+                                            <span>Total Required</span>
+                                            <span className="font-mono">{Number((escrow as any).buyerDepositAmount)}</span>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Seller Requirement */}
+                                <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                    <div className="flex justify-between items-center mb-2">
+                                        <span className="font-bold text-slate-700">Seller Deposit</span>
+                                        <span className="text-slate-500 text-xs font-mono">{escrow.sellCurrency}</span>
+                                    </div>
+
+                                    {escrow.feePayer === 'SELLER' ? (
+                                        <div className="space-y-1 text-sm">
+                                            <div className="flex justify-between text-slate-500">
+                                                <span>Base Amount</span>
+                                                <span className="font-mono">{Number((Number((escrow as any).sellerDepositAmount) / 1.01).toFixed(8))}</span>
+                                            </div>
+                                            <div className="flex justify-between text-slate-500">
+                                                <span>Escrow Fee (1%)</span>
+                                                <span className="font-mono text-emerald-600">
+                                                    + {Number((Number((escrow as any).sellerDepositAmount) - (Number((escrow as any).sellerDepositAmount) / 1.01)).toFixed(8))}
+                                                </span>
+                                            </div>
+                                            <div className="border-t border-slate-200 mt-2 pt-2 flex justify-between font-bold text-slate-900">
+                                                <span>Total Required</span>
+                                                <span className="font-mono">{Number((escrow as any).sellerDepositAmount)}</span>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="flex justify-between font-bold text-slate-900">
+                                            <span>Total Required</span>
+                                            <span className="font-mono">{Number((escrow as any).sellerDepositAmount)}</span>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
                         </div>
 
                         <div data-testid="reception-details" className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 h-full relative overflow-hidden">
