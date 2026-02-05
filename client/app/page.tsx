@@ -34,13 +34,13 @@ export default function Home() {
           {/* Desktop Navigation */}
           <div className="hidden md:flex gap-4 text-sm font-bold">
             <Link
-              href="/login"
+              href="/auth/login"
               className="bg-[#13ec5b] hover:bg-[#10c94d] text-[#0d1b12] px-6 py-2.5 rounded-full font-bold text-sm transition-colors"
             >
               Login
             </Link>
             <Link
-              href="/sign-up"
+              href="/auth/sign-up"
               className="bg-[#13ec5b] hover:bg-[#10c94d] text-[#0d1b12] px-6 py-2.5 rounded-full font-bold text-sm transition-colors"
             >
               Get Started
@@ -61,14 +61,14 @@ export default function Home() {
         {mobileMenuOpen && (
           <div className="md:hidden mt-4 pb-4 space-y-3 border-t border-gray-200 pt-4">
             <Link
-              href="/login"
+              href="/auth/login"
               className="block w-full text-center bg-[#13ec5b] hover:bg-[#10c94d] text-[#0d1b12] px-6 py-3 rounded-full font-bold text-sm transition-colors"
               onClick={() => setMobileMenuOpen(false)}
             >
               Login
             </Link>
             <Link
-              href="/sign-up"
+              href="/auth/sign-up"
               className="block w-full text-center bg-[#13ec5b] hover:bg-[#10c94d] text-[#0d1b12] px-6 py-3 rounded-full font-bold text-sm transition-colors"
               onClick={() => setMobileMenuOpen(false)}
             >
@@ -99,12 +99,12 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 mb-16">
               <Link
-                href="/sign-up"
+                href="/auth/sign-up"
                 className="bg-[#0d1b12] text-white px-8 py-4 rounded-full font-bold text-sm hover:bg-black transition-all flex items-center justify-center gap-2 shadow-xl shadow-green-900/20"
               >
                 Initiate Secure Escrow
               </Link>
-              <Link href="/login" className="text-center bg-white border border-gray-200 text-gray-900 px-8 py-4 rounded-full font-bold text-sm hover:bg-gray-50 transition-colors">
+              <Link href="/auth/login" className="text-center bg-white border border-gray-200 text-gray-900 px-8 py-4 rounded-full font-bold text-sm hover:bg-gray-50 transition-colors">
                 Login
               </Link>
             </div>
