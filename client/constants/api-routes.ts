@@ -8,6 +8,7 @@ const API_ROUTES = {
         FORGOT_PASSWORD: '/auth/forgot-password',
         RESET_PASSWORD: '/auth/reset-password',
         RESEND_VERIFICATION: '/auth/resend-verification',
+        ME: '/auth/me',
     },
     ESCROWS: {
         GET_ALL: '/escrow',

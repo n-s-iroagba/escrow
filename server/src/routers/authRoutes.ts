@@ -7,10 +7,12 @@ import {
     verifyEmail,
     forgotPassword,
     resetPassword,
-    resendVerification
+    resendVerification,
+    getMe
 } from '../controllers/AuthController';
 
 const router = Router();
+import { authenticate } from '../middleware/auth';
 
 router.post('/register', register);
 router.post('/login', login);
@@ -20,5 +22,6 @@ router.post('/verify-email', verifyEmail);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);
 router.post('/resend-verification', resendVerification);
+router.get('/me', authenticate, getMe);
 
 export default router;

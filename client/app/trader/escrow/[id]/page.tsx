@@ -96,9 +96,7 @@ export default function EscrowDetailsPage() {
                         </h1>
                     </div>
                     <div className="flex gap-3">
-                        <button data-testid="cancel-escrow-button" className="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-[#0d1b12] font-bold rounded-xl transition-all">
-                            Cancel
-                        </button>
+
                         <div className="flex gap-3">
                             <button data-testid="cancel-escrow-button" className="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-[#0d1b12] font-bold rounded-xl transition-all">
                                 Cancel
@@ -122,12 +120,7 @@ export default function EscrowDetailsPage() {
                                     );
                                 }
 
-                                return (
-                                    <button data-testid="perform-action-button" className="px-6 py-2.5 bg-[#13ec5b] hover:bg-[#10c94d] text-[#0d1b12] font-bold rounded-xl shadow-lg shadow-green-200 transition-all flex items-center gap-2">
-                                        <ShieldCheck className="w-4 h-4" />
-                                        Perform Action
-                                    </button>
-                                );
+
                             })()}
                         </div>
                     </div>

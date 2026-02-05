@@ -13,10 +13,11 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
         const authHeader = req.headers.authorization;
 
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            ApiResponse.error(
+            console.log('Access token required');
+            ApiResponse.unauthorized(
                 res,
                 'Access token required',
-                401
+
             );
             return;
         }
@@ -32,6 +33,7 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
 
             next();
         } catch (error) {
+            console.log('Invalid or expired token');
             ApiResponse.error(
                 res,
                 'Invalid or expired token',
@@ -40,6 +42,7 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
             return;
         }
     } catch (error) {
+        console.log('Authentication error');
         console.error('Authentication error:', error);
         ApiResponse.error(
             res,

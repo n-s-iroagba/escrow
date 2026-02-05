@@ -283,3 +283,25 @@ export const resendVerification = asyncHandler(async (req: Request, res: Respons
 
     return ApiResponse.success(res, null, 'Verification email sent successfully', 200);
 });
+
+export const getMe = asyncHandler(async (req: Request, res: Response) => {
+    const userId = (req as any).user?.id;
+    if (!userId) {
+        return ApiResponse.error(res, 'Authentication required', 401);
+    }
+
+    const user = await User.findByPk(userId);
+    if (!user) {
+        return ApiResponse.error(res, 'User not found', 404);
+    }
+
+    return ApiResponse.success(res, {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        role: user.role,
+        emailVerified: user.emailVerified,
+        kycStatus: user.kycStatus,
+        createdAt: user.createdAt
+    }, 'User details retrieved', 200);
+});

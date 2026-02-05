@@ -45,7 +45,7 @@ export default function DashboardPage() {
         return (e.state === 'INITIALIZED' || e.state === 'ONE_PARTY_FUNDED') && (isBuyer || isSeller);
     });
 
-    const loading = escrowsLoading || kycLoading;
+    const loading = escrowsLoading;
     const kycStatus = kycData?.status || 'NOT_STARTED';
     const isVerified = kycStatus === 'APPROVED' || kycStatus === 'VERIFIED';
 
