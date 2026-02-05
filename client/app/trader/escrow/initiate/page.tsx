@@ -4,9 +4,10 @@ import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import API_ROUTES from '@/constants/api-routes';
 import { usePost, useGet } from '@/hooks/useApiQuery';
-import { TradeType, PaymentMethod, FeePayer, Currency } from '@/constants/enums';
+import { TradeType, PaymentMethod, FeePayer } from '@/constants/enums';
 import { ArrowLeft, ArrowRight, Check, ShieldCheck, Coins, Banknote, Wallet, AlertCircle, UserCheck, Building2 } from 'lucide-react';
 import Link from 'next/link';
+import { useRequiredAuth } from '@/hooks/useAuthContext';
 
 // Define crypto and fiat currencies
 const CRYPTO_CURRENCIES = ['BTC', 'ETH', 'USDT', 'USDC', 'LTC', 'XRP'];
@@ -32,14 +33,20 @@ interface FormData {
     paymentMethod: string;
     feePayer: typeof FeePayer[keyof typeof FeePayer];
     counterPartyConfirmationDeadline: string;
-    preferredBankId: string;
-    walletAddress: string;
-    walletNetwork: string;
-    bankAccountNumber: string;
-    bankAccountHolderName: string;
-    bankRoutingNumber: string;
-    bankIban: string;
-    bankSwift: string;
+    selectedBankId?: string;
+    // if crypto to fiat the choose bank e.g two banks could exist for one currency
+    bankDetails: {
+        accountNumber: string;
+        accountHolderName: string;
+        routingNumber: string;
+        iban: string;
+        swift: string;
+    };
+    //sellers bank details if crypto to fiat initiator is seller
+    walletDetails: {
+        walletAddress: string;
+        network: string;
+    };//buyer wallet details if fiat to crypto or crypto to crypto or seller wallet(initiator wallet details if crypto to crypto)
 }
 
 export default function InitiateEscrowPage() {
@@ -61,15 +68,20 @@ export default function InitiateEscrowPage() {
         paymentMethod: PaymentMethod.CRYPTO,
         feePayer: FeePayer.BUYER,
         counterPartyConfirmationDeadline: '24',
-        preferredBankId: '',
-        walletAddress: '',
-        walletNetwork: 'mainnet',
-        bankAccountNumber: '',
-        bankAccountHolderName: '',
-        bankRoutingNumber: '',
-        bankIban: '',
-        bankSwift: '',
+        selectedBankId: '',
+        bankDetails: {
+            accountNumber: '',
+            accountHolderName: '',
+            routingNumber: '',
+            iban: '',
+            swift: ''
+        },
+        walletDetails: {
+            walletAddress: '',
+            network: 'mainnet'
+        }
     });
+    const { user } = useRequiredAuth();
 
     // Determine if trade involves fiat
     const isCryptoToFiat = formData.tradeType === TradeType.CRYPTO_TO_FIAT;
@@ -166,7 +178,19 @@ export default function InitiateEscrowPage() {
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+
+        if (name.includes('.')) {
+            const [parent, child] = name.split('.');
+            setFormData(prev => ({
+                ...prev,
+                [parent]: {
+                    ...prev[parent as keyof FormData] as any,
+                    [child]: value
+                }
+            }));
+        } else {
+            setFormData(prev => ({ ...prev, [name]: value }));
+        }
 
         // Reset counterparty status when email changes
         if (name === 'counterPartyEmail') {
@@ -215,27 +239,22 @@ export default function InitiateEscrowPage() {
             counterPartyConfirmationDeadline: new Date(Date.now() + (parseInt(formData.counterPartyConfirmationDeadline || '24') * 60 * 60 * 1000)),
         };
 
-        // Add preferred bank for buyer in Crypto to Fiat
-        if (isCryptoToFiat && isBuyer && formData.preferredBankId) {
-            payload.preferredBankId = formData.preferredBankId;
+        // Add preferred bank for buyer in Crypto to Fiat (mapped to selectedBankId)
+        if (formData.selectedBankId) {
+            payload.selectedBankId = formData.selectedBankId;
         }
 
         // Add asset reception details
-        if (isBuyer) {
-            // Buyer receives crypto (or fiat in C2F - but handled differently)
-            payload.walletDetails = { walletAddress: formData.walletAddress, network: formData.walletNetwork };
+        // Logic corresponds to form visibility: 
+        // Seller in C2F provides Bank Details. Everyone else provides Wallet Details (or Platform Bank selection for Buyer C2F).
+        if (!isBuyer && isCryptoToFiat) {
+            // Seller C2F -> Bank Details
+            payload.bankDetails = formData.bankDetails;
         } else {
-            // Seller receives based on trade type
-            if (isCryptoToFiat) {
-                payload.bankDetails = {
-                    accountNumber: formData.bankAccountNumber,
-                    accountHolderName: formData.bankAccountHolderName,
-                    routingNumber: formData.bankRoutingNumber,
-                    iban: formData.bankIban,
-                    swift: formData.bankSwift
-                };
-            } else {
-                payload.walletDetails = { walletAddress: formData.walletAddress, network: formData.walletNetwork };
+            // Buyer (Any) or Seller (C2C) -> Wallet Details
+            // Note: Buyer in C2F also sees Wallet Input in Step 3
+            if (formData.walletDetails.walletAddress) {
+                payload.walletDetails = formData.walletDetails;
             }
         }
 
@@ -339,22 +358,24 @@ export default function InitiateEscrowPage() {
                                 {/* Currencies */}
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-sm font-semibold text-slate-700 mb-2">Buying (Receiving)</label>
+                                        <label className="block text-sm font-semibold text-slate-700 mb-2">Buyer's Currency</label>
                                         <select data-testid="buy-currency-select" name="buyCurrency" value={formData.buyCurrency} onChange={handleInputChange}
                                             className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 outline-none">
                                             {availableBuyCurrencies.map(c => (
                                                 <option key={c} value={c}>{c}</option>
                                             ))}
                                         </select>
+                                        <p className="text-xs text-slate-400 mt-1">Currency the buyer sends</p>
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-semibold text-slate-700 mb-2">Selling (Sending)</label>
+                                        <label className="block text-sm font-semibold text-slate-700 mb-2">Seller's Currency</label>
                                         <select data-testid="sell-currency-select" name="sellCurrency" value={formData.sellCurrency} onChange={handleInputChange}
                                             className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 outline-none">
                                             {availableSellCurrencies.map(c => (
                                                 <option key={c} value={c}>{c}</option>
                                             ))}
                                         </select>
+                                        <p className="text-xs text-slate-400 mt-1">Currency the seller sends</p>
                                     </div>
                                 </div>
 
@@ -430,7 +451,7 @@ export default function InitiateEscrowPage() {
                                 )}
 
                                 {/* Preferred Bank for Buyer in Crypto to Fiat */}
-                                {isCryptoToFiat && isBuyer && banks && banks.length > 0 && (
+                                {isCryptoToFiat && isBuyer && banks && banks.length && formData.paymentMethod !== PaymentMethod.PAYPAL && (
                                     <div>
                                         <label className="block text-sm font-semibold text-slate-700 mb-2">
                                             <span className="flex items-center gap-2">
@@ -440,8 +461,8 @@ export default function InitiateEscrowPage() {
                                         </label>
                                         <select
                                             data-testid="preferred-bank-select"
-                                            name="preferredBankId"
-                                            value={formData.preferredBankId}
+                                            name="selectedBankId"
+                                            value={formData.selectedBankId}
                                             onChange={handleInputChange}
                                             className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 outline-none"
                                         >
@@ -519,10 +540,8 @@ export default function InitiateEscrowPage() {
                                         <h3 className="font-bold text-slate-900">Asset Reception Details</h3>
                                         <p className="text-sm text-slate-500">
                                             {isBuyer
-                                                ? `Where should you receive ${formData.buyCurrency}?`
-                                                : isCryptoToFiat
-                                                    ? `Where should you receive ${formData.sellCurrency}?`
-                                                    : `Where should you receive ${formData.buyCurrency}?`
+                                                ? `Where should you receive ${formData.sellCurrency}?`
+                                                : `Where should you receive ${formData.buyCurrency}?`
                                             }
                                         </p>
                                     </div>
@@ -536,8 +555,8 @@ export default function InitiateEscrowPage() {
                                             <input
                                                 data-testid="bank-holder-input"
                                                 type="text"
-                                                name="bankAccountHolderName"
-                                                value={formData.bankAccountHolderName}
+                                                name="bankDetails.accountHolderName"
+                                                value={formData.bankDetails?.accountHolderName || ''}
                                                 onChange={handleInputChange}
                                                 className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 outline-none"
                                             />
@@ -547,8 +566,8 @@ export default function InitiateEscrowPage() {
                                             <input
                                                 data-testid="bank-account-input"
                                                 type="text"
-                                                name="bankAccountNumber"
-                                                value={formData.bankAccountNumber}
+                                                name="bankDetails.accountNumber"
+                                                value={formData.bankDetails?.accountNumber || ''}
                                                 onChange={handleInputChange}
                                                 className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 outline-none font-mono"
                                             />
@@ -558,8 +577,8 @@ export default function InitiateEscrowPage() {
                                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Routing Number</label>
                                                 <input
                                                     type="text"
-                                                    name="bankRoutingNumber"
-                                                    value={formData.bankRoutingNumber}
+                                                    name="bankDetails.routingNumber"
+                                                    value={formData.bankDetails?.routingNumber || ''}
                                                     onChange={handleInputChange}
                                                     className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 outline-none font-mono"
                                                 />
@@ -568,8 +587,8 @@ export default function InitiateEscrowPage() {
                                                 <label className="block text-sm font-semibold text-slate-700 mb-2">SWIFT</label>
                                                 <input
                                                     type="text"
-                                                    name="bankSwift"
-                                                    value={formData.bankSwift}
+                                                    name="bankDetails.swift"
+                                                    value={formData.bankDetails?.swift || ''}
                                                     onChange={handleInputChange}
                                                     className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 outline-none font-mono uppercase"
                                                 />
@@ -579,8 +598,8 @@ export default function InitiateEscrowPage() {
                                             <label className="block text-sm font-semibold text-slate-700 mb-2">IBAN (Optional)</label>
                                             <input
                                                 type="text"
-                                                name="bankIban"
-                                                value={formData.bankIban}
+                                                name="bankDetails.iban"
+                                                value={formData.bankDetails?.iban || ''}
                                                 onChange={handleInputChange}
                                                 className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 outline-none font-mono uppercase"
                                             />
@@ -594,8 +613,8 @@ export default function InitiateEscrowPage() {
                                             <input
                                                 data-testid="wallet-address-input"
                                                 type="text"
-                                                name="walletAddress"
-                                                value={formData.walletAddress}
+                                                name="walletDetails.walletAddress"
+                                                value={formData.walletDetails?.walletAddress || ''}
                                                 onChange={handleInputChange}
                                                 className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 outline-none font-mono"
                                                 placeholder="0x..."
@@ -604,8 +623,8 @@ export default function InitiateEscrowPage() {
                                         <div>
                                             <label className="block text-sm font-semibold text-slate-700 mb-2">Network</label>
                                             <select
-                                                name="walletNetwork"
-                                                value={formData.walletNetwork}
+                                                name="walletDetails.network"
+                                                value={formData.walletDetails?.network || 'mainnet'}
                                                 onChange={handleInputChange}
                                                 className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 outline-none"
                                             >
@@ -638,3 +657,4 @@ export default function InitiateEscrowPage() {
         </div>
     );
 }
+

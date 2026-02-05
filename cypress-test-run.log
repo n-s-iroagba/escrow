@@ -1,79 +1,8 @@
-=== Cypress Test Run Started at 2026-02-04T20:41:56.325Z ===
+=== Cypress Test Run Started at 2026-02-04T21:25:19.980Z ===
 
 Test run starting...
-Specs: 6
+Specs: 1
 Browser: electron
-
-
-================================================================================
-Running spec: admin-signup.cy.ts
-Relative path: cypress/e2e/auth/admin-signup.cy.ts
-================================================================================
-
-[2026-02-04T20:42:29.768Z] Test "Admin Sign Up Flow should display admin sign up form" - PASSED
-[2026-02-04T20:42:35.514Z] Test "Admin Sign Up Flow should display warning banner for authorized personnel" - PASSED
-[2026-02-04T20:42:46.053Z] Test "Admin Sign Up Flow should validate password match" - PASSED
-[2026-02-04T20:43:07.773Z] Test "Admin Sign Up Flow should successfully create admin account" - PASSED
-[2026-02-04T20:43:14.580Z] Test "Admin Sign Up Flow should navigate back to login" - PASSED
-[2026-02-04T20:43:26.671Z] Test "Admin Sign Up Flow should show error for duplicate admin email" - PASSED
-[2026-02-04T20:43:36.765Z] Test "Admin Sign Up Flow should validate email format" - PASSED
-[2026-02-04T20:43:49.257Z] Test "Admin Sign Up Flow should validate username format and length" - FAILED
-[2026-02-04T20:44:02.810Z] Test "Admin Sign Up Flow should validate username format and length" - FAILED
-[2026-02-04T20:44:16.450Z] Test "Admin Sign Up Flow should validate username format and length" - FAILED
-
-Spec results for admin-signup.cy.ts:
-  Tests: 8
-  Passes: 7
-  Failures: 1
-  Pending: 0
-  Skipped: 0
-  Duration: 120655ms
-
-
-================================================================================
-Running spec: email-verification.cy.ts
-Relative path: cypress/e2e/auth/email-verification.cy.ts
-================================================================================
-
-[2026-02-04T20:44:31.724Z] Test "Email Verification Flow should display OTP input fields" - PASSED
-[2026-02-04T20:44:36.529Z] Test "Email Verification Flow should auto-fill OTP from URL token" - PASSED
-[2026-02-04T20:44:47.523Z] Test "Email Verification Flow should allow manual OTP entry" - PASSED
-[2026-02-04T20:44:58.759Z] Test "Email Verification Flow should auto-focus next input on digit entry" - PASSED
-[2026-02-04T20:45:09.051Z] Test "Email Verification Flow should handle backspace navigation" - PASSED
-[2026-02-04T20:45:19.182Z] Test "Email Verification Flow should handle paste functionality" - PASSED
-[2026-02-04T20:45:32.020Z] Test "Email Verification Flow should successfully verify email with valid OTP" - PASSED
-[2026-02-04T20:45:41.944Z] Test "Email Verification Flow should show error for invalid OTP" - PASSED
-[2026-02-04T20:45:52.200Z] Test "Email Verification Flow should disable verify button when OTP is incomplete" - PASSED
-[2026-02-04T20:46:01.205Z] Test "Email Verification Flow should handle resend button timer state" - PASSED
-[2026-02-04T20:46:10.188Z] Test "Email Verification Flow should show error if resend clicked without email" - PASSED
-[2026-02-04T20:46:20.289Z] Test "Email Verification Flow should navigate back to login" - PASSED
-[2026-02-04T20:46:30.643Z] Test "Email Verification Flow should only accept numeric input" - PASSED
-
-Spec results for email-verification.cy.ts:
-  Tests: 13
-  Passes: 13
-  Failures: 0
-  Pending: 0
-  Skipped: 0
-  Duration: 125529ms
-
-
-================================================================================
-Running spec: invite-signup.cy.ts
-Relative path: cypress/e2e/auth/invite-signup.cy.ts
-================================================================================
-
-[2026-02-04T20:47:04.565Z] Test "Invite Sign Up Flow should display invite sign up form with pre-filled email" - PASSED
-[2026-02-04T20:47:21.137Z] Test "Invite Sign Up Flow should successfully register invited user (auto-verified)" - PASSED
-[2026-02-04T20:47:38.779Z] Test "Invite Sign Up Flow should show error if invited email is already registered" - PASSED
-
-Spec results for invite-signup.cy.ts:
-  Tests: 3
-  Passes: 3
-  Failures: 0
-  Pending: 0
-  Skipped: 0
-  Duration: 53658ms
 
 
 ================================================================================
@@ -81,9 +10,34 @@ Running spec: login.cy.ts
 Relative path: cypress/e2e/auth/login.cy.ts
 ================================================================================
 
-[2026-02-04T20:47:54.516Z] Test "Login Flow should display login form" - PASSED
-[2026-02-04T20:48:01.409Z] Test "Login Flow should show error message for invalid credentials" - PASSED
-[2026-02-04T20:48:18.964Z] Test "Login Flow should successfully login as trader and redirect to trader dashboard" - FAILED
-[2026-02-04T20:48:37.527Z] Test "Login Flow should successfully login as trader and redirect to trader dashboard" - FAILED
-[2026-02-04T20:48:55.878Z] Test "Login Flow should successfully login as trader and redirect to trader dashboard" - FAILED
-[2026-02-04T20:49:11.436Z] Test "Login Flow should successfully login as admin and redirect to admin dashboard" - FAILED
+[2026-02-04T21:25:49.145Z] Test "Login Flow should display login form" - PASSED
+[2026-02-04T21:25:55.450Z] Test "Login Flow should show error message for invalid credentials" - PASSED
+[2026-02-04T21:26:33.840Z] Test "Login Flow should successfully login as trader and redirect to trader dashboard" - FAILED
+[2026-02-04T21:27:13.382Z] Test "Login Flow should successfully login as trader and redirect to trader dashboard" - FAILED
+[2026-02-04T21:27:54.427Z] Test "Login Flow should successfully login as trader and redirect to trader dashboard" - FAILED
+[2026-02-04T21:28:35.337Z] Test "Login Flow should successfully login as admin and redirect to admin dashboard" - FAILED
+[2026-02-04T21:29:15.024Z] Test "Login Flow should successfully login as admin and redirect to admin dashboard" - FAILED
+[2026-02-04T21:29:55.706Z] Test "Login Flow should successfully login as admin and redirect to admin dashboard" - FAILED
+[2026-02-04T21:30:00.204Z] Test "Login Flow should toggle password visibility" - PASSED
+[2026-02-04T21:30:05.118Z] Test "Login Flow should navigate to forgot password page" - PASSED
+[2026-02-04T21:30:10.091Z] Test "Login Flow should navigate to sign up page" - PASSED
+[2026-02-04T21:30:14.379Z] Test "Login Flow should validate required fields" - PASSED
+
+Spec results for login.cy.ts:
+  Tests: 8
+  Passes: 6
+  Failures: 2
+  Pending: 0
+  Skipped: 0
+  Duration: 272978ms
+
+
+================================================================================
+Test Run Complete at 2026-02-04T21:30:15.842Z
+Total Tests: 8
+Passed: 6
+Failed: 2
+Pending: 0
+Skipped: 0
+Duration: 272978ms
+================================================================================

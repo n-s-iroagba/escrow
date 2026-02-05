@@ -4,7 +4,7 @@ import ApiResponse from '../utils/apiResponse';
 import User from '../models/User';
 import EmailService from '../services/EmailService';
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
+
 import crypto from 'crypto';
 
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || 'access_secret';
@@ -12,8 +12,8 @@ const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || 'refresh_secret
 const ACCESS_TOKEN_EXPIRY = '15m';
 const REFRESH_TOKEN_EXPIRY = '7d';
 
-const generateTokens = (userId: string) => {
-    const accessToken = jwt.sign({ id: userId }, ACCESS_TOKEN_SECRET, { expiresIn: ACCESS_TOKEN_EXPIRY });
+const generateTokens = (userId: string, email: string) => {
+    const accessToken = jwt.sign({ id: userId, email: email }, ACCESS_TOKEN_SECRET, { expiresIn: ACCESS_TOKEN_EXPIRY });
     const refreshToken = jwt.sign({ id: userId }, REFRESH_TOKEN_SECRET, { expiresIn: REFRESH_TOKEN_EXPIRY });
     return { accessToken, refreshToken };
 };
@@ -96,13 +96,13 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
 
 export const login = asyncHandler(async (req: Request, res: Response) => {
     const { email, password } = req.body;
-
+    console.log(email, password);
     const user = await User.findOne({ where: { email } });
     if (!user) {
         return ApiResponse.error(res, 'Invalid credentials', 401);
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await password === user.password;
     if (!isMatch) {
         return ApiResponse.error(res, 'Invalid credentials', 401);
     }
@@ -111,7 +111,7 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
     user.lastLoginAt = new Date();
     await user.save();
 
-    const { accessToken, refreshToken } = generateTokens(user.id);
+    const { accessToken, refreshToken } = generateTokens(user.id, user.email);
 
     // Set Refresh Token Cookie
     res.cookie('refreshToken', refreshToken, {
@@ -157,7 +157,7 @@ export const refreshAccessToken = asyncHandler(async (req: Request, res: Respons
             return ApiResponse.error(res, 'User not found', 401);
         }
 
-        const tokens = generateTokens(user.id);
+        const tokens = generateTokens(user.id, user.email);
 
         // Rotate refresh token
         res.cookie('refreshToken', tokens.refreshToken, {
@@ -190,11 +190,12 @@ export const verifyEmail = asyncHandler(async (req: Request, res: Response) => {
     }
 
     user.emailVerified = true;
-    user.emailVerificationToken = undefined; // clear
-    user.emailVerificationTokenExpires = undefined;
+    user.emailVerificationToken = null; // clear
+    user.emailVerificationTokenExpires = null;
+    const tokens = generateTokens(user.id, user.email);
     await user.save();
 
-    return ApiResponse.success(res, null, 'Email verified successfully', 200);
+    return ApiResponse.success(res, { user, accessToken: tokens.accessToken }, 'Email verified successfully', 200);
 });
 
 export const forgotPassword = asyncHandler(async (req: Request, res: Response) => {
@@ -229,14 +230,14 @@ export const resetPassword = asyncHandler(async (req: Request, res: Response) =>
     }
 
     user.password = newPassword; // Hook will hash it
-    user.passwordResetToken = undefined;
-    user.passwordResetTokenExpires = undefined;
+    user.passwordResetToken = null;
+    user.passwordResetTokenExpires = null;
     // Update last login
     user.lastLoginAt = new Date();
     await user.save();
 
     // Generate tokens for auto-login
-    const { accessToken, refreshToken } = generateTokens(user.id);
+    const { accessToken, refreshToken } = generateTokens(user.id, user.email);
 
     // Set Refresh Token Cookie
     res.cookie('refreshToken', refreshToken, {
@@ -278,7 +279,7 @@ export const resendVerification = asyncHandler(async (req: Request, res: Respons
     user.emailVerificationTokenExpires = verificationTokenExpires;
     await user.save();
 
-    await EmailService.sendVerificationEmail(email, verificationToken, user.username);
+    await EmailService.sendVerificationEmail(email, verificationToken, user.username || '');
 
     return ApiResponse.success(res, null, 'Verification email sent successfully', 200);
 });

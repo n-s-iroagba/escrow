@@ -168,3 +168,159 @@ Warning: terminator_CreateInstance: Failed to CreateInstance in ICD 2.  Skipping
     (Attempt 2 of 3) should successfully login as trader and redirect to trader dashboard
     1) should successfully login as trader and redirect to trader dashboard
     (Attempt 1 of 3) should successfully login as admin and redirect to admin dashboard
+    (Attempt 2 of 3) should successfully login as admin and redirect to admin dashboard
+    2) should successfully login as admin and redirect to admin dashboard
+    ✓ should toggle password visibility (3029ms)
+    ✓ should navigate to forgot password page (6814ms)
+    ✓ should navigate to sign up page (8298ms)
+    ✓ should validate required fields (3477ms)
+
+
+  6 passing (2m)
+  2 failing
+
+  1) Login Flow
+       should successfully login as trader and redirect to trader dashboard:
+     AssertionError: Timed out retrying after 10000ms: expected 'http://localhost:3000/auth/login' to include '/trader/dashboard'
+      at Context.eval (webpack://client/./cypress/e2e/auth/login.cy.ts:24:0)
+
+  2) Login Flow
+       should successfully login as admin and redirect to admin dashboard:
+     AssertionError: Timed out retrying after 10000ms: expected 'http://localhost:3000/auth/login' to include '/admin/dashboard'
+      at Context.eval (webpack://client/./cypress/e2e/auth/login.cy.ts:32:0)
+
+
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        8                                                                                │
+  │ Passing:      6                                                                                │
+  │ Failing:      2                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  6                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     2 minutes, 20 seconds                                                            │
+  │ Spec Ran:     login.cy.ts                                                                      │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+  (Screenshots)
+
+  -  /home/udorakpuenyi/escrow/client/cypress/screenshots/login.cy.ts/Login Flow -- s     (1280x720)
+     hould successfully login as trader and redirect to trader dashboard (failed).png               
+  -  /home/udorakpuenyi/escrow/client/cypress/screenshots/login.cy.ts/Login Flow -- s     (1280x720)
+     hould successfully login as trader and redirect to trader dashboard (failed) (at               
+     tempt 2).png                                                                                   
+  -  /home/udorakpuenyi/escrow/client/cypress/screenshots/login.cy.ts/Login Flow -- s     (1280x720)
+     hould successfully login as trader and redirect to trader dashboard (failed) (at               
+     tempt 3).png                                                                                   
+  -  /home/udorakpuenyi/escrow/client/cypress/screenshots/login.cy.ts/Login Flow -- s     (1280x720)
+     hould successfully login as admin and redirect to admin dashboard (failed).png                 
+  -  /home/udorakpuenyi/escrow/client/cypress/screenshots/login.cy.ts/Login Flow -- s     (1280x720)
+     hould successfully login as admin and redirect to admin dashboard (failed) (atte               
+     mpt 2).png                                                                                     
+  -  /home/udorakpuenyi/escrow/client/cypress/screenshots/login.cy.ts/Login Flow -- s     (1280x720)
+     hould successfully login as admin and redirect to admin dashboard (failed) (atte               
+     mpt 3).png                                                                                     
+
+
+  (Video)
+
+  -  Video output: /home/udorakpuenyi/escrow/client/cypress/videos/login.cy.ts.mp4
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  password-reset.cy.ts                                                            (5 of 6)
+
+
+  Password Reset Flow
+    Reset Password
+      ✓ should display reset password form (5893ms)
+
+
+  1 passing (6s)
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        1                                                                                │
+  │ Passing:      1                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     6 seconds                                                                        │
+  │ Spec Ran:     password-reset.cy.ts                                                             │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+  (Video)
+
+  -  Video output: /home/udorakpuenyi/escrow/client/cypress/videos/password-reset.cy.ts.mp4
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  signup.cy.ts                                                                    (6 of 6)
+
+
+  Sign Up Flow
+    ✓ should display sign up form (4011ms)
+    ✓ should validate password requirements (8136ms)
+    ✓ should show error for mismatched passwords (8679ms)
+    ✓ should require terms acceptance (7957ms)
+    ✓ should successfully register a new user (11474ms)
+    ✓ should navigate to login page (3991ms)
+    ✓ should show error for duplicate email (13183ms)
+
+
+  7 passing (1m)
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        7                                                                                │
+  │ Passing:      7                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     1 minute, 0 seconds                                                              │
+  │ Spec Ran:     signup.cy.ts                                                                     │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+  (Video)
+
+  -  Video output: /home/udorakpuenyi/escrow/client/cypress/videos/signup.cy.ts.mp4
+
+
+================================================================================
+
+  (Run Finished)
+
+
+       Spec                                              Tests  Passing  Failing  Pending  Skipped  
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ ✖  admin-signup.cy.ts                       02:00        8        7        1        -        - │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✔  email-verification.cy.ts                 02:05       13       13        -        -        - │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✔  invite-signup.cy.ts                      00:53        3        3        -        -        - │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✖  login.cy.ts                              02:20        8        6        2        -        - │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✔  password-reset.cy.ts                     00:06        1        1        -        -        - │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✔  signup.cy.ts                             01:00        7        7        -        -        - │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+    ✖  2 of 6 failed (33%)                      08:27       40       37        3        -        -  
+

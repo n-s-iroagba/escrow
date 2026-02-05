@@ -25,10 +25,10 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
 
         try {
             // Verify token
-            const decoded = jwt.verify(token, ACCESS_TOKEN_SECRET) as { id: string };
+            const decoded = jwt.verify(token, ACCESS_TOKEN_SECRET) as { id: string, email: string };
 
             // Attach user ID to request object
-            (req as any).user = { id: decoded.id };
+            (req as any).user = { id: decoded.id, email: decoded.email };
 
             next();
         } catch (error) {

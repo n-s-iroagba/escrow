@@ -107,34 +107,37 @@ api.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error) => {
     const originalRequest = error.config;
-
+    console.log('Axios Interceptor: Error Response:', error); // Debug Log
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {
-        const refreshResponse = await refreshApi.post(API_ROUTES.AUTH.REFRESH_ACCESS_TOKEN,
+        console.log('🔄 Axios Interceptor: Attempting to refresh token...'); // Debug Log
+        const refreshResponse = await refreshApi.post(API_ROUTES.AUTH.REFRESH_ACCESS_TOKEN, {}, {
+          headers: { 'Content-Type': 'application/json' },
+          timeout: 10000,
+        });
 
-          {
-            headers: { 'Content-Type': 'application/json' },
-            timeout: 10000,
-          }
-        );
-
+        console.log('✅ Axio Interceptor: Refresh Response:', refreshResponse.data); // Debug Log
         const { data } = refreshResponse;
 
         if (data.data?.accessToken) {
+          console.log('🔑 Axios Interceptor: New Access Token received'); // Debug Log
           setAccessToken(data.data.accessToken);
 
           originalRequest.headers.Authorization = `Bearer ${data.data.accessToken}`;
           return api(originalRequest);
+        } else {
+          console.error('❌ Axios Interceptor: Refresh response missing access token', data);
         }
       } catch (refreshError) {
-        console.error('Token refresh failed:', refreshError);
+        console.error('❌ Axios Interceptor: Token refresh failed:', refreshError);
         clearTokens();
 
-        // if (typeof window !== 'undefined') {
-        //   window.location.href = '/auth/login';
-        // }
+        // Ensure we don't loop indefinitely
+        if (typeof window !== 'undefined' && window.location.pathname !== '/auth/login') {
+          window.location.href = '/auth/login';
+        }
 
         return Promise.reject(refreshError);
       }

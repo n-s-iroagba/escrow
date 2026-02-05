@@ -8,6 +8,7 @@ export interface IEscrow {
   buyerEmail: string;
   buyerId?: string;
   isBuyerInitiated: boolean;
+  paymentMethod: string;
   sellerEmail: string;
   sellerId?: string;
   feePayer: string;
@@ -20,30 +21,39 @@ export interface IEscrow {
   sellerConfirmedFunding?: boolean;
   buyerMarkedPaymentSent?: boolean;
   sellerMarkedPaymentSent?: boolean;
+  buyerDepositWalletId?: string;
+  sellerDepositWalletId?: string;
+  sellerBankId?: string;
+  buyerDepositBankId?: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
 class Escrow extends Model<IEscrow> implements IEscrow {
-  public id!: string;
-  public tradeType!: string;
-  public buyerEmail!: string;
-  public buyerId?: string;
-  public isBuyerInitiated!: boolean;
-  public sellerEmail!: string;
-  public sellerId?: string;
-  public feePayer!: string;
-  public buyCurrency!: string;
-  public sellCurrency!: string;
-  public amount!: number;
-  public state!: string;
-  public counterPartyConfirmationDeadline!: Date;
-  public buyerConfirmedFunding?: boolean;
-  public sellerConfirmedFunding?: boolean;
-  public buyerMarkedPaymentSent?: boolean;
-  public sellerMarkedPaymentSent?: boolean;
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  declare public id: string;
+  declare public tradeType: string;
+  declare public buyerEmail: string;
+  declare public buyerId?: string;
+  declare public isBuyerInitiated: boolean;
+  declare public paymentMethod: string;
+  declare public sellerEmail: string;
+  declare public sellerId?: string;
+  declare public feePayer: string;
+  declare public buyCurrency: string;
+  declare public sellCurrency: string;
+  declare public amount: number;
+  declare public state: string;
+  declare public counterPartyConfirmationDeadline: Date;
+  declare public buyerConfirmedFunding?: boolean;
+  declare public sellerConfirmedFunding?: boolean;
+  declare public buyerMarkedPaymentSent?: boolean;
+  declare public sellerMarkedPaymentSent?: boolean;
+  declare public buyerDepositWalletId?: string;
+  declare public sellerDepositWalletId?: string;
+  declare public sellerBankId?: string;
+  declare public buyerDepositBankId?: string;
+  declare public readonly createdAt: Date;
+  declare public readonly updatedAt: Date;
 }
 
 Escrow.init(
@@ -140,8 +150,33 @@ Escrow.init(
       defaultValue: false,
       field: 'seller_marked_payment_sent',
     },
+    buyerDepositWalletId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      field: 'buyer_deposit_wallet_id',
+    },
+    buyerDepositBankId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      field: 'buyer_deposit_bank_id',
+    },
+    sellerDepositWalletId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      field: 'seller_deposit_wallet_id',
+    },
+    sellerBankId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      field: 'seller_bank_id',
+    },
     createdAt: { type: DataTypes.DATE },
-    updatedAt: { type: DataTypes.DATE }
+    updatedAt: { type: DataTypes.DATE },
+    paymentMethod: {
+      type: DataTypes.STRING(10),
+      allowNull: false,
+      field: 'payment_method',
+    }
   },
   {
     sequelize,

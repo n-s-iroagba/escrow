@@ -79,7 +79,9 @@ describe('Admin Sign Up Flow', () => {
         cy.getByTestId('admin-signup-button').click();
 
         cy.getByTestId('username-input').then(($input: any) => {
+            // Ensure the input is invalid due to minLength
             expect($input[0].checkValidity()).to.be.false;
+            expect($input[0].validationMessage).to.not.be.empty;
         });
     });
 });

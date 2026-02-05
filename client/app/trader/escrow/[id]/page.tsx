@@ -2,7 +2,7 @@
 
 import { useGet } from '@/hooks/useApiQuery';
 import API_ROUTES from '@/constants/api-routes';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { EscrowState, TradeType } from '@/constants/enums';
 import {
     Clock,
@@ -13,14 +13,19 @@ import {
     Building2,
     Wallet,
     ShieldCheck,
+
     User
 } from 'lucide-react';
+import { useRequiredAuth } from '@/hooks/useAuthContext';
 
 export default function EscrowDetailsPage() {
     const { id } = useParams();
+    const router = useRouter();
     const { data: escrow, loading, error } = useGet(API_ROUTES.ESCROWS.GET_ONE(id as string), {
         enabled: !!id
     });
+    const { user } = useRequiredAuth();
+    console.log(user)
 
     if (loading) return (
         <div className="min-h-screen flex items-center justify-center bg-[#f6f8f6]">
@@ -94,69 +99,97 @@ export default function EscrowDetailsPage() {
                         <button data-testid="cancel-escrow-button" className="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-[#0d1b12] font-bold rounded-xl transition-all">
                             Cancel
                         </button>
-                        {/* Logic for action button based on state/role would go here */}
-                        <button data-testid="perform-action-button" className="px-6 py-2.5 bg-[#13ec5b] hover:bg-[#10c94d] text-[#0d1b12] font-bold rounded-xl shadow-lg shadow-green-200 transition-all flex items-center gap-2">
-                            <ShieldCheck className="w-4 h-4" />
-                            Perform Action
-                        </button>
-                    </div>
-                </div>
+                        <div className="flex gap-3">
+                            <button data-testid="cancel-escrow-button" className="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-[#0d1b12] font-bold rounded-xl transition-all">
+                                Cancel
+                            </button>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                            {/* Funding Button Logic */}
+                            {(() => {
+                                const isBuyer = user?.id === escrow.buyerId;
+                                const isSeller = user?.id === escrow.sellerId;
+                                const needsFunding = (isBuyer && !escrow.buyerConfirmedFunding) || (isSeller && !escrow.sellerConfirmedFunding);
 
-                    {/* Left Column: Transaction Details */}
-                    <div className="lg:col-span-2 space-y-8">
+                                if (needsFunding && escrow.state === EscrowState.INITIALIZED) {
+                                    return (
+                                        <button
+                                            onClick={() => router.push(`/trader/escrow/${id}/fund`)}
+                                            className="px-6 py-2.5 bg-[#13ec5b] hover:bg-[#10c94d] text-[#0d1b12] font-bold rounded-xl shadow-lg shadow-green-200 transition-all flex items-center gap-2"
+                                        >
+                                            <Wallet className="w-4 h-4" />
+                                            Fund Escrow
+                                        </button>
+                                    );
+                                }
 
-                        {/* Summary Card */}
-                        <div data-testid="transaction-summary" className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
-                            <h3 className="font-bold text-lg mb-6 flex items-center gap-2">
-                                <Briefcase className="w-5 h-5 text-gray-400" />
-                                Transaction Summary
-                            </h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
-                                    <span className="text-gray-500 text-xs uppercase tracking-wide font-bold">Trade Type</span>
-                                    <p className="font-bold text-lg mt-1">{escrow.tradeType.replace(/_/g, ' -> ')}</p>
-                                </div>
-                                <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
-                                    <span className="text-gray-500 text-xs uppercase tracking-wide font-bold">Total Amount</span>
-                                    <p className="font-bold text-lg mt-1 font-mono">{escrow.amount} {escrow.buyCurrency}</p>
-                                </div>
-                                <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
-                                    <span className="text-gray-500 text-xs uppercase tracking-wide font-bold">Fee Payer</span>
-                                    <p className="font-bold text-lg mt-1">{escrow.feePayer}</p>
-                                </div>
-                                <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
-                                    <span className="text-gray-500 text-xs uppercase tracking-wide font-bold">Confirmation By</span>
-                                    <p className="font-bold text-lg mt-1">
-                                        {new Date(escrow.counterPartyConfirmationDeadline).toLocaleDateString()}
-                                    </p>
-                                </div>
-                            </div>
+                                return (
+                                    <button data-testid="perform-action-button" className="px-6 py-2.5 bg-[#13ec5b] hover:bg-[#10c94d] text-[#0d1b12] font-bold rounded-xl shadow-lg shadow-green-200 transition-all flex items-center gap-2">
+                                        <ShieldCheck className="w-4 h-4" />
+                                        Perform Action
+                                    </button>
+                                );
+                            })()}
                         </div>
+                    </div>
 
-                        {/* Trust & Counterparty Section */}
-                        <div data-testid="counterparty-info" className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
-                            <h3 className="font-bold text-lg mb-6 flex items-center gap-2">
-                                <User className="w-5 h-5 text-gray-400" />
-                                Counterparty Info
-                            </h3>
-                            {/* Assuming current user logic to hide self */}
-                            <div className="flex items-center gap-4 p-4 rounded-xl border border-gray-100 bg-gray-50/50">
-                                <div className="w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xl">
-                                    {escrow.seller?.email?.charAt(0).toUpperCase() || '?'}
-                                </div>
-                                <div>
-                                    <p className="font-bold text-gray-900">{escrow.seller?.email}</p>
-                                    <div className="flex items-center gap-2 text-sm text-gray-500">
-                                        <span>Seller</span>
-                                        <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
-                                        <span className={escrow.seller?.kycStatus === 'VERIFIED' ? 'text-green-600 font-medium' : 'text-yellow-600'}>
-                                            {escrow.seller?.kycStatus === 'VERIFIED' ? 'KYC Verified' : 'Unverified'}
-                                        </span>
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+                        {/* Left Column: Transaction Details */}
+                        <div className="lg:col-span-2 space-y-8">
+
+                            {/* Summary Card */}
+                            <div data-testid="transaction-summary" className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+                                <h3 className="font-bold text-lg mb-6 flex items-center gap-2">
+                                    <Briefcase className="w-5 h-5 text-gray-400" />
+                                    Transaction Summary
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
+                                        <span className="text-gray-500 text-xs uppercase tracking-wide font-bold">Trade Type</span>
+                                        <p className="font-bold text-lg mt-1">{escrow.tradeType.replace(/_/g, ' -> ')}</p>
+                                    </div>
+                                    <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
+                                        <span className="text-gray-500 text-xs uppercase tracking-wide font-bold">Total Amount</span>
+                                        <p className="font-bold text-lg mt-1 font-mono">{escrow.amount} {escrow.buyCurrency}</p>
+                                    </div>
+                                    <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
+                                        <span className="text-gray-500 text-xs uppercase tracking-wide font-bold">Fee Payer</span>
+                                        <p className="font-bold text-lg mt-1">{escrow.feePayer}</p>
+                                    </div>
+                                    <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
+                                        <span className="text-gray-500 text-xs uppercase tracking-wide font-bold">Confirmation By</span>
+                                        <p className="font-bold text-lg mt-1">
+                                            {new Date(escrow.counterPartyConfirmationDeadline).toLocaleDateString()}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Counterparty Logic */}
+                            {(() => {
+                                const isBuyer = user?.id === escrow.buyerId;
+                                const counterparty = isBuyer ? escrow.seller : escrow.buyer;
+                                const counterpartyRole = isBuyer ? 'Seller' : 'Buyer';
+                                const counterpartyEmail = isBuyer ? escrow.sellerEmail : escrow.buyerEmail;
+
+                                return (
+                                    <div className="flex items-center gap-4 p-4 rounded-xl border border-gray-100 bg-gray-50/50">
+                                        <div className="w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xl">
+                                            {counterpartyEmail?.charAt(0).toUpperCase() || '?'}
+                                        </div>
+                                        <div>
+                                            <p className="font-bold text-gray-900">{counterparty?.email || counterpartyEmail}</p>
+                                            <div className="flex items-center gap-2 text-sm text-gray-500">
+                                                <span>{counterpartyRole}</span>
+                                                <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
+                                                <span className={counterparty?.kycStatus === 'VERIFIED' ? 'text-green-600 font-medium' : 'text-yellow-600'}>
+                                                    {counterparty?.kycStatus === 'VERIFIED' ? 'KYC Verified' : 'Unverified'}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })()}
                         </div>
                     </div>
 
@@ -169,54 +202,69 @@ export default function EscrowDetailsPage() {
                                 Reception Details
                             </h3>
 
-                            {escrow.recipientDetails ? (
-                                <div className="space-y-6">
-                                    {isCryptoToFiat ? (
-                                        // Bank Details View
-                                        <>
-                                            <div>
-                                                <label className="text-xs font-bold text-gray-400 uppercase">Bank Name</label>
-                                                <p className="font-medium text-gray-900">{(escrow.recipientDetails as any).bankName || 'N/A'}</p>
-                                            </div>
-                                            <div>
-                                                <label className="text-xs font-bold text-gray-400 uppercase">Account Holder</label>
-                                                <p className="font-medium text-gray-900">{(escrow.recipientDetails as any).accountHolderName}</p>
-                                            </div>
-                                            <div>
-                                                <label className="text-xs font-bold text-gray-400 uppercase">Account Number</label>
-                                                <p className="font-mono font-medium text-gray-900 bg-gray-50 p-2 rounded border border-gray-100">
-                                                    {(escrow.recipientDetails as any).accountNumber}
-                                                </p>
-                                            </div>
-                                        </>
-                                    ) : (
-                                        // Wallet Details View
-                                        <>
-                                            <div>
-                                                <label className="text-xs font-bold text-gray-400 uppercase">Wallet Network</label>
-                                                <p className="font-medium text-gray-900">{(escrow.recipientDetails as any).network}</p>
-                                            </div>
-                                            <div>
-                                                <label className="text-xs font-bold text-gray-400 uppercase">Wallet Address</label>
-                                                <p className="font-mono text-sm break-all font-medium text-gray-900 bg-gray-50 p-3 rounded-xl border border-gray-100">
-                                                    {(escrow.recipientDetails as any).walletAddress}
-                                                </p>
-                                            </div>
-                                        </>
-                                    )}
+                            {(() => {
+                                const isBuyer = user?.id === escrow.buyerId;
+                                const isSeller = user?.id === escrow.sellerId;
+                                const recipientDetails = isBuyer ? escrow.buyerRecipientDetails : escrow.sellerRecipientDetails;
+                                const showBankDetails = isSeller && isCryptoToFiat; // Only Seller in C2F receives Fiat (Bank)
 
-                                    <div className="mt-6 pt-6 border-t border-gray-100">
-                                        <p className="text-xs text-gray-500 flex items-start gap-2">
-                                            <AlertCircle className="w-4 h-4 text-blue-500 shrink-0" />
-                                            Please verify these details carefully with your counterparty before sending any funds.
-                                        </p>
+                                return recipientDetails ? (
+                                    <div className="space-y-6">
+                                        {showBankDetails ? (
+                                            // Bank Details View
+                                            <>
+                                                <div>
+                                                    <label className="text-xs font-bold text-gray-400 uppercase">Bank Name</label>
+                                                    <p className="font-medium text-gray-900">{(recipientDetails as any).name || (recipientDetails as any).bankName || 'N/A'}</p>
+                                                </div>
+                                                <div>
+                                                    <label className="text-xs font-bold text-gray-400 uppercase">Account Holder</label>
+                                                    <p className="font-medium text-gray-900">{(recipientDetails as any).accountHolderName || (recipientDetails as any).recipientName}</p>
+                                                </div>
+                                                <div>
+                                                    <label className="text-xs font-bold text-gray-400 uppercase">Account Number</label>
+                                                    <p className="font-mono font-medium text-gray-900 bg-gray-50 p-2 rounded border border-gray-100">
+                                                        {(recipientDetails as any).accountNumber}
+                                                    </p>
+                                                </div>
+                                            </>
+                                        ) : (
+                                            // Wallet Details View
+                                            <>
+                                                <div>
+                                                    <label className="text-xs font-bold text-gray-400 uppercase">Wallet Network</label>
+                                                    <p className="font-medium text-gray-900">{(recipientDetails as any).network}</p>
+                                                </div>
+                                                <div>
+                                                    <label className="text-xs font-bold text-gray-400 uppercase">Wallet Address</label>
+                                                    <p className="font-mono text-sm break-all font-medium text-gray-900 bg-gray-50 p-3 rounded-xl border border-gray-100">
+                                                        {(recipientDetails as any).walletAddress}
+                                                    </p>
+                                                </div>
+                                            </>
+                                        )}
+
+                                        <div className="mt-6 pt-6 border-t border-gray-100">
+                                            <p className="text-xs text-gray-500 flex items-start gap-2">
+                                                <AlertCircle className="w-4 h-4 text-blue-500 shrink-0" />
+                                                Please verify these details carefully with your counterparty before sending any funds.
+                                            </p>
+                                        </div>
                                     </div>
-                                </div>
-                            ) : (
-                                <div className="text-center py-8 text-gray-400">
-                                    Details hidden or not yet provided.
-                                </div>
-                            )}
+                                ) : (
+                                    <div className="text-center py-8">
+                                        <p className="text-gray-400 mb-4">Details hidden or not yet provided.</p>
+                                        {((isBuyer && !escrow.buyerRecipientDetails) || (isSeller && !escrow.sellerRecipientDetails)) && (
+                                            <button
+                                                onClick={() => router.push(`/trader/profile?action=add_reception&escrowId=${id}`)}
+                                                className="px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold rounded-lg transition-colors text-sm"
+                                            >
+                                                + Add Reception Details
+                                            </button>
+                                        )}
+                                    </div>
+                                );
+                            })()}
                         </div>
                     </div>
                 </div>

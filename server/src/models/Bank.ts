@@ -18,18 +18,18 @@ export interface IBank {
 }
 
 class Bank extends Model<IBank> implements IBank {
-  public id!: string;
-  public name!: string;
-  public accountNumber!: string;
-  public currency!: string;
-  public recipientName?: string;
-  public logoUrl?: string;
-  public bankAddress?: string;
-  public iban?: string;
-  public swift?: string;
-  public routingNumber?: string;
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  declare public id: string;
+  declare public name: string;
+  declare public accountNumber: string;
+  declare public currency: string;
+  declare public recipientName?: string;
+  declare public logoUrl?: string;
+  declare public bankAddress?: string;
+  declare public iban?: string;
+  declare public swift?: string;
+  declare public routingNumber?: string;
+  declare public readonly createdAt: Date;
+  declare public readonly updatedAt: Date;
 }
 
 

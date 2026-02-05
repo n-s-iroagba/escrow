@@ -14,7 +14,7 @@ export default function AdminSignUpPage() {
         email: '',
         password: '',
         confirmPassword: '',
-        adminSecret: '' // Optional additional security field if backend required it
+        role: 'ADMIN' // Optional additional security field if backend required it
     });
     const [showPassword, setShowPassword] = useState(false);
 
@@ -39,7 +39,7 @@ export default function AdminSignUpPage() {
             username: formData.username,
             email: formData.email,
             password: formData.password,
-            role: 'ADMIN'
+            role: formData.role
         });
     };
 

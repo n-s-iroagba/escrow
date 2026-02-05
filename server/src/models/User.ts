@@ -5,36 +5,36 @@ import sequelize from '@/config/database';
 export interface IUser {
   id: string;
   email: string;
-  username?: string;
+  username?: string | null;
   password: string;
   role: string;
   emailVerified: boolean;
-  kycStatus?: string;
-  emailVerificationToken?: string;
-  emailVerificationTokenExpires?: Date;
-  passwordResetToken?: string;
-  passwordResetTokenExpires?: Date;
-  lastLoginAt?: Date;
+  kycStatus?: string | null;
+  emailVerificationToken?: string | null;
+  emailVerificationTokenExpires?: Date | null;
+  passwordResetToken?: string | null;
+  passwordResetTokenExpires?: Date | null;
+  lastLoginAt?: Date | null;
   createdAt: Date;
   updatedAt: Date;
 }
 
 class User extends Model<IUser> implements IUser {
-  public id!: string;
-  public email!: string;
-  public username?: string;
-  public password!: string;
-  public role!: string;
-  public emailVerified!: boolean;
-  public kycStatus?: string;
-  public emailVerificationToken?: string;
-  public emailVerificationTokenExpires?: Date;
-  public passwordResetToken?: string;
-  public passwordResetTokenExpires?: Date;
-  public lastLoginAt?: Date;
+  declare public id: string;
+  declare public email: string;
+  declare public username: string | null;
+  declare public password: string;
+  declare public role: string;
+  declare public emailVerified: boolean;
+  declare public kycStatus: string | null;
+  declare public emailVerificationToken: string | null;
+  declare public emailVerificationTokenExpires: Date | null;
+  declare public passwordResetToken: string | null;
+  declare public passwordResetTokenExpires: Date | null;
+  declare public lastLoginAt: Date | null;
 
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  declare public readonly createdAt: Date;
+  declare public readonly updatedAt: Date;
 
   // Exclude password from JSON
   toJSON() {

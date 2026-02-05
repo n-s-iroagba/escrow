@@ -7,7 +7,7 @@ export interface ISellerCryptoWallet {
   sellerId: string;
   currency: string;
   walletAddress: string;
- 
+
   network: string;
   verifiedAt?: Date;
   createdAt: Date;
@@ -15,70 +15,70 @@ export interface ISellerCryptoWallet {
 }
 
 class SellerCryptoWallet extends Model<ISellerCryptoWallet> implements ISellerCryptoWallet {
-  public id!: string;
-  public sellerId!: string;
-  public currency!: string;
-  public walletAddress!: string;
+  declare public id: string;
+  declare public sellerId: string;
+  declare public currency: string;
+  declare public walletAddress: string;
 
-  public network!: string;
-  public verifiedAt?: Date;
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  declare public network: string;
+  declare public verifiedAt?: Date;
+  declare public readonly createdAt: Date;
+  declare public readonly updatedAt: Date;
 
   // Static initialization method
 }
-    SellerCryptoWallet.init(
-      {
-          id: {
-              type: DataTypes.UUID,
-              defaultValue: DataTypes.UUIDV4,
-              primaryKey: true,
-          },
-          sellerId: {
-              type: DataTypes.UUID,
-              allowNull: false,
-              field: 'seller_id',
-          },
-          currency: {
-              type: DataTypes.ENUM(...Object.values(Currency).filter(c => ['BTC', 'ETH', 'USDT', 'USDC', 'LTC', 'XRP'].includes(c)
-              )),
-              allowNull: false,
-          },
-          walletAddress: {
-              type: DataTypes.STRING,
-              allowNull: false,
-              field: 'wallet_address',
-          },
+SellerCryptoWallet.init(
+  {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
+    },
+    sellerId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      field: 'seller_id',
+    },
+    currency: {
+      type: DataTypes.ENUM(...Object.values(Currency).filter(c => ['BTC', 'ETH', 'USDT', 'USDC', 'LTC', 'XRP'].includes(c)
+      )),
+      allowNull: false,
+    },
+    walletAddress: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      field: 'wallet_address',
+    },
 
-          network: {
-              type: DataTypes.STRING,
-              allowNull: false,
-              defaultValue: 'mainnet',
-          },
+    network: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 'mainnet',
+    },
 
-    
 
-          updatedAt: { type: DataTypes.DATE },
-          createdAt: { type: DataTypes.DATE }
-      },{
-        sequelize,
-        tableName: 'seller_crypto_wallets',
-        timestamps: true,
-        indexes: [
-          {
-            fields: ['seller_id'],
-          },
-          {
-            fields: ['currency'],
-          },
-          {
-            fields: ['wallet_address'],
-            unique: true,
-          },
-          
-        ],
-      }
-    );
+
+    updatedAt: { type: DataTypes.DATE },
+    createdAt: { type: DataTypes.DATE }
+  }, {
+  sequelize,
+  tableName: 'seller_crypto_wallets',
+  timestamps: true,
+  indexes: [
+    {
+      fields: ['seller_id'],
+    },
+    {
+      fields: ['currency'],
+    },
+    {
+      fields: ['wallet_address'],
+      unique: true,
+    },
+
+  ],
+}
+);
 
 
 

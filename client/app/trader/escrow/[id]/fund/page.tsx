@@ -7,6 +7,7 @@ import { TradeType, PaymentMethod } from '@/constants/enums';
 import { Copy, ArrowRight, Banknote, ShieldCheck } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import Script from 'next/script';
+import { useRequiredAuth } from '@/hooks/useAuthContext';
 
 declare global {
     interface Window {
@@ -17,6 +18,7 @@ declare global {
 export default function FundEscrowPage() {
     const { id } = useParams();
     const router = useRouter();
+    const { user } = useRequiredAuth();
 
     const [wireRef, setWireRef] = useState('');
     const [cryptoTxHash, setCryptoTxHash] = useState('');
@@ -106,11 +108,27 @@ export default function FundEscrowPage() {
     const isWire = escrow.tradeType === TradeType.CRYPTO_TO_FIAT && (escrow as any).paymentMethod === PaymentMethod.WIRE_TRANSFER;
     const isPayPal = escrow.tradeType === TradeType.CRYPTO_TO_FIAT && (escrow as any).paymentMethod === PaymentMethod.PAYPAL;
 
-    // Crypto logic: Display if Crypto-Crypto, OR if Crypto-Fiat logic implies User is depositing Crypto asset (Seller) 
-    // BUT usually "Fund Page" is for the BUYER/PAYER.
-    // If Buyer is Paying Fiat (Wire/PayPal), we show that.
-    // If Buyer is Paying Crypto (Crypto-Crypto), we show that.
-    const isCryptoPayment = escrow.tradeType === TradeType.CRYPTO_TO_CRYPTO;
+    const isBuyer = user?.id === escrow.buyerId;
+    const isSeller = user?.id === escrow.sellerId;
+
+    // Logic for what to show based on User Role & Trade Type (User Rules)
+    let showCrypto = false;
+    let showBank = false;
+    let targetWallet = null;
+
+    if (escrow.tradeType === TradeType.CRYPTO_TO_CRYPTO) {
+        showCrypto = true;
+        // C2C: Buyer sees BuyerWallet, Seller sees SellerWallet
+        targetWallet = isBuyer ? fundingDetails.buyerFundingWallet : fundingDetails.sellerFundingWallet;
+    } else if (escrow.tradeType === TradeType.CRYPTO_TO_FIAT) {
+        // User Rule: "for crypto to fiat for buyer it is the wallet and for seller it is the seller bank account"
+        if (isBuyer) {
+            showCrypto = true;
+            targetWallet = fundingDetails.buyerFundingWallet;
+        } else if (isSeller) {
+            showBank = true; // Seller funding via Bank
+        }
+    }
 
     return (
         <div className="min-h-screen bg-[#f6f8f6] p-8 font-display text-[#0d1b12] flex items-center justify-center">
@@ -135,7 +153,7 @@ export default function FundEscrowPage() {
                     </div>
                 </div>
 
-                {isWire && (
+                {showBank && (
                     <div className="space-y-6">
                         <div className="bg-gray-50 p-6 rounded-2xl border border-gray-200">
                             <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
@@ -210,7 +228,7 @@ export default function FundEscrowPage() {
                     </div>
                 )}
 
-                {isCryptoPayment && (
+                {showCrypto && targetWallet && (
                     <div className="space-y-6">
                         <div className="bg-gray-900 text-white p-6 rounded-2xl shadow-xl">
                             <div className="flex justify-between items-start mb-6">
@@ -226,8 +244,8 @@ export default function FundEscrowPage() {
                             <div className="bg-black/30 p-4 rounded-xl backdrop-blur-sm border border-white/10 mb-4">
                                 <label className="text-xs text-gray-400 uppercase font-bold tracking-wider">Address</label>
                                 <div className="flex items-center gap-3 mt-1">
-                                    <code className="text-sm font-mono break-all flex-1 text-green-400">{fundingDetails.fundsWallet?.address || 'Generation Pending...'}</code>
-                                    <button onClick={() => handleCopy(fundingDetails.fundsWallet?.address)} className="hover:text-green-400 transition-colors"><Copy className="w-4 h-4" /></button>
+                                    <code className="text-sm font-mono break-all flex-1 text-green-400">{targetWallet?.address || 'Generation Pending...'}</code>
+                                    <button onClick={() => handleCopy(targetWallet?.address)} className="hover:text-green-400 transition-colors"><Copy className="w-4 h-4" /></button>
                                 </div>
                             </div>
                         </div>

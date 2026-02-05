@@ -6,6 +6,7 @@ import { usePost } from '@/hooks/useApiQuery';
 import API_ROUTES from '@/constants/api-routes';
 import { Mail, CheckCircle, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { setAccessToken } from '@/lib/axios';
 
 export default function VerifyEmailPage() {
     const params = useParams();
@@ -21,6 +22,8 @@ export default function VerifyEmailPage() {
 
     const [timeLeft, setTimeLeft] = useState(300); // 5 minutes in seconds
     const [canResend, setCanResend] = useState(false);
+    const [user, setUser] = useState(null);
+
 
     useEffect(() => {
         if (timeLeft > 0) {
@@ -38,12 +41,16 @@ export default function VerifyEmailPage() {
     };
 
     const { post: verify, isPending, error, isSuccess } = usePost(API_ROUTES.AUTH.VERIFY_EMAIL, {
-        onSuccess: () => {
+        onSuccess: (responseData: any) => {
             setTimeout(() => {
-                router.push('/dashboard');
+                console.log(responseData);
+                setAccessToken(responseData?.accessToken);
+                setUser(responseData?.user);
+                router.push(`/${responseData?.user?.role === 'ADMIN' ? 'admin' : 'trader'}/dashboard`);
             }, 2000);
         }
     });
+
 
     const { post: resend, isPending: isResending } = usePost(API_ROUTES.AUTH.RESEND_VERIFICATION, {
         onSuccess: () => {

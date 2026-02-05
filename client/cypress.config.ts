@@ -100,8 +100,8 @@ export default defineConfig({
         runMode: 2,
         openMode: 0,
     },
-    defaultCommandTimeout: 10000,
-    requestTimeout: 15000,
-    responseTimeout: 15000,
+    defaultCommandTimeout: 30000,
+    requestTimeout: 30000,
+    responseTimeout: 30000,
     pageLoadTimeout: 120000,
 });

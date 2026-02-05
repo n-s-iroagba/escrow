@@ -34,33 +34,27 @@ export default function AdminDashboardPage() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50">
             {/* Sidebar */}
-            <aside className="fixed left-0 top-0 h-full w-64 bg-slate-900 text-white p-6 hidden lg:flex flex-col z-50">
-                <div className="flex items-center gap-3 mb-12">
-                    <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/30">
-                        <ShieldCheck className="w-5 h-5 text-white" />
-                    </div>
-                    <div>
-                        <span className="font-bold text-lg tracking-tight">X-Escrow</span>
-                        <span className="block text-[10px] text-slate-400 uppercase tracking-widest">Admin Portal</span>
-                    </div>
-                </div>
 
-                <nav className="space-y-2 flex-1">
-                    <NavItem icon={<Activity />} label="Overview" href="/admin/dashboard" active />
-                    <NavItem icon={<FileText />} label="Escrows" href="/admin/escrow" />
-                    <NavItem icon={<Landmark />} label="Banks" href="/admin/bank" />
-                    <NavItem icon={<Wallet />} label="Wallets" href="/admin/custodial-wallet" />
-                    <NavItem icon={<Users />} label="Users" href="/admin/users" />
-                </nav>
-
-                <div className="border-t border-slate-700 pt-6">
-                    <p className="text-xs text-slate-500 uppercase tracking-widest mb-2">System Health</p>
-                    <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
-                        <span className="text-sm text-slate-300">All systems operational</span>
-                    </div>
+            <div className="flex items-center gap-3 mb-12">
+                <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/30">
+                    <ShieldCheck className="w-5 h-5 text-white" />
                 </div>
-            </aside>
+                <div>
+                    <span className="font-bold text-lg tracking-tight">X-Escrow</span>
+                    <span className="block text-[10px] text-slate-400 uppercase tracking-widest">Admin Portal</span>
+                </div>
+            </div>
+
+            <nav className="space-y-2 flex-1">
+                <NavItem icon={<Activity />} label="Overview" href="/admin/dashboard" active />
+                <NavItem icon={<FileText />} label="Escrows" href="/admin/escrow" />
+                <NavItem icon={<Landmark />} label="Banks" href="/admin/bank" />
+                <NavItem icon={<Wallet />} label="Wallets" href="/admin/custodial-wallet" />
+                <NavItem icon={<Users />} label="Users" href="/admin/users" />
+            </nav>
+
+
+
 
             {/* Main Content */}
             <main className="lg:ml-64 p-6 lg:p-10">

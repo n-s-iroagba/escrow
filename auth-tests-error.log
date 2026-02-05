@@ -1,68 +1,86 @@
-=== Auth Tests Error Log - 2026-02-04T20:41:56.327Z ===
+=== Auth Tests Error Log - 2026-02-04T21:25:19.983Z ===
 
-[2026-02-04T20:43:49.327Z] {
-  "test": "Admin Sign Up Flow should validate username format and length",
-  "state": "failed",
-  "error": "expected true to be false",
-  "timestamp": "2026-02-04T20:43:49.224Z"
-}
-[2026-02-04T20:44:02.909Z] {
-  "test": "Admin Sign Up Flow should validate username format and length",
-  "state": "failed",
-  "error": "expected true to be false",
-  "timestamp": "2026-02-04T20:44:02.737Z"
-}
-[2026-02-04T20:44:16.478Z] {
-  "test": "Admin Sign Up Flow should validate username format and length",
-  "state": "failed",
-  "error": "expected true to be false",
-  "timestamp": "2026-02-04T20:44:16.283Z"
-}
-
-================================================================================
-FAILURE in admin-signup.cy.ts
-Test: Admin Sign Up Flow > should validate username format and length
-Error: Unknown error
-Stack: No stack trace
-Timestamp: 2026-02-04T20:44:18.715Z
-================================================================================
-
-================================================================================
-FAILURE in admin-signup.cy.ts
-Test: Admin Sign Up Flow > should validate username format and length
-Error: Unknown error
-Stack: No stack trace
-Timestamp: 2026-02-04T20:44:18.715Z
-================================================================================
-
-================================================================================
-FAILURE in admin-signup.cy.ts
-Test: Admin Sign Up Flow > should validate username format and length
-Error: Unknown error
-Stack: No stack trace
-Timestamp: 2026-02-04T20:44:18.715Z
-================================================================================
-[2026-02-04T20:48:19.046Z] {
+[2026-02-04T21:26:33.872Z] {
   "test": "Login Flow should successfully login as trader and redirect to trader dashboard",
   "state": "failed",
-  "error": "Timed out retrying after 10000ms: expected 'http://localhost:3000/auth/login' to include '/trader/dashboard'",
-  "timestamp": "2026-02-04T20:48:18.868Z"
+  "error": "Timed out retrying after 30000ms: expected 'http://localhost:3000/auth/login' to include '/trader/dashboard'",
+  "timestamp": "2026-02-04T21:26:33.773Z"
 }
-[2026-02-04T20:48:37.618Z] {
+[2026-02-04T21:27:13.418Z] {
   "test": "Login Flow should successfully login as trader and redirect to trader dashboard",
   "state": "failed",
-  "error": "Timed out retrying after 10000ms: expected 'http://localhost:3000/auth/login' to include '/trader/dashboard'",
-  "timestamp": "2026-02-04T20:48:37.494Z"
+  "error": "Timed out retrying after 30000ms: expected 'http://localhost:3000/auth/login' to include '/trader/dashboard'",
+  "timestamp": "2026-02-04T21:27:13.301Z"
 }
-[2026-02-04T20:48:55.893Z] {
+[2026-02-04T21:27:54.524Z] {
   "test": "Login Flow should successfully login as trader and redirect to trader dashboard",
   "state": "failed",
-  "error": "Timed out retrying after 10000ms: expected 'http://localhost:3000/auth/login' to include '/trader/dashboard'",
-  "timestamp": "2026-02-04T20:48:55.808Z"
+  "error": "Timed out retrying after 30000ms: expected 'http://localhost:3000/auth/login' to include '/trader/dashboard'",
+  "timestamp": "2026-02-04T21:27:54.316Z"
 }
-[2026-02-04T20:49:11.459Z] {
+[2026-02-04T21:28:35.381Z] {
   "test": "Login Flow should successfully login as admin and redirect to admin dashboard",
   "state": "failed",
-  "error": "Timed out retrying after 10000ms: expected 'http://localhost:3000/auth/login' to include '/admin/dashboard'",
-  "timestamp": "2026-02-04T20:49:11.381Z"
+  "error": "Timed out retrying after 30000ms: expected 'http://localhost:3000/auth/login' to include '/admin/dashboard'",
+  "timestamp": "2026-02-04T21:28:35.217Z"
 }
+[2026-02-04T21:29:15.630Z] {
+  "test": "Login Flow should successfully login as admin and redirect to admin dashboard",
+  "state": "failed",
+  "error": "Timed out retrying after 30000ms: expected 'http://localhost:3000/auth/login' to include '/admin/dashboard'",
+  "timestamp": "2026-02-04T21:29:14.927Z"
+}
+[2026-02-04T21:29:55.736Z] {
+  "test": "Login Flow should successfully login as admin and redirect to admin dashboard",
+  "state": "failed",
+  "error": "Timed out retrying after 30000ms: expected 'http://localhost:3000/auth/login' to include '/admin/dashboard'",
+  "timestamp": "2026-02-04T21:29:55.579Z"
+}
+
+================================================================================
+FAILURE in login.cy.ts
+Test: Login Flow > should successfully login as trader and redirect to trader dashboard
+Error: Unknown error
+Stack: No stack trace
+Timestamp: 2026-02-04T21:30:15.739Z
+================================================================================
+
+================================================================================
+FAILURE in login.cy.ts
+Test: Login Flow > should successfully login as trader and redirect to trader dashboard
+Error: Unknown error
+Stack: No stack trace
+Timestamp: 2026-02-04T21:30:15.739Z
+================================================================================
+
+================================================================================
+FAILURE in login.cy.ts
+Test: Login Flow > should successfully login as trader and redirect to trader dashboard
+Error: Unknown error
+Stack: No stack trace
+Timestamp: 2026-02-04T21:30:15.739Z
+================================================================================
+
+================================================================================
+FAILURE in login.cy.ts
+Test: Login Flow > should successfully login as admin and redirect to admin dashboard
+Error: Unknown error
+Stack: No stack trace
+Timestamp: 2026-02-04T21:30:15.739Z
+================================================================================
+
+================================================================================
+FAILURE in login.cy.ts
+Test: Login Flow > should successfully login as admin and redirect to admin dashboard
+Error: Unknown error
+Stack: No stack trace
+Timestamp: 2026-02-04T21:30:15.740Z
+================================================================================
+
+================================================================================
+FAILURE in login.cy.ts
+Test: Login Flow > should successfully login as admin and redirect to admin dashboard
+Error: Unknown error
+Stack: No stack trace
+Timestamp: 2026-02-04T21:30:15.740Z
+================================================================================

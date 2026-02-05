@@ -4,7 +4,7 @@ import ApiResponse from '../utils/apiResponse';
 import EscrowService from '../services/EscrowService';
 
 export const initiateEscrow = asyncHandler(async (req: Request, res: Response) => {
-    const escrow = await EscrowService.initiateEscrow(req.body, (req as any).user?.email || 'test@example.com');
+    const escrow = await EscrowService.initiateEscrow(req.body, (req as any).user?.email);
     return ApiResponse.success(res, escrow, 'Escrow initiated successfully', 201);
 });
 
