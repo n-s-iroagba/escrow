@@ -43,6 +43,10 @@ const API_ROUTES = {
         CREATE: '/custodial-wallets',
         GET_ONE: (id: string) => `/custodial-wallets/${id}`,
         UPDATE: (id: string) => `/custodial-wallets/${id}`,
+    },
+    SELLER_BANKS: {
+        CREATE: '/seller-banks',
+        GET_ALL: '/seller-banks'
     }
 }
 export default API_ROUTES

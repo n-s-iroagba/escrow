@@ -20,7 +20,10 @@ export const getEscrow = asyncHandler(async (req: Request, res: Response) => {
 });
 
 export const getUserEscrows = asyncHandler(async (req: Request, res: Response) => {
-    const userId = (req as any).user?.id || '2add4264-96fe-4d9f-a886-1ba5a8d46101'; // Fallback for dev without auth
+    const userId = (req as any).user?.id;
+    if (!userId) {
+        return ApiResponse.error(res, 'Authentication required', 401);
+    }
     const { role } = req.query;
 
     const escrows = await EscrowService.getUserEscrows(userId, role as 'buyer' | 'seller');

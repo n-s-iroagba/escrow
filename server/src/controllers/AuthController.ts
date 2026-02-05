@@ -61,8 +61,11 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
         role: role || 'CLIENT', // Default to client if not specified
         emailVerified: isInvitedUser, // Auto-verify if invited
         emailVerificationToken: isInvitedUser ? null : verificationToken,
-        emailVerificationTokenExpires: isInvitedUser ? null : verificationTokenExpires
+        emailVerificationTokenExpires: isInvitedUser ? null : verificationTokenExpires,
+        kycStatus: role === 'ADMIN' ? 'APPROVED' : 'NOT_STARTED'
     } as any);
+
+    let accessToken = undefined;
 
     if (isInvitedUser) {
         // Link user to escrows
@@ -76,8 +79,20 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
             await escrow.save();
         }
 
-        // Send Welcome Email with funding instructions
+        // Send Welcome Email
         await EmailService.sendWelcomeWithFundingInstructions(email, existingEscrows, username);
+
+        // Generate tokens for auto-login
+        const tokens = generateTokens(user.id, user.email);
+        accessToken = tokens.accessToken;
+
+        // Set Refresh Token Cookie
+        res.cookie('refreshToken', tokens.refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+        });
     } else {
         // Standard flow
         await EmailService.sendVerificationEmail(email, verificationToken, username);
@@ -90,7 +105,8 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
         username: user.username,
         emailVerified: user.emailVerified, // Frontend needs this to decide redirect
         role: user.role,
-        verificationToken: isInvitedUser ? null : verificationToken
+        verificationToken: isInvitedUser ? null : verificationToken,
+        accessToken // Include token if invited
     }, isInvitedUser ? 'Registration successful. Welcome aboard!' : 'Registration successful. Please check your email to verify your account.', 201);
 });
 

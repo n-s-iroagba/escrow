@@ -2,480 +2,353 @@
 
 import { useGet } from '@/hooks/useApiQuery';
 import API_ROUTES from '@/constants/api-routes';
-import { useAuthContext } from '@/hooks/useAuthContext';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
+import { EscrowState, TradeType } from '@/constants/enums';
 import {
-    ShieldAlert,
-    Plus,
-    ArrowRight,
     Clock,
     CheckCircle2,
-    ShieldCheck,
-    Coins,
-    Banknote,
+    AlertCircle,
+    ArrowRightLeft,
+    Briefcase,
+    Building2,
     Wallet,
-    FileText,
-    Home,
-    LogOut,
-    ChevronRight,
-    TrendingUp,
-    Sparkles,
-    Award,
-    Activity,
-    Menu,
-    X
+    ShieldCheck,
+
+    User
 } from 'lucide-react';
-import Link from 'next/link';
-import { APP_NAME } from '@/constants/data';
-import { useState } from 'react';
+import { useRequiredAuth } from '@/hooks/useAuthContext';
 
-export default function DashboardPage() {
-    const { user } = useAuthContext();
+export default function EscrowDetailsPage() {
+    const { id } = useParams();
     const router = useRouter();
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const { data: escrow, loading, error } = useGet(API_ROUTES.ESCROWS.GET_ONE(id as string), {
+        enabled: !!id
+    });
+    const { user } = useRequiredAuth();
+    console.log(user)
 
-    const { data: kycData, loading: kycLoading } = useGet(
-        API_ROUTES.KYC.STATUS(user?.id),
-        { enabled: user?.role === 'CLIENT' }
+    if (loading) return (
+        <div className="min-h-screen flex items-center justify-center bg-[#f6f8f6]">
+            <div className="flex flex-col items-center gap-4">
+                <div className="w-8 h-8 border-4 border-[#13ec5b] border-t-transparent rounded-full animate-spin"></div>
+                <p className="text-gray-500 font-medium animate-pulse">Loading transaction details...</p>
+            </div>
+        </div>
     );
 
-    const { data: escrows, loading: escrowsLoading } = useGet(API_ROUTES.ESCROWS.GET_MY);
-
-    const myEscrows = Array.isArray(escrows) ? escrows : [];
-
-    const pendingFundingEscrows = myEscrows.filter((e: any) => {
-        const isBuyer = e.buyerId === user?.id;
-        const isSeller = e.sellerId === user?.id;
-        return (e.state === 'INITIALIZED' || e.state === 'ONE_PARTY_FUNDED') && (isBuyer || isSeller);
-    });
-
-    const loading = escrowsLoading || (user?.role === 'ADMIN' ? false : kycLoading);
-    const kycStatus = kycData?.status || 'NOT_STARTED';
-    const isVerified = kycStatus === 'APPROVED' || kycStatus === 'VERIFIED';
-
-    const completedCount = myEscrows.filter((e: any) => e.state === 'COMPLETED' || e.state === 'COMPLETELY_FUNDED').length;
-    const totalVolume = myEscrows.reduce((acc: number, curr: any) => acc + parseFloat(curr.amount || 0), 0);
-
-    if (loading) {
-        return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-                <div className="animate-pulse flex flex-col items-center">
-                    <div className="w-16 h-16 rounded-xl bg-[#D4FF00]/30 mb-4 shadow-lg shadow-[#D4FF00]/30"></div>
-                    <p className="text-[#D4FF00] font-semibold">Loading your dashboard...</p>
-                </div>
+    if (error) return (
+        <div className="min-h-screen flex items-center justify-center bg-[#f6f8f6]">
+            <div className="p-8 bg-white rounded-2xl shadow-sm text-center max-w-md">
+                <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
+                <h2 className="text-xl font-bold mb-2">Unable to load details</h2>
+                <p className="text-gray-500 mb-6">{error}</p>
+                <button
+                    onClick={() => window.location.reload()}
+                    className="px-6 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-bold transition-colors"
+                >
+                    Retry
+                </button>
             </div>
-        );
-    }
+        </div>
+    );
+
+    if (!escrow) return null;
+
+    // Helper for status badge style
+    const getStatusStyle = (state: string) => {
+        switch (state) {
+            case EscrowState.INITIALIZED:
+                return 'bg-blue-50 text-blue-600 border-blue-200';
+            case EscrowState.ONE_PARTY_FUNDED:
+                return 'bg-yellow-50 text-yellow-600 border-yellow-200';
+            case EscrowState.COMPLETELY_FUNDED:
+                return 'bg-purple-50 text-purple-600 border-purple-200';
+            case EscrowState.RELEASED:
+                return 'bg-green-50 text-green-600 border-green-200';
+            case EscrowState.DISPUTED:
+                return 'bg-red-50 text-red-600 border-red-200';
+            case EscrowState.CANCELLED:
+                return 'bg-gray-50 text-gray-500 border-gray-200';
+            default:
+                return 'bg-gray-50 text-gray-500';
+        }
+    };
+
+    const isCryptoToFiat = escrow.tradeType === TradeType.CRYPTO_TO_FIAT;
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            {/* Decorative Background Elements */}
-            <div className="fixed inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#D4FF00]/10 rounded-full blur-3xl"></div>
-                <div className="absolute bottom-0 left-0 w-[700px] h-[700px] bg-[#D4FF00]/8 rounded-full blur-3xl"></div>
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#D4FF00]/5 rounded-full blur-3xl"></div>
-            </div>
+        <div className="min-h-screen bg-[#f6f8f6] p-8 font-display text-[#0d1b12]">
+            <div className="max-w-5xl mx-auto space-y-8">
 
-            {/* Mobile Header */}
-            <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white shadow-2xl border-b border-[#D4FF00]/30">
-                <div className="flex items-center justify-between p-4">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-[#D4FF00] to-[#B8E600] rounded-xl flex items-center justify-center shadow-lg shadow-[#D4FF00]/50 relative">
-                            <ShieldCheck className="w-5 h-5 text-gray-900" />
-                            <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-[#D4FF00] rounded-full animate-pulse shadow-lg shadow-[#D4FF00]/70"></div>
-                        </div>
-                        <div>
-                            <span className="font-bold text-lg tracking-tight font-display">{APP_NAME}</span>
-                            <span className="block text-[10px] text-[#D4FF00] uppercase tracking-widest font-semibold">Trader Platform</span>
-                        </div>
-                    </div>
-                    <button
-                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                        className="p-2 hover:bg-[#D4FF00]/10 rounded-lg transition-all"
-                        aria-label="Toggle menu"
-                    >
-                        {mobileMenuOpen ? <X className="w-6 h-6 text-[#D4FF00]" /> : <Menu className="w-6 h-6 text-[#D4FF00]" />}
-                    </button>
-                </div>
-            </div>
-
-            {/* Mobile Menu */}
-            {mobileMenuOpen && (
-                <>
-                    <div className="lg:hidden fixed inset-0 z-40 bg-black/60 backdrop-blur-sm" onClick={() => setMobileMenuOpen(false)} />
-                    <aside className="lg:hidden fixed left-0 top-[73px] bottom-0 w-72 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white p-6 z-50 shadow-2xl border-r border-[#D4FF00]/30 overflow-y-auto">
-                        <nav className="space-y-2 mb-8">
-                            <NavItem icon={<Home />} label="Dashboard" href="/trader/dashboard" active onClick={() => setMobileMenuOpen(false)} />
-                            <NavItem icon={<FileText />} label="My Escrows" href="/trader/escrow" onClick={() => setMobileMenuOpen(false)} />
-                            <NavItem icon={<Wallet />} label="KYC Verification" href="/trader/kyc" onClick={() => setMobileMenuOpen(false)} />
-                        </nav>
-
-                        <div className="border-t border-white/10 pt-6 space-y-4">
-                            <div className="bg-white/5 rounded-xl p-4 backdrop-blur-sm border border-[#D4FF00]/20">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#D4FF00] to-[#B8E600] flex items-center justify-center text-sm font-bold text-gray-900 shadow-lg font-display">
-                                        {user?.email?.substring(0, 2).toUpperCase() || 'U'}
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <p className="text-sm font-semibold truncate">{user?.email || 'Trader'}</p>
-                                        <p className="text-xs text-[#D4FF00]/80 capitalize">{user?.role?.toLowerCase()}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <button data-testid="logout-button" className="w-full flex items-center gap-2 p-3.5 rounded-lg text-gray-400 hover:text-white hover:bg-[#D4FF00]/10 transition-all text-sm font-medium group">
-                                <LogOut className="w-4 h-4 group-hover:rotate-12 transition-transform" />
-                                Sign out
-                            </button>
-                        </div>
-                    </aside>
-                </>
-            )}
-
-            {/* Desktop Sidebar */}
-            <aside className="fixed left-0 top-0 h-full w-72 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white p-8 hidden lg:flex flex-col z-50 shadow-2xl border-r border-[#D4FF00]/30">
-                <div className="flex items-center gap-3 mb-16">
-                    <div className="w-12 h-12 bg-gradient-to-br from-[#D4FF00] to-[#B8E600] rounded-xl flex items-center justify-center shadow-lg shadow-[#D4FF00]/50 relative">
-                        <ShieldCheck className="w-6 h-6 text-gray-900" />
-                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-[#D4FF00] rounded-full animate-pulse shadow-lg shadow-[#D4FF00]/70"></div>
-                    </div>
+                {/* Header Section */}
+                <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div>
-                        <span className="font-bold text-xl tracking-tight font-display">{APP_NAME}</span>
-                        <span className="block text-[11px] text-[#D4FF00] uppercase tracking-widest font-semibold">Trader Platform</span>
-                    </div>
-                </div>
-
-                <nav className="space-y-2 flex-1">
-                    <NavItem icon={<Home />} label="Dashboard" href="/trader/dashboard" active />
-                    <NavItem icon={<FileText />} label="My Escrows" href="/trader/escrow" />
-                    <NavItem icon={<Wallet />} label="KYC Verification" href="/trader/kyc" />
-                </nav>
-
-                <div className="border-t border-white/10 pt-6 space-y-4">
-                    <div className="bg-white/5 rounded-xl p-4 backdrop-blur-sm border border-[#D4FF00]/20">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#D4FF00] to-[#B8E600] flex items-center justify-center text-sm font-bold text-gray-900 shadow-lg font-display">
-                                {user?.email?.substring(0, 2).toUpperCase() || 'U'}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <p className="text-sm font-semibold truncate">{user?.email || 'Trader'}</p>
-                                <p className="text-xs text-[#D4FF00]/80 capitalize">{user?.role?.toLowerCase()}</p>
-                            </div>
+                        <div className="flex items-center gap-3 mb-2">
+                            <span className={`px-3 py-1 rounded-full text-xs font-bold border ${getStatusStyle(escrow.state)}`}>
+                                {escrow.state.replace(/_/g, ' ')}
+                            </span>
+                            <span className="text-gray-400 text-sm font-mono">#{escrow.id.substring(0, 8)}</span>
                         </div>
-                    </div>
-                    <button data-testid="logout-button" className="w-full flex items-center gap-2 p-3.5 rounded-lg text-gray-400 hover:text-white hover:bg-[#D4FF00]/10 transition-all text-sm font-medium group">
-                        <LogOut className="w-4 h-4 group-hover:rotate-12 transition-transform" />
-                        Sign out
-                    </button>
-                </div>
-            </aside>
-
-            {/* Main Content */}
-            <main className="lg:ml-72 p-6 lg:p-12 pb-24 relative pt-20 lg:pt-6">
-                {/* Header */}
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-12">
-                    <div>
-                        <div className="flex items-center gap-2 mb-2">
-                            <Sparkles className="w-5 h-5 text-[#D4FF00]" />
-                            <p className="text-sm text-[#D4FF00] font-semibold">Welcome back,</p>
-                        </div>
-                        <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 tracking-tight font-display">
-                            {user?.email?.split('@')[0] || 'Trader'}
+                        <h1 className="text-2xl font-bold flex items-center gap-2">
+                            {escrow.amount} {escrow.isBuyerInitiated ? escrow.buyCurrency : escrow.sellCurrency}
+                            <ArrowRightLeft className="w-5 h-5 text-gray-400" />
+                            Transaction
                         </h1>
                     </div>
-                    <button
-                        data-testid="new-transaction-button"
-                        onClick={() => router.push('/trader/escrow/initiate')}
-                        disabled={user?.role !== 'ADMIN' && !isVerified}
-                        className={`px-8 py-4 rounded-xl font-bold flex items-center justify-center gap-3 shadow-xl transition-all transform hover:scale-[1.02] active:scale-[0.98] font-display w-full lg:w-auto ${!isVerified
-                            ? 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none'
-                            : 'bg-gradient-to-r from-[#D4FF00] to-[#B8E600] hover:from-[#B8E600] hover:to-[#D4FF00] text-gray-900 shadow-[#D4FF00]/40'}`}
-                    >
-                        <Plus className="w-5 h-5" />
-                        New Transaction
-                        <ArrowRight className="w-5 h-5" />
-                    </button>
-                </div>
+                    <div className="flex gap-3">
 
-                {/* KYC Alert */}
-                {!isVerified && user?.role !== 'ADMIN' && (
-                    <div className="bg-white rounded-xl p-8 lg:p-10 border-2 border-[#D4FF00]/30 shadow-xl shadow-[#D4FF00]/10 mb-12 relative overflow-hidden">
-                        <div className="absolute right-0 top-0 w-96 h-96 bg-[#D4FF00]/10 rounded-full blur-3xl -mr-48 -mt-48"></div>
-                        <div className="absolute left-0 bottom-0 w-80 h-80 bg-[#D4FF00]/5 rounded-full blur-3xl -ml-40 -mb-40"></div>
-                        <div className="relative flex flex-col lg:flex-row items-start lg:items-center gap-6">
-                            <div className="p-5 bg-[#D4FF00]/10 rounded-xl shadow-lg shrink-0">
-                                <ShieldAlert className="w-10 h-10 text-[#D4FF00]" />
-                            </div>
-                            <div className="flex-1">
-                                <h3 className="text-2xl font-bold text-gray-900 mb-3 flex items-center gap-2 font-display">
-                                    Complete Identity Verification
-                                    <Sparkles className="w-5 h-5 text-[#D4FF00]" />
-                                </h3>
-                                <p className="text-gray-600 text-lg leading-relaxed">
-                                    Verify your identity to unlock all trading features. This one-time check ensures the security of all platform transactions.
-                                </p>
-                            </div>
-                            <button
-                                data-testid="verify-kyc-button"
-                                onClick={() => router.push('/trader/kyc')}
-                                className="bg-gradient-to-r from-gray-900 to-gray-800 hover:from-gray-800 hover:to-gray-900 text-white px-8 py-4 rounded-xl font-bold transition-all flex items-center gap-2 shadow-xl font-display w-full lg:w-auto justify-center border border-[#D4FF00]/20"
-                            >
-                                Verify Now <ArrowRight className="w-5 h-5 text-[#D4FF00]" />
+                        <div className="flex gap-3">
+                            <button data-testid="cancel-escrow-button" className="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-[#0d1b12] font-bold rounded-xl transition-all">
+                                Cancel
                             </button>
+
+                            {/* Funding Button Logic */}
+                            {(() => {
+                                const isBuyer = user?.id === escrow.buyerId;
+                                const isSeller = user?.id === escrow.sellerId;
+                                const needsFunding = (isBuyer && !escrow.buyerConfirmedFunding) || (isSeller && !escrow.sellerConfirmedFunding);
+
+                                if (needsFunding && escrow.state === EscrowState.INITIALIZED) {
+                                    return (
+                                        <button
+                                            onClick={() => router.push(`/trader/escrow/${id}/fund`)}
+                                            className="px-6 py-2.5 bg-[#13ec5b] hover:bg-[#10c94d] text-[#0d1b12] font-bold rounded-xl shadow-lg shadow-green-200 transition-all flex items-center gap-2"
+                                        >
+                                            <Wallet className="w-4 h-4" />
+                                            Fund Escrow
+                                        </button>
+                                    );
+                                }
+
+
+                            })()}
                         </div>
                     </div>
-                )}
 
-                {/* Stats Grid */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6 mb-12">
-                    <StatCard
-                        title="Pending"
-                        value={pendingFundingEscrows.length}
-                        icon={<Clock className="w-6 h-6" />}
-                        color="amber"
-                        trend="+2 this week"
-                    />
-                    <StatCard
-                        title="Completed"
-                        value={completedCount}
-                        icon={<CheckCircle2 className="w-6 h-6" />}
-                        color="green"
-                        trend="All successful"
-                    />
-                    <StatCard
-                        title="Total Trades"
-                        value={myEscrows.length}
-                        icon={<Activity className="w-6 h-6" />}
-                        color="green"
-                        trend="Since joining"
-                    />
-                    <StatCard
-                        title="Volume"
-                        value={`$${totalVolume.toLocaleString()}`}
-                        icon={<TrendingUp className="w-6 h-6" />}
-                        color="green"
-                        trend="+12% growth"
-                    />
-                </div>
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-                {/* Main Grid */}
-                <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-                    {/* Action Required */}
-                    <div className="xl:col-span-2 space-y-8">
-                        <div className="flex items-center justify-between">
-                            <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-3 font-display">
-                                <div className="p-2 bg-amber-50 rounded-lg">
-                                    <Clock className="w-6 h-6 text-amber-600" />
+                        {/* Left Column: Transaction Details */}
+                        <div className="lg:col-span-2 space-y-8">
+
+                            {/* Summary Card */}
+                            <div data-testid="transaction-summary" className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+                                <h3 className="font-bold text-lg mb-6 flex items-center gap-2">
+                                    <Briefcase className="w-5 h-5 text-gray-400" />
+                                    Transaction Summary
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
+                                        <span className="text-gray-500 text-xs uppercase tracking-wide font-bold">Trade Type</span>
+                                        <p className="font-bold text-lg mt-1">{escrow.tradeType.replace(/_/g, ' -> ')}</p>
+                                    </div>
+                                    <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
+                                        <span className="text-gray-500 text-xs uppercase tracking-wide font-bold">Total Amount</span>
+                                        <p className="font-bold text-lg mt-1 font-mono">{escrow.amount} {escrow.buyCurrency}</p>
+                                    </div>
+                                    <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
+                                        <span className="text-gray-500 text-xs uppercase tracking-wide font-bold">Fee Payer</span>
+                                        <p className="font-bold text-lg mt-1">{escrow.feePayer}</p>
+                                    </div>
+                                    <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
+                                        <span className="text-gray-500 text-xs uppercase tracking-wide font-bold">Confirmation By</span>
+                                        <p className="font-bold text-lg mt-1">
+                                            {new Date(escrow.counterPartyConfirmationDeadline).toLocaleDateString()}
+                                        </p>
+                                    </div>
                                 </div>
-                                Action Required
-                            </h2>
-                            {pendingFundingEscrows.length > 0 && (
-                                <span className="px-4 py-2 bg-amber-50 text-amber-700 text-sm font-bold rounded-lg border border-amber-200">
-                                    {pendingFundingEscrows.length} item(s)
-                                </span>
+                            </div>
+
+                            {/* Counterparty Logic */}
+                            {(() => {
+                                const isBuyer = user?.id === escrow.buyerId;
+                                const counterparty = isBuyer ? escrow.seller : escrow.buyer;
+                                const counterpartyRole = isBuyer ? 'Seller' : 'Buyer';
+                                const counterpartyEmail = isBuyer ? escrow.sellerEmail : escrow.buyerEmail;
+
+                                return (
+                                    <div className="flex items-center gap-4 p-4 rounded-xl border border-gray-100 bg-gray-50/50">
+                                        <div className="w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xl">
+                                            {counterpartyEmail?.charAt(0).toUpperCase() || '?'}
+                                        </div>
+                                        <div>
+                                            <p className="font-bold text-gray-900">{counterparty?.email || counterpartyEmail}</p>
+                                            <div className="flex items-center gap-2 text-sm text-gray-500">
+                                                <span>{counterpartyRole}</span>
+                                                <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
+                                                <span className={counterparty?.kycStatus === 'VERIFIED' ? 'text-green-600 font-medium' : 'text-yellow-600'}>
+                                                    {counterparty?.kycStatus === 'VERIFIED' ? 'KYC Verified' : 'Unverified'}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })()}
+                        </div>
+                    </div>
+
+                    {/* Right Column: Asset Reception & Balances */}
+                    <div className="space-y-8">
+
+                        {/* Balance Card - New Requirement */}
+                        <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 relative overflow-hidden">
+                            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-gray-900 to-gray-600"></div>
+                            <h3 className="font-bold text-lg mb-6 flex items-center gap-2">
+                                <ShieldCheck className="w-5 h-5 text-gray-400" />
+                                Escrow Holdings
+                            </h3>
+
+                            {(escrow as any).bankBalance && (
+                                <div className="mb-4 p-4 bg-blue-50 rounded-xl border border-blue-100">
+                                    <span className="text-xs font-bold text-blue-400 uppercase tracking-wider">Fiat Balance</span>
+                                    <div className="flex items-baseline gap-2 mt-1">
+                                        <p className="font-bold text-2xl text-blue-900">{(escrow as any).bankBalance.amount}</p>
+                                        <span className="font-mono text-sm font-bold text-blue-600">{(escrow as any).bankBalance.currency}</span>
+                                    </div>
+                                    <div className="flex items-center gap-1 mt-2 text-xs text-blue-500">
+                                        <div className={`w-2 h-2 rounded-full ${(escrow as any).bankBalance.confirmedByAdmin ? 'bg-green-500' : 'bg-yellow-500'}`}></div>
+                                        {(escrow as any).bankBalance.confirmedByAdmin ? 'Confirmed' : 'Pending Confirmation'}
+                                    </div>
+                                </div>
+                            )}
+
+                            {(escrow as any).cryptoBalances && (escrow as any).cryptoBalances.map((bal: any, idx: number) => (
+                                <div key={idx} className="mb-4 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                                        {bal.role === 'BUYER' ? 'Buyer Deposit' : 'Seller Deposit'} ({bal.currency})
+                                    </span>
+                                    <div className="flex items-baseline gap-2 mt-1">
+                                        <p className="font-bold text-2xl text-gray-900">{bal.balance}</p>
+                                        <span className="font-mono text-sm font-bold text-gray-500">{bal.currency}</span>
+                                    </div>
+                                    <div className="flex items-center gap-1 mt-2 text-xs text-gray-500">
+                                        <div className={`w-2 h-2 rounded-full ${bal.confirmedByAdmin ? 'bg-green-500' : 'bg-yellow-500'}`}></div>
+                                        {bal.confirmedByAdmin ? 'Confirmed' : 'Pending Confirmation'}
+                                    </div>
+                                </div>
+                            ))}
+
+                            {!(escrow as any).bankBalance && (!(escrow as any).cryptoBalances || (escrow as any).cryptoBalances.length === 0) && (
+                                <p className="text-gray-400 text-sm text-center py-4 italic">No funds currently held in escrow.</p>
                             )}
                         </div>
 
-                        {pendingFundingEscrows.length === 0 ? (
-                            <div className="bg-white rounded-xl p-12 text-center border-2 border-[#D4FF00]/30 shadow-xl shadow-[#D4FF00]/10">
-                                <div className="w-20 h-20 bg-[#D4FF00]/10 rounded-xl flex items-center justify-center mx-auto mb-6 shadow-lg">
-                                    <CheckCircle2 className="w-10 h-10 text-[#D4FF00]" />
-                                </div>
-                                <h3 className="font-bold text-gray-900 text-2xl mb-3 font-display">All Caught Up!</h3>
-                                <p className="text-gray-600 text-lg">No pending actions. Ready to start a new trade?</p>
-                            </div>
-                        ) : (
-                            <div className="space-y-5">
-                                {pendingFundingEscrows.map((escrow: any) => (
-                                    <div key={escrow.id} className="bg-white p-7 rounded-xl border-2 border-gray-100 shadow-lg hover:shadow-xl hover:border-[#D4FF00]/40 transition-all group">
-                                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
-                                            <div className="flex items-center gap-5">
-                                                <div className={`p-4 rounded-lg shadow-md ${escrow.tradeType === 'CRYPTO_TO_CRYPTO'
-                                                    ? 'bg-purple-50 text-purple-600'
-                                                    : 'bg-blue-50 text-blue-600'}`}>
-                                                    {escrow.tradeType === 'CRYPTO_TO_CRYPTO' ? <Coins className="w-7 h-7" /> : <Banknote className="w-7 h-7" />}
+                        <div data-testid="reception-details" className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 h-full relative overflow-hidden">
+                            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-[#13ec5b]"></div>
+                            <h3 className="font-bold text-lg mb-6 flex items-center gap-2">
+                                {isCryptoToFiat ? <Building2 className="w-5 h-5 text-gray-400" /> : <Wallet className="w-5 h-5 text-gray-400" />}
+                                Reception Details
+                            </h3>
+
+                            {(() => {
+                                const isBuyer = user?.id === escrow.buyerId;
+                                const isSeller = user?.id === escrow.sellerId;
+                                const recipientDetails = isBuyer ? escrow.buyerRecipientDetails : escrow.sellerRecipientDetails;
+
+                                // Logic: If C2F, Seller needs bank account.
+                                const isSellerMissingBank = isSeller && isCryptoToFiat && !recipientDetails;
+
+                                if (isSellerMissingBank) {
+                                    return (
+                                        <div className="text-center py-6">
+                                            <div className="w-12 h-12 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                                                <AlertCircle className="w-6 h-6" />
+                                            </div>
+                                            <h4 className="font-bold text-gray-900 mb-2">Bank Account Required</h4>
+                                            <p className="text-sm text-gray-500 mb-4 px-4">
+                                                As a seller, you must link a bank account to receive fiat funds before this transaction can proceed.
+                                            </p>
+                                            <button
+                                                onClick={() => router.push(`/trader/profile?action=add_bank&escrowId=${id}&redirect=/trader/escrow/${id}`)}
+                                                className="px-6 py-2.5 bg-red-500 hover:bg-red-600 text-white font-bold rounded-xl transition-all shadow-lg shadow-red-200"
+                                            >
+                                                + Add Bank Account
+                                            </button>
+                                        </div>
+                                    );
+                                }
+
+                                return recipientDetails ? (
+                                    <div className="space-y-6">
+                                        {/* If we have details, render them. 
+                                            For Seller/C2F -> Bank Details. 
+                                            For Anything Else -> Wallet Details (mostly) */}
+
+                                        {(escrow.tradeType === TradeType.CRYPTO_TO_FIAT && (recipientDetails as any).accountNumber) ? (
+                                            // Bank Details View (Detected by key property 'accountNumber')
+                                            <>
+                                                <div>
+                                                    <label className="text-xs font-bold text-gray-400 uppercase">Bank Name</label>
+                                                    <p className="font-medium text-gray-900">{(recipientDetails as any).name || (recipientDetails as any).bankName || 'N/A'}</p>
                                                 </div>
                                                 <div>
-                                                    <h3 className="font-bold text-gray-900 text-xl mb-1 font-display">
-                                                        {escrow.amount} {escrow.buyCurrency}
-                                                        <span className="text-[#D4FF00] font-normal text-lg mx-2">→</span>
-                                                        {escrow.sellCurrency}
-                                                    </h3>
-                                                    <p className="text-sm text-gray-500">
-                                                        ID: <span className="font-mono bg-gray-100 px-2 py-0.5 rounded">#{escrow.id.substring(0, 8)}</span>
+                                                    <label className="text-xs font-bold text-gray-400 uppercase">Account Holder</label>
+                                                    <p className="font-medium text-gray-900">{(recipientDetails as any).accountHolderName || (recipientDetails as any).recipientName}</p>
+                                                </div>
+                                                <div>
+                                                    <label className="text-xs font-bold text-gray-400 uppercase">Account Number</label>
+                                                    <p className="font-mono font-medium text-gray-900 bg-gray-50 p-2 rounded border border-gray-100">
+                                                        {(recipientDetails as any).accountNumber}
                                                     </p>
                                                 </div>
-                                            </div>
-                                            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-                                                <span className="px-4 py-2 bg-amber-50 text-amber-700 text-xs font-bold rounded-lg border-2 border-amber-200 shadow-sm text-center">
-                                                    FUNDING PENDING
-                                                </span>
-                                                <button
-                                                    data-testid="fund-now-button"
-                                                    onClick={() => router.push(`/trader/escrow/${escrow.id}/fund`)}
-                                                    className="bg-gradient-to-r from-[#D4FF00] to-[#B8E600] hover:from-[#B8E600] hover:to-[#D4FF00] text-gray-900 px-6 py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-lg shadow-[#D4FF00]/40 group-hover:shadow-xl font-display"
-                                                >
-                                                    Fund Now <ChevronRight className="w-4 h-4" />
-                                                </button>
-                                            </div>
+                                            </>
+                                        ) : (
+                                            // Wallet Details View
+                                            <>
+                                                <div>
+                                                    <label className="text-xs font-bold text-gray-400 uppercase">Wallet Network</label>
+                                                    <p className="font-medium text-gray-900">{(recipientDetails as any).network || 'Mainnet'}</p>
+                                                </div>
+                                                <div>
+                                                    <label className="text-xs font-bold text-gray-400 uppercase">Wallet Address</label>
+                                                    <p className="font-mono text-sm break-all font-medium text-gray-900 bg-gray-50 p-3 rounded-xl border border-gray-100">
+                                                        {(recipientDetails as any).walletAddress}
+                                                    </p>
+                                                </div>
+                                            </>
+                                        )}
+
+                                        <div className="mt-6 pt-6 border-t border-gray-100">
+                                            <p className="text-xs text-gray-500 flex items-start gap-2">
+                                                <AlertCircle className="w-4 h-4 text-blue-500 shrink-0" />
+                                                Please verify these details carefully with your counterparty before sending any funds.
+                                            </p>
                                         </div>
                                     </div>
-                                ))}
-                            </div>
-                        )}
-
-                        {/* Recent Activity */}
-                        <div className="mt-12">
-                            <div className="flex items-center justify-between mb-6">
-                                <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-3 font-display">
-                                    <div className="p-2 bg-[#D4FF00]/10 rounded-lg">
-                                        <Activity className="w-6 h-6 text-[#D4FF00]" />
-                                    </div>
-                                    Recent Activity
-                                </h2>
-                                <Link data-testid="view-all-escrows-link" href="/trader/escrow" className="text-sm font-bold text-[#D4FF00] hover:text-[#B8E600] flex items-center gap-1 px-4 py-2 bg-[#D4FF00]/10 rounded-lg hover:bg-[#D4FF00]/20 transition-all font-display">
-                                    View All <ChevronRight className="w-4 h-4" />
-                                </Link>
-                            </div>
-
-                            <div className="bg-white rounded-xl border-2 border-gray-100 shadow-xl overflow-hidden">
-                                {myEscrows.length === 0 ? (
-                                    <div className="p-12 text-center text-gray-400">No transaction history yet.</div>
                                 ) : (
-                                    <div className="overflow-x-auto">
-                                        <table data-testid="recent-activity-table" className="w-full text-left">
-                                            <thead className="bg-gray-50 text-xs text-gray-600 uppercase tracking-wider">
-                                                <tr>
-                                                    <th className="p-5 font-bold">Type</th>
-                                                    <th className="p-5 font-bold">Amount</th>
-                                                    <th className="p-5 font-bold">Status</th>
-                                                    <th className="p-5 font-bold">Date</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody className="divide-y divide-gray-100">
-                                                {myEscrows.slice(0, 5).map((e: any, index: number) => (
-                                                    <tr key={e.id} data-testid={`escrow-row-${index}`} className="hover:bg-[#D4FF00]/5 cursor-pointer transition-all" onClick={() => router.push(`/trader/escrow/${e.id}`)}>
-                                                        <td className="p-5 font-semibold text-gray-900">{e.tradeType?.replace(/_/g, ' ')}</td>
-                                                        <td className="p-5 font-medium text-gray-900">{e.amount} <span className="text-gray-400">{e.buyCurrency}</span></td>
-                                                        <td className="p-5">
-                                                            <StatusBadge status={e.state} />
-                                                        </td>
-                                                        <td className="p-5 text-gray-500 font-medium">{new Date(e.createdAt).toLocaleDateString()}</td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
+                                    <div className="text-center py-8">
+                                        <p className="text-gray-400 mb-4 text-sm">Waiting for counterparty to provide details.</p>
 
-                    {/* Right Sidebar */}
-                    <div className="space-y-6">
-                        {/* Trust Score Card */}
-                        <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white rounded-xl p-8 shadow-2xl relative overflow-hidden border border-[#D4FF00]/20">
-                            <div className="absolute right-0 top-0 w-56 h-56 bg-[#D4FF00] rounded-full blur-[100px] opacity-10 -mr-28 -mt-28"></div>
-                            <div className="absolute left-0 bottom-0 w-48 h-48 bg-[#D4FF00] rounded-full blur-[90px] opacity-5 -ml-24 -mb-24"></div>
+                                        {/* Fallback "Add Details" for other cases if needed, but the main Seller Block is handled above */}
 
-                            <div className="relative">
-                                <div className="flex items-center gap-2 mb-6">
-                                    <Award className="w-5 h-5 text-[#D4FF00]" />
-                                    <h3 className="text-[#D4FF00] text-xs uppercase tracking-widest font-bold">Trust Center</h3>
-                                </div>
-
-                                <div className="space-y-4">
-                                    <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg backdrop-blur-sm border border-[#D4FF00]/20 hover:bg-white/10 transition-all">
-                                        <div className="flex items-center gap-3">
-                                            <div className={`w-3 h-3 rounded-full shadow-lg ${isVerified ? 'bg-[#D4FF00] shadow-[#D4FF00]/50' : 'bg-amber-400 shadow-amber-400/50 animate-pulse'}`}></div>
-                                            <span className="text-sm font-medium">Identity (KYC)</span>
-                                        </div>
-                                        <span className={`text-xs font-bold px-3 py-1 rounded-full ${isVerified ? 'bg-[#D4FF00]/20 text-[#D4FF00]' : 'bg-amber-500/20 text-amber-300'}`}>
-                                            {isVerified ? 'VERIFIED' : 'PENDING'}
-                                        </span>
                                     </div>
-                                    <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg backdrop-blur-sm border border-[#D4FF00]/20 hover:bg-white/10 transition-all">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-3 h-3 rounded-full bg-[#D4FF00] shadow-lg shadow-[#D4FF00]/50"></div>
-                                            <span className="text-sm font-medium">Email</span>
-                                        </div>
-                                        <span className="text-xs font-bold bg-[#D4FF00]/20 text-[#D4FF00] px-3 py-1 rounded-full">VERIFIED</span>
-                                    </div>
-                                    <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg backdrop-blur-sm border border-[#D4FF00]/20 hover:bg-white/10 transition-all">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-3 h-3 rounded-full bg-[#D4FF00] shadow-lg shadow-[#D4FF00]/50"></div>
-                                            <span className="text-sm font-medium">Security</span>
-                                        </div>
-                                        <span className="text-xs font-bold bg-[#D4FF00]/20 text-[#D4FF00] px-3 py-1 rounded-full">ACTIVE</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Quick Stats */}
-                        <div className="bg-white rounded-xl p-8 border-2 border-gray-100 shadow-xl">
-                            <h3 className="font-bold text-gray-900 mb-6 flex items-center gap-2 text-lg font-display">
-                                <TrendingUp className="w-5 h-5 text-[#D4FF00]" />
-                                Quick Stats
-                            </h3>
-                            <div className="space-y-5">
-                                <div className="flex items-center justify-between p-4 bg-[#D4FF00]/10 rounded-lg">
-                                    <span className="text-gray-600 text-sm font-semibold">Total Trades</span>
-                                    <span className="font-bold text-gray-900 text-lg font-display">{myEscrows.length}</span>
-                                </div>
-                            </div>
+                                );
+                            })()}
                         </div>
                     </div>
                 </div>
-            </main>
-        </div>
-    );
-}
 
-function NavItem({ icon, label, href, active, onClick }: { icon: React.ReactNode; label: string; href: string; active?: boolean; onClick?: () => void }) {
-    return (
-        <Link
-            href={href}
-            onClick={onClick}
-            className={`flex items-center gap-4 px-5 py-4 rounded-lg font-semibold transition-all font-display ${active
-                ? 'bg-[#D4FF00]/20 text-[#D4FF00] shadow-lg shadow-[#D4FF00]/20 border-l-4 border-[#D4FF00]'
-                : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
-        >
-            <span className={active ? 'text-[#D4FF00]' : 'text-gray-500'}>{icon}</span>
-            {label}
-        </Link>
-    );
-}
+                {/* Timeline Section */}
+                <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+                    <h3 className="font-bold text-lg mb-8 flex items-center gap-2">
+                        <Clock className="w-5 h-5 text-gray-400" />
+                        Transaction Timeline
+                    </h3>
 
-function StatCard({ title, value, icon, color, trend }: { title: string; value: string | number; icon: React.ReactNode; color: string; trend?: string }) {
-    const colorClasses: Record<string, { bg: string; icon: string; border: string }> = {
-        amber: { bg: 'bg-amber-50', icon: 'text-amber-600', border: 'border-amber-100' },
-        green: { bg: 'bg-[#D4FF00]/10', icon: 'text-[#D4FF00]', border: 'border-[#D4FF00]/30' },
-    };
-    const classes = colorClasses[color] || colorClasses.green;
+                    <div className="relative pl-8 border-l-2 border-gray-100 space-y-8">
+                        {/* Step 1: Initialized */}
+                        <div className="relative">
+                            <span className="absolute -left-[41px] bg-[#13ec5b] text-white p-1 rounded-full border-4 border-white shadow-sm">
+                                <CheckCircle2 className="w-5 h-5" />
+                            </span>
+                            <h4 className="font-bold text-gray-900">Escrow Initialized</h4>
+                            <p className="text-sm text-gray-500 mt-1">Transaction created on {new Date(escrow.createdAt).toLocaleString()}</p>
+                        </div>
 
-    return (
-        <div className={`bg-white p-6 rounded-xl border-2 ${classes.border} shadow-lg hover:shadow-xl transition-all hover:scale-[1.02]`}>
-            <div className={`inline-flex p-3.5 rounded-lg ${classes.bg} ${classes.icon} mb-4 shadow-sm`}>
-                {icon}
+
+                    </div>
+                </div>
+
             </div>
-            <p className="text-3xl font-bold text-gray-900 mb-1 font-display">{value}</p>
-            <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-2">{title}</p>
-            {trend && <p className="text-xs text-[#D4FF00] font-medium">{trend}</p>}
         </div>
-    );
-}
-
-function StatusBadge({ status }: { status: string }) {
-    const statusClasses: Record<string, string> = {
-        COMPLETED: 'bg-[#D4FF00]/10 text-[#D4FF00] border-[#D4FF00]/40',
-        COMPLETELY_FUNDED: 'bg-[#D4FF00]/10 text-[#D4FF00] border-[#D4FF00]/40',
-        INITIALIZED: 'bg-amber-50 text-amber-700 border-amber-200',
-        ONE_PARTY_FUNDED: 'bg-blue-50 text-blue-700 border-blue-200',
-        CANCELLED: 'bg-red-50 text-red-700 border-red-200',
-    };
-    return (
-        <span className={`text-[11px] font-bold uppercase tracking-wide px-3 py-1.5 rounded-lg border-2 ${statusClasses[status] || 'bg-gray-50 text-gray-600 border-gray-200'} shadow-sm`}>
-            {status?.replace(/_/g, ' ')}
-        </span>
     );
 }

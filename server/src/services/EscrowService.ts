@@ -186,7 +186,11 @@ class EscrowService {
             const buyer = escrow.buyerId ? await User.findByPk(escrow.buyerId) : null;
             const seller = escrow.sellerId ? await User.findByPk(escrow.sellerId) : null;
 
-            // Fetch reception details for both parties
+            // Fetch Balances
+            const bankBalance = await EscrowBankBalance.findOne({ where: { escrowId: id } });
+            const cryptoBalances = await EscrowCryptoWalletBalance.findAll({ where: { escrowId: id } });
+
+            // Fetch reception details
             let buyerRecipientDetails: any = null;
             let sellerRecipientDetails: any = null;
 
@@ -201,14 +205,13 @@ class EscrowService {
                     if (escrow.tradeType === TradeType.CRYPTO_TO_CRYPTO && escrow.buyCurrency) {
                         sellerRecipientDetails = await SellerCryptoWalletRepository.findBySellerIdAndCurrency(escrow.sellerId, escrow.buyCurrency);
                     } else if (escrow.tradeType === TradeType.CRYPTO_TO_FIAT) {
-                        // For bank, usually checking for the bank account linked or primary
+                        // For C2F, Seller receives Fiat. Needs Bank Account.
+                        // We fetch their primary bank account.
                         sellerRecipientDetails = await SellerBankAccountRepository.findPrimaryBySellerId(escrow.sellerId);
                     }
                 }
             } catch (detailsError) {
                 console.error("Error fetching recipient details", detailsError);
-                // Swallow error to at least return escrow details?
-                // Or rethrow if critical. For now, log and proceed with null details.
             }
 
             return {
@@ -216,7 +219,9 @@ class EscrowService {
                 buyer: buyer ? { email: buyer.email, kycStatus: buyer.kycStatus } : null,
                 seller: seller ? { email: seller.email, kycStatus: seller.kycStatus } : null,
                 buyerRecipientDetails,
-                sellerRecipientDetails
+                sellerRecipientDetails,
+                bankBalance,
+                cryptoBalances
             };
         } catch (error) {
             console.error(`Error in getEscrowById(${id}):`, error);
@@ -237,56 +242,50 @@ class EscrowService {
         if (!escrow) throw new Error('Escrow not found');
 
         if (escrow.tradeType === TradeType.CRYPTO_TO_CRYPTO) {
-            // Payer funds (Buyer sends SellCurrency, Seller sends BuyCurrency in C2C?)
-            // Standard C2C: Initiator (Buyer) buys BuyCurrency by sending SellCurrency.
-            // So: 
-            // - Buyer sends SellCurrency -> Custodial Wallet (SellCurrency)
-            // - Seller sends BuyCurrency -> Custodial Wallet (BuyCurrency)
+            // Requirement:
+            // Buyer -> Custodial Wallet for BuyCurrency
+            // Seller -> Custodial Wallet for SellCurrency
+            const buyerFundingWallet = await CustodialWalletRepository.findByCurrency(escrow.buyCurrency);
+            const sellerFundingWallet = await CustodialWalletRepository.findByCurrency(escrow.sellCurrency);
 
-            const buyerFundingWallet = await CustodialWalletRepository.findByCurrency(escrow.sellCurrency);
-            const sellerFundingWallet = await CustodialWalletRepository.findByCurrency(escrow.buyCurrency);
-
-            // Let's return both possible funding targets
             return {
                 type: 'CRYPTO_WALLET',
                 buyerFundingWallet,
                 sellerFundingWallet,
-                // Check if balances exist for either
-                hasBuyerFunded: await EscrowCryptoWalletBalance.findOne({ where: { escrowId, role: 'BUYER' } }).then(b => !!b),
-                hasSellerFunded: await EscrowCryptoWalletBalance.findOne({ where: { escrowId, role: 'SELLER' } }).then(b => !!b)
+                hasBuyerFunded: escrow.buyerMarkedPaymentSent,
+                hasSellerFunded: escrow.sellerMarkedPaymentSent
             };
 
         } else if (escrow.tradeType === TradeType.CRYPTO_TO_FIAT) {
-            // Buyer (Crypto Payer) -> Wallet
-            // Seller (Fiat Payer) -> Bank
+            // Requirement:
+            // Buyer (if paying Fiat/Wire) -> EscrowBankBalance.bank (Bank ID)
+            // Seller (Paying Crypto) -> Custodial Wallet matches SellCurrency
 
-            // User Rule: "for crypto to fiat for buyer it is the wallet" -> Buyer pays CRYPTO.
-            // User Rule: "for seller it is the seller bank account" -> Seller pays FIAT.
-
-            // Buyer (Paying Crypto) -> Needs Wallet matching their currency
-            // If Buyer pays Crypto, they pay 'sellCurrency'? (What they give).
-            // Let's assume Buyer gives 'sellCurrency' (Crypto).
-            const buyerFundingWalletRef = await CustodialWalletRepository.findByCurrency(escrow.sellCurrency);
-
-            // Seller (Paying Fiat) -> Needs Bank.
-            // So Seller needs Platform Bank details to wire to.
-
-            let adminBank;
-            const balanceRecord = await EscrowBankBalance.findOne({ where: { escrowId } });
-            if (balanceRecord) {
+            // 1. Resolve Admin Bank for Buyer (Fiat Payer)
+            let adminBank = null;
+            // Check if specific bank attached to escrow (e.g. escrow.buyerDepositBankId from initiate)
+            // Or try to find via EscrowBankBalance
+            if (escrow.buyerDepositBankId) {
                 const BankRepository = require('../repositories/BankRepository').default;
-                adminBank = await BankRepository.findById(balanceRecord.bankId);
-            } else {
-                const banks = await import('../repositories/BankRepository').then(m => m.default.findAll());
-                adminBank = banks[0];
+                adminBank = await BankRepository.findById(escrow.buyerDepositBankId);
             }
+            if (!adminBank) {
+                // Fallback: Find primary bank or any bank
+                const BankRepository = require('../repositories/BankRepository').default;
+                const banks = await BankRepository.findAll();
+                if (banks.length > 0) adminBank = banks[0];
+            }
+
+            // 2. Resolve Wallet for Seller (Crypto Payer)
+            const sellerFundingWallet = await CustodialWalletRepository.findByCurrency(escrow.sellCurrency);
 
             return {
                 type: 'MIXED',
-                buyerFundingWallet: buyerFundingWalletRef,
-                adminBank, // For Fiat Funder
+                adminBank,             // For Buyer (Fiat)
+                sellerFundingWallet,   // For Seller (Crypto)
                 paymentMethod: (escrow as any).paymentMethod,
-                hasFunded: !!balanceRecord
+                hasBuyerFunded: escrow.buyerMarkedPaymentSent,
+                hasSellerFunded: escrow.sellerMarkedPaymentSent
             };
         }
         return null;
@@ -356,6 +355,7 @@ class EscrowService {
         if (typeof updates.sellerMarkedPaymentSent === 'boolean') (escrow as any).sellerMarkedPaymentSent = updates.sellerMarkedPaymentSent;
         if (typeof updates.buyerConfirmedFunding === 'boolean') (escrow as any).buyerConfirmedFunding = updates.buyerConfirmedFunding;
         if (typeof updates.sellerConfirmedFunding === 'boolean') (escrow as any).sellerConfirmedFunding = updates.sellerConfirmedFunding;
+        if (updates.state) (escrow as any).state = updates.state;
 
         // Handle Amount Change
         if (updates.amount && updates.amount !== escrow.amount) {
@@ -384,6 +384,71 @@ class EscrowService {
                     // For now, update all associated balances to match new agreed amount
                     (balance as any).balance = newAmount;
                     await balance.save();
+                }
+            }
+        }
+
+        // Handle Specific Balance Updates (Admin Override)
+        if (updates.balanceUpdates) {
+            const balanceUpdates = Array.isArray(updates.balanceUpdates) ? updates.balanceUpdates : [updates.balanceUpdates];
+
+            for (const update of balanceUpdates) {
+                if (update.type === 'BANK') {
+                    // Update or Create Bank Balance (Fiat)
+                    let balance = await EscrowBankBalance.findOne({ where: { escrowId: id } });
+
+                    if (balance) {
+                        if (update.amount !== undefined) (balance as any).amount = update.amount;
+                        if (typeof update.confirmed === 'boolean') (balance as any).confirmedByAdmin = update.confirmed;
+                        await balance.save();
+                    } else {
+                        // Create new if missing
+                        await EscrowBankBalance.create({
+                            escrowId: id,
+                            amount: update.amount || escrow.amount,
+                            currency: escrow.buyCurrency,
+                            confirmedByAdmin: update.confirmed || false,
+                            bankId: escrow.buyerDepositBankId || update.bankId // Use existing or provided
+                        } as any);
+                    }
+                }
+                else if (update.type === 'CRYPTO') {
+                    // Update Crypto Balance
+                    // Role is required to distinguish Buyer/Seller side
+                    if (!update.role) continue;
+
+                    let balance = await EscrowCryptoWalletBalance.findOne({
+                        where: { escrowId: id, role: update.role }
+                    });
+
+                    if (balance) {
+                        if (update.amount !== undefined) (balance as any).balance = update.amount;
+                        if (typeof update.confirmed === 'boolean') (balance as any).confirmedByAdmin = update.confirmed;
+                        await balance.save();
+                    } else {
+                        // Create
+                        // Determine currency based on role and trade type
+                        let currency = '';
+                        if (escrow.tradeType === TradeType.CRYPTO_TO_CRYPTO) {
+                            currency = update.role === 'BUYER' ? escrow.buyCurrency : escrow.sellCurrency;
+                        } else {
+                            // C2F: Buyer pays Fiat (Bank), Seller pays Crypto (SellCurrency)
+                            // So if role is SELLER, it's SellCurrency. 
+                            // If role is BUYER, it shouldn't happen for Crypto, but maybe user wants to record crypto sent by buyer in C2F? Unlikely.
+                            currency = escrow.sellCurrency;
+                        }
+
+                        if (currency) {
+                            await EscrowCryptoWalletBalance.create({
+                                escrowId: id,
+                                role: update.role,
+                                balance: update.amount || escrow.amount,
+                                currency: currency,
+                                confirmedByAdmin: update.confirmed || false,
+                                walletAddress: update.walletAddress || 'MANUAL_ADMIN_ENTRY'
+                            } as any);
+                        }
+                    }
                 }
             }
         }

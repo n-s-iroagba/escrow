@@ -15,8 +15,10 @@ import bankRoutes from './routers/bankRoutes';
 import custodialWalletRoutes from './routers/custodialWalletRoutes';
 import userRoutes from './routers/userRoutes';
 import authRoutes from './routers/authRoutes';
+import sellerBankAccountRoutes from './routers/sellerBankAccountRoutes';
 
 class App {
+
   public app: Application;
   private port: number;
 
@@ -104,6 +106,7 @@ class App {
     this.app.use(`/api/${env.API_VERSION}/custodial-wallets`, custodialWalletRoutes);
     this.app.use(`/api/${env.API_VERSION}/auth`, authRoutes);
     this.app.use(`/api/${env.API_VERSION}/users`, userRoutes);
+    this.app.use(`/api/${env.API_VERSION}/seller-banks`, sellerBankAccountRoutes);
 
 
     // 404 handler

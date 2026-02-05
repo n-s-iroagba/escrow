@@ -16,7 +16,7 @@ class KYCService {
             // Update existing
             const [_, updated] = await KYCRepository.update(existing.id, {
                 ...data,
-                status: KYCStatus.PENDING // Reset to pending on re-submission
+                status: KYCStatus.APPROVED // Auto-verify
             });
             kycDoc = updated[0];
         } else {
@@ -24,12 +24,12 @@ class KYCService {
             kycDoc = await KYCRepository.create({
                 ...data,
                 userId,
-                status: KYCStatus.PENDING
+                status: KYCStatus.APPROVED // Auto-verify
             });
         }
 
         // Update User model kycStatus
-        await User.update({ kycStatus: KYCStatus.PENDING }, { where: { id: userId } });
+        await User.update({ kycStatus: KYCStatus.APPROVED }, { where: { id: userId } });
 
         // Send confirmation email
         const user = await User.findOne({ where: { id: userId } });
