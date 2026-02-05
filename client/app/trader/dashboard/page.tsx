@@ -32,7 +32,7 @@ export default function DashboardPage() {
 
     const { data: kycData, loading: kycLoading } = useGet(
         API_ROUTES.KYC.STATUS(user?.id),
-        { enabled: !!user?.id }
+        { enabled: user?.role === 'CLIENT' }
     );
 
     const { data: escrows, loading: escrowsLoading } = useGet(API_ROUTES.ESCROWS.GET_MY);
@@ -45,7 +45,7 @@ export default function DashboardPage() {
         return (e.state === 'INITIALIZED' || e.state === 'ONE_PARTY_FUNDED') && (isBuyer || isSeller);
     });
 
-    const loading = escrowsLoading;
+    const loading = escrowsLoading || (user?.role === 'ADMIN' ? false : kycLoading);
     const kycStatus = kycData?.status || 'NOT_STARTED';
     const isVerified = kycStatus === 'APPROVED' || kycStatus === 'VERIFIED';
 
@@ -125,7 +125,7 @@ export default function DashboardPage() {
                     <button
                         data-testid="new-transaction-button"
                         onClick={() => router.push('/trader/escrow/initiate')}
-                        disabled={!isVerified}
+                        disabled={user?.role !== 'ADMIN' && !isVerified}
                         className={`px-8 py-4 rounded-xl font-bold flex items-center gap-3 shadow-xl transition-all transform hover:scale-[1.02] active:scale-[0.98] font-display ${!isVerified
                             ? 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none'
                             : 'bg-primary hover:bg-primary/90 text-background-dark shadow-primary/30'}`}
@@ -137,7 +137,7 @@ export default function DashboardPage() {
                 </div>
 
                 {/* KYC Alert */}
-                {!isVerified && (
+                {!isVerified && user?.role !== 'ADMIN' && (
                     <div className="bg-white rounded-xl p-8 lg:p-10 border-2 border-primary/20 shadow-xl shadow-primary/10 mb-12 relative overflow-hidden">
                         <div className="absolute right-0 top-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -mr-48 -mt-48"></div>
                         <div className="absolute left-0 bottom-0 w-80 h-80 bg-primary/3 rounded-full blur-3xl -ml-40 -mb-40"></div>
