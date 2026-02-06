@@ -102,20 +102,21 @@ export default function KYCPage() {
                     <p className="text-gray-500 mb-8 leading-relaxed">
                         Excellent! Your account is fully verified. You now have access to all secure escrow features.
                     </p>
-
-                    <button
-                        data-testid="initiate-escrow-button"
-                        onClick={() => router.push('/trader/escrow/initiate')}
-                        className="w-full py-4 bg-[#13ec5b] hover:bg-[#10c94d] text-[#0d1b12] font-bold rounded-xl shadow-lg shadow-green-200 transition-all hover:scale-[1.02]"
-                    >
-                        Start Trading
-                    </button>
                     <button
                         onClick={() => router.push('/trader/dashboard')}
-                        className="mt-4 text-sm font-bold text-gray-400 hover:text-gray-600 transition-colors"
+                        className="w-full py-4 bg-[#13ec5b] hover:bg-[#10c94d] text-[#0d1b12] font-bold rounded-xl shadow-lg shadow-green-200 transition-all hover:scale-[1.02]"
                     >
                         Back to Dashboard
                     </button>
+                    <button
+                        data-testid="initiate-escrow-button"
+                        className="mt-4 text-sm font-bold text-gray-400 hover:text-gray-600 transition-colors"
+                        onClick={() => router.push('/trader/escrow/initiate')}
+
+                    >
+                        Start Trading
+                    </button>
+
                 </div>
             </div>
         );

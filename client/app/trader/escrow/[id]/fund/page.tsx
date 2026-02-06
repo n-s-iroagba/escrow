@@ -39,7 +39,7 @@ export default function FundEscrowPage() {
         API_ROUTES.ESCROWS.FUND(id as string),
         {
             onSuccess: () => {
-                router.push(`/escrow/${id}`);
+                router.push(`/trader/escrow/${id}`);
             }
         }
     );

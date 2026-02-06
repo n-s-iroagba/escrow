@@ -688,7 +688,7 @@ export default function InitiateEscrowPage() {
                                             </div>
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-semibold text-slate-700 mb-2">IBAN (Optional)</label>
+                                            <label className="block text-sm font-semibold text-slate-700 mb-2">IBAN </label>
                                             <input
                                                 type="text"
                                                 name="bankDetails.iban"

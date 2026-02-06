@@ -12,7 +12,8 @@ export function AddSellerBankForm({ escrowId }: { escrowId: string }) {
         accountNumber: '',
         bankName: '',
         routingNumber: '',
-        swift: ''
+        swift: '',
+        iban: ''
     });
 
     const handleSubmit = async () => {
@@ -54,12 +55,35 @@ export function AddSellerBankForm({ escrowId }: { escrowId: string }) {
                     />
                 </div>
                 <div>
-                    <label className="text-xs font-bold text-gray-500 uppercase">Routing/SWIFT</label>
+                    <label className="text-xs font-bold text-gray-500 uppercase">Routing Number</label>
                     <input
                         type="text"
                         value={formData.routingNumber}
                         onChange={(e) => setFormData({ ...formData, routingNumber: e.target.value })}
                         className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl mt-1 text-sm outline-none focus:border-[#13ec5b]"
+                        placeholder=""
+                    />
+                </div>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+                <div>
+                    <label className="text-xs font-bold text-gray-500 uppercase">SWIFT Code</label>
+                    <input
+                        type="text"
+                        value={formData.swift}
+                        onChange={(e) => setFormData({ ...formData, swift: e.target.value })}
+                        className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl mt-1 text-sm outline-none focus:border-[#13ec5b]"
+                        placeholder=""
+                    />
+                </div>
+                <div>
+                    <label className="text-xs font-bold text-gray-500 uppercase">IBAN</label>
+                    <input
+                        type="text"
+                        value={formData.iban}
+                        onChange={(e) => setFormData({ ...formData, iban: e.target.value })}
+                        className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl mt-1 text-sm outline-none focus:border-[#13ec5b]"
+                        placeholder=""
                     />
                 </div>
             </div>

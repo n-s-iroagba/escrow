@@ -42,7 +42,7 @@ export const uploadFile = async (
   file: File,
   type: 'thumbnail' | 'video' | 'image'
 ) => {
-  const { cloudName } = (await api.get('/videos/upload/signature')).data;
+  // const { cloudName } = (await api.get('/videos/upload/signature')).data;
 
   const formData = new FormData();
   formData.append('file', file);
@@ -50,7 +50,7 @@ export const uploadFile = async (
   formData.append('folder', 'amafor');
 
   const resourceType = type === 'video' ? 'video' : 'image';
-  const cloudUrl = `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`;
+  const cloudUrl = `https://api.cloudinary.com/v1_1/dh2cpesxu/${resourceType}/upload`;
 
   const uploadRes = await fetch(cloudUrl, { method: 'POST', body: formData });
 
@@ -58,14 +58,14 @@ export const uploadFile = async (
   return data.url;
 };
 
- export const formatDate = (dateString?: string) => {
-    if (!dateString) return 'Unknown date';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
+export const formatDate = (dateString?: string) => {
+  if (!dateString) return 'Unknown date';
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+};

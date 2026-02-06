@@ -66,7 +66,7 @@ export const testConnection = async (): Promise<void> => {
     await sequelize.authenticate();
     if (env.NODE_ENV === 'development') {
       await sequelize.sync({
-        // alter: true
+        alter: true
       });
       console.log('✅ Database synchronized (alter: true)');
     }

@@ -192,7 +192,7 @@ export default function EditBankPage() {
 
                             {/* Recipient Name */}
                             <div className="col-span-2">
-                                <label className="block text-sm font-medium mb-1.5 text-gray-700">Recipient Name (Optional)</label>
+                                <label className="block text-sm font-medium mb-1.5 text-gray-700">Recipient Name </label>
                                 <input
                                     type="text"
                                     name="recipientName"
@@ -205,7 +205,7 @@ export default function EditBankPage() {
 
                             {/* Routing Number */}
                             <div>
-                                <label className="block text-sm font-medium mb-1.5 text-gray-700">Routing Number (Optional)</label>
+                                <label className="block text-sm font-medium mb-1.5 text-gray-700">Routing Number </label>
                                 <input
                                     type="text"
                                     name="routingNumber"
@@ -217,7 +217,7 @@ export default function EditBankPage() {
 
                             {/* SWIFT */}
                             <div>
-                                <label className="block text-sm font-medium mb-1.5 text-gray-700">SWIFT / BIC (Optional)</label>
+                                <label className="block text-sm font-medium mb-1.5 text-gray-700">SWIFT / BIC </label>
                                 <input
                                     type="text"
                                     name="swift"
@@ -229,7 +229,7 @@ export default function EditBankPage() {
 
                             {/* IBAN */}
                             <div className="col-span-2">
-                                <label className="block text-sm font-medium mb-1.5 text-gray-700">IBAN (Optional)</label>
+                                <label className="block text-sm font-medium mb-1.5 text-gray-700">IBAN </label>
                                 <input
                                     type="text"
                                     name="iban"
@@ -241,7 +241,7 @@ export default function EditBankPage() {
 
                             {/* Bank Address */}
                             <div className="col-span-2">
-                                <label className="block text-sm font-medium mb-1.5 text-gray-700">Bank Address (Optional)</label>
+                                <label className="block text-sm font-medium mb-1.5 text-gray-700">Bank Address </label>
                                 <input
                                     type="text"
                                     name="bankAddress"

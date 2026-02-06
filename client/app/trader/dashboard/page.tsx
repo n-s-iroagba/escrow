@@ -182,18 +182,28 @@ export default function DashboardPage() {
                             {user?.email?.split('@')[0] || 'Trader'}
                         </h1>
                     </div>
-                    <button
-                        data-testid="new-transaction-button"
-                        onClick={() => router.push('/trader/escrow/initiate')}
-                        disabled={user?.role !== 'ADMIN' && !isVerified}
-                        className={`px-8 py-4 rounded-xl font-bold flex items-center justify-center gap-3 shadow-xl transition-all transform hover:scale-[1.02] active:scale-[0.98] font-display w-full lg:w-auto ${!isVerified
-                            ? 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none'
-                            : 'bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-emerald-500/40'}`}
-                    >
-                        <Plus className="w-5 h-5" />
-                        New Transaction
-                        <ArrowRight className="w-5 h-5" />
-                    </button>
+                    <div className="relative group/tooltip w-full lg:w-auto">
+                        <button
+                            data-testid="new-transaction-button"
+                            onClick={() => router.push('/trader/escrow/initiate')}
+                            disabled={user?.role !== 'ADMIN' && !isVerified}
+                            className={`px-8 py-4 rounded-xl font-bold flex items-center justify-center gap-3 shadow-xl transition-all transform hover:scale-[1.02] active:scale-[0.98] font-display w-full ${!isVerified && user?.role !== 'ADMIN'
+                                ? 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none'
+                                : 'bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-emerald-500/40'}`}
+                        >
+                            <Plus className="w-5 h-5" />
+                            New Transaction
+                            <ArrowRight className="w-5 h-5" />
+                        </button>
+                        {!isVerified && user?.role !== 'ADMIN' && (
+                            <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-max invisible group-hover/tooltip:visible opacity-0 group-hover/tooltip:opacity-100 transition-all z-10">
+                                <div className="bg-gray-900 text-white text-xs py-2 px-3 rounded-lg shadow-xl relative">
+                                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 border-4 border-transparent border-b-gray-900"></div>
+                                    Please verify your KYC to proceed
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
 
                 {/* KYC Alert */}

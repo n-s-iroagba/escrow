@@ -239,7 +239,7 @@ export const useDelete = <U = any>(
   };
 };
 
-// ==================== PATCH Hook (Optional) ====================
+// ==================== PATCH Hook  ====================
 export const usePatch = <T = any, U = any>(
   patchUrl: string,
   options?: UsePostOptions<T, U>

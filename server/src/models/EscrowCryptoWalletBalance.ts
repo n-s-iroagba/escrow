@@ -16,16 +16,16 @@ export interface IEscrowCryptoWalletBalance {
 }
 
 class EscrowCryptoWalletBalance extends Model<IEscrowCryptoWalletBalance> implements IEscrowCryptoWalletBalance {
-  public id!: string;
-  public escrowId!: string;
-  public walletAddress!: string;
-  public role!: string;
-  public balance!: number;
-  public currency!: string;
-  public confirmedByAdmin!: boolean;
-  public confirmedAt?: Date;
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  declare public id: string;
+  declare public escrowId: string;
+  declare public walletAddress: string;
+  declare public role: string;
+  declare public balance: number;
+  declare public currency: string;
+  declare public confirmedByAdmin: boolean;
+  declare public confirmedAt?: Date;
+  declare public readonly createdAt: Date;
+  declare public readonly updatedAt: Date;
 }
 
 

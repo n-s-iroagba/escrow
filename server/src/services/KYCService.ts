@@ -1,7 +1,7 @@
 import KYCDocument, { IKYCDocument } from '../models/KYCDocument';
 import KYCRepository from '../repositories/KYCRepository';
 import User from '../models/User';
-import { KYCStatus } from '../utils/constants';
+import { KycStatus } from '../utils/constants';
 import EmailService from './EmailService';
 
 class KYCService {
@@ -16,7 +16,7 @@ class KYCService {
             // Update existing
             const [_, updated] = await KYCRepository.update(existing.id, {
                 ...data,
-                status: KYCStatus.APPROVED // Auto-verify
+                status: KycStatus.VERIFIED // Auto-verify
             });
             kycDoc = updated[0];
         } else {
@@ -24,12 +24,12 @@ class KYCService {
             kycDoc = await KYCRepository.create({
                 ...data,
                 userId,
-                status: KYCStatus.APPROVED // Auto-verify
+                status: KycStatus.VERIFIED // Auto-verify
             });
         }
 
         // Update User model kycStatus
-        await User.update({ kycStatus: KYCStatus.APPROVED }, { where: { id: userId } });
+        await User.update({ kycStatus: KycStatus.VERIFIED }, { where: { id: userId } });
 
         // Send confirmation email
         const user = await User.findOne({ where: { id: userId } });
@@ -57,14 +57,14 @@ class KYCService {
         }
 
         const [_, updated] = await KYCRepository.update(kycDoc.id, {
-            status: KYCStatus.APPROVED,
+            status: KycStatus.VERIFIED,
             reviewedBy,
             reviewedAt: new Date()
         } as any);
 
         // Update user KYC status
         await User.update(
-            { kycStatus: KYCStatus.APPROVED },
+            { kycStatus: KycStatus.VERIFIED },
             { where: { id: userId } }
         );
 
@@ -87,7 +87,7 @@ class KYCService {
         }
 
         const [_, updated] = await KYCRepository.update(kycDoc.id, {
-            status: KYCStatus.REJECTED,
+            status: KycStatus.REJECTED,
             rejectionReason: reason,
             reviewedBy,
             reviewedAt: new Date()
@@ -95,7 +95,7 @@ class KYCService {
 
         // Update user KYC status
         await User.update(
-            { kycStatus: KYCStatus.REJECTED },
+            { kycStatus: KycStatus.REJECTED },
             { where: { id: userId } }
         );
 
@@ -113,7 +113,7 @@ class KYCService {
      */
     async getPendingKYCs(): Promise<KYCDocument[]> {
         return await KYCDocument.findAll({
-            where: { status: KYCStatus.PENDING },
+            where: { status: KycStatus.PENDING },
             include: [{
                 model: User,
                 as: 'user',
@@ -126,7 +126,7 @@ class KYCService {
     /**
      * Admin: Get all KYC documents
      */
-    async getAllKYCs(status?: KYCStatus): Promise<KYCDocument[]> {
+    async getAllKYCs(status?: string): Promise<KYCDocument[]> {
         const where: any = {};
         if (status) {
             where.status = status;
@@ -154,9 +154,9 @@ class KYCService {
     }> {
         const [total, pending, approved, rejected] = await Promise.all([
             KYCDocument.count(),
-            KYCDocument.count({ where: { status: KYCStatus.PENDING } }),
-            KYCDocument.count({ where: { status: KYCStatus.APPROVED } }),
-            KYCDocument.count({ where: { status: KYCStatus.REJECTED } })
+            KYCDocument.count({ where: { status: KycStatus.PENDING } }),
+            KYCDocument.count({ where: { status: KycStatus.VERIFIED } }),
+            KYCDocument.count({ where: { status: KycStatus.REJECTED } })
         ]);
 
         return { total, pending, approved, rejected };

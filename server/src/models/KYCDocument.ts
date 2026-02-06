@@ -1,5 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
-import { DocumentType, KYCStatus } from '../utils/constants';
+import { DocumentType, KycStatus } from '../utils/constants';
 import sequelize from '@/config/database';
 
 export interface IKYCDocument {
@@ -18,18 +18,18 @@ export interface IKYCDocument {
 }
 
 class KYCDocument extends Model<IKYCDocument> implements IKYCDocument {
-  public id!: string;
-  public userId!: string;
-  public documentType!: string;
-  public documentNumber!: string;
-  public fullName?: string;
-  public documentFrontUrl?: string;
-  public documentBackUrl?: string;
-  public selfieUrl?: string;
-  public status!: string;
+  declare public id: string;
+  declare public userId: string;
+  declare public documentType: string;
+  declare public documentNumber: string;
+  declare public fullName?: string;
+  declare public documentFrontUrl?: string;
+  declare public documentBackUrl?: string;
+  declare public selfieUrl?: string;
+  declare public status: string;
 
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  declare public readonly createdAt: Date;
+  declare public readonly updatedAt: Date;
 }
 
 
@@ -77,8 +77,8 @@ KYCDocument.init(
       field: 'selfie_url',
     },
     status: {
-      type: DataTypes.ENUM(...Object.values(KYCStatus)),
-      defaultValue: KYCStatus.PENDING,
+      type: DataTypes.ENUM(...Object.values(KycStatus)),
+      defaultValue: KycStatus.PENDING,
       allowNull: false
     },
 

@@ -5,18 +5,20 @@ export const UserRole = {
 
 export const KycStatus = {
   NOT_SUBMITTED: 'NOT_SUBMITTED',
-  SUBMITTED: 'SUBMITTED',
-  VERIFIED: 'VERIFIED', // You might want to add this
-  REJECTED: 'REJECTED', // You might want to add this
+  PENDING: 'PENDING',
+  VERIFIED: 'VERIFIED',
+  REJECTED: 'REJECTED',
 } as const;
+
+export type KycStatusType = typeof KycStatus[keyof typeof KycStatus];
 
 export const EscrowState = {
   INITIALIZED: 'INITIALIZED',
   ONE_PARTY_FUNDED: 'ONE_PARTY_FUNDED',
   COMPLETELY_FUNDED: 'COMPLETELY_FUNDED',
-  RELEASED: 'RELEASED', // You might want to add this
-  DISPUTED: 'DISPUTED', // You might want to add this
-  CANCELLED: 'CANCELLED', // You might want to add this
+  RELEASED: 'RELEASED',
+  DISPUTED: 'DISPUTED',
+  CANCELLED: 'CANCELLED',
 } as const;
 
 export const TradeType = {
@@ -44,20 +46,11 @@ export const Currency = {
   XRP: 'XRP',
 } as const;
 
-
-
 export const PaymentMethod = {
   PAYPAL: 'PAYPAL',
   WIRE_TRANSFER: 'WIRE_TRANSFER',
   CRYPTO: 'CRYPTO',
 } as const;
-
-export enum KYCStatus {
-  NOT_STARTED = 'NOT_STARTED',
-  PENDING = 'PENDING',
-  APPROVED = 'APPROVED',
-  REJECTED = 'REJECTED'
-}
 
 export const DocumentType = {
   PASSPORT: 'PASSPORT',

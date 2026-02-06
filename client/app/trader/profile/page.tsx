@@ -208,7 +208,7 @@ export default function ProfilePage() {
 
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                     <div>
-                                                        <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Routing Number (Optional)</label>
+                                                        <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Routing Number </label>
                                                         <input
                                                             type="text"
                                                             className="w-full p-3 bg-white border border-gray-200 rounded-lg outline-none focus:border-green-500 transition-colors font-mono"
@@ -217,7 +217,7 @@ export default function ProfilePage() {
                                                         />
                                                     </div>
                                                     <div>
-                                                        <label className="block text-xs font-bold text-gray-500 uppercase mb-2">SWIFT / BIC (Optional)</label>
+                                                        <label className="block text-xs font-bold text-gray-500 uppercase mb-2">SWIFT / BIC </label>
                                                         <input
                                                             type="text"
                                                             className="w-full p-3 bg-white border border-gray-200 rounded-lg outline-none focus:border-green-500 transition-colors font-mono"
