@@ -25,10 +25,136 @@ class EmailService {
      */
     private getLogoHtml(): string {
         return `
-        <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 20px;">
-            <div style="width: 24px; height: 24px; background-color: #13ec5b; border-radius: 4px; color: #0d1b12; font-size: 12px; font-weight: bold; display: flex; align-items: center; justify-content: center; text-align: center; line-height: 24px; font-family: sans-serif;">X</div>
-            <span style="font-weight: bold; font-size: 18px; letter-spacing: -0.025em; color: #ffffff; font-family: sans-serif;">MuskX Secure Escrow</span>
+        <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 32px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <div style="width: 24px; height: 24px; background-color: #13ec5b; border-radius: 4px; color: #0d1b12; font-size: 14px; font-weight: bold; display: flex; align-items: center; justify-content: center; line-height: 24px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">X</div>
+                <span style="font-weight: 700; font-size: 18px; color: #0d1b12; letter-spacing: -0.02em; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">MuskX Secure Escrow</span>
+            </div>
         </div>
+        `;
+    }
+
+    /**
+     * Wrap content in a minimal, premium container
+     */
+    private wrapEmail(title: string, content: string): string {
+        return `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <style>
+                    body {
+                        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+                        line-height: 1.6;
+                        color: #111827;
+                        margin: 0;
+                        padding: 0;
+                        background-color: #f9fafb;
+                        -webkit-font-smoothing: antialiased;
+                    }
+                    .wrapper {
+                        max-width: 600px;
+                        margin: 40px auto;
+                        padding: 0 20px;
+                    }
+                    .container {
+                        background: #ffffff;
+                        border-radius: 16px;
+                        padding: 48px;
+                        border: 1px solid #eaeaea;
+                        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+                    }
+                    h1 {
+                        font-size: 24px;
+                        font-weight: 700;
+                        color: #111827;
+                        margin: 0 0 24px 0;
+                        text-align: center;
+                        letter-spacing: -0.025em;
+                    }
+                    p {
+                        margin: 0 0 16px 0;
+                        font-size: 16px;
+                        color: #374151;
+                    }
+                    .button {
+                        display: inline-block;
+                        background-color: #0d1b12;
+                        color: #ffffff;
+                        padding: 14px 32px;
+                        border-radius: 8px;
+                        text-decoration: none;
+                        font-weight: 600;
+                        font-size: 15px;
+                        margin: 24px 0;
+                        text-align: center;
+                        transition: background-color 0.2s;
+                    }
+                    .button:hover {
+                        background-color: #1f2937;
+                    }
+                    .divider {
+                        height: 1px;
+                        background-color: #eaeaea;
+                        margin: 32px 0;
+                        border: none;
+                    }
+                    .footer {
+                        text-align: center;
+                        margin-top: 32px;
+                        color: #9ca3af;
+                        font-size: 13px;
+                    }
+                    .data-box {
+                        background-color: #f9fafb;
+                        border-radius: 8px;
+                        padding: 24px;
+                        margin: 24px 0;
+                        border: 1px solid #f3f4f6;
+                    }
+                    .data-row {
+                        display: flex;
+                        justify-content: space-between;
+                        padding: 8px 0;
+                        font-size: 14px;
+                    }
+                    .data-label {
+                        color: #6b7280;
+                    }
+                    .data-value {
+                        font-weight: 600;
+                        color: #111827;
+                    }
+                    strong {
+                        font-weight: 600;
+                        color: #111827;
+                    }
+                    a {
+                        color: #0d1b12;
+                        text-decoration: underline;
+                    }
+                    a.button {
+                        color: #ffffff;
+                        text-decoration: none;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="wrapper">
+                    ${this.getLogoHtml()}
+                    <div class="container">
+                        <h1>${title}</h1>
+                        ${content}
+                    </div>
+                    <div class="footer">
+                        <p style="margin-bottom: 8px;">&copy; ${new Date().getFullYear()} MuskX Secure Escrow</p>
+                        <p>Secure. Transparent. Efficient.</p>
+                    </div>
+                </div>
+            </body>
+            </html>
         `;
     }
 
@@ -58,9 +184,18 @@ class EmailService {
 
     /**
      * Strip HTML tags to create plain text version
+     * Improved to preserve whitespace and line breaks for better spam scores
      */
     private stripHtml(html: string): string {
-        return html.replace(/<[^>]*>/g, '');
+        return html
+            .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '') // Remove style tags
+            .replace(/<br\s*\/?>/gi, '\n') // Replace <br> with newline
+            .replace(/<\/p>/gi, '\n\n') // Replace </p> with double newline
+            .replace(/<\/div>/gi, '\n') // Replace </div> with newline
+            .replace(/<[^>]*>/g, '') // Strip remaining tags
+            .replace(/&nbsp;/g, ' ') // Replace &nbsp;
+            .replace(/\n\s+\n/g, '\n\n') // Collapse multiple newlines
+            .trim(); // Trim whitespace
     }
 
     /**
@@ -69,49 +204,22 @@ class EmailService {
     async sendVerificationEmail(email: string, token: string, userName?: string): Promise<boolean> {
         const verificationLink = `${this.frontendUrl}/auth/verify-email/${token}`;
 
-        const html = `
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <style>
-                    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-                    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                    .header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
-                    .content { background: #f9fafb; padding: 30px; border-radius: 0 0 8px 8px; }
-                    .button { display: inline-block; background: #10b981; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 20px 0; }
-                    .footer { text-align: center; margin-top: 20px; color: #6b7280; font-size: 12px; }
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <div class="header">
-                        ${this.getLogoHtml()}
-                        <h1>Welcome to MuskX Secure Escrow!</h1>
-                    </div>
-                    <div class="content">
-                        <p>Hello ${userName || 'there'},</p>
-                        <p>Thank you for signing up with MuskX Secure Escrow. To complete your registration, please verify your email address by clicking the button below:</p>
-                        <p style="text-align: center;">
-                            <a href="${verificationLink}" class="button">Verify Email Address</a>
-                        </p>
-                        <p>Or copy and paste this link into your browser:</p>
-                        <p style="word-break: break-all; background: white; padding: 10px; border-radius: 4px;">${verificationLink}</p>
-                        <p style="margin-top: 20px; color: #6b7280; font-size: 14px;">
-                            This verification link will expire in 24 hours. If you didn't create an account, please ignore this email.
-                        </p>
-                    </div>
-                    <div class="footer">
-                        <p>&copy; ${new Date().getFullYear()} MuskX Secure Escrow. All rights reserved.</p>
-                    </div>
-                </div>
-            </body>
-            </html>
+        const content = `
+            <p>Hello ${userName || 'there'},</p>
+            <p>Welcome to MuskX Secure Escrow. To ensure the security of your account, please verify your email address.</p>
+            <div style="text-align: center;">
+                <a href="${verificationLink}" class="button">Verify Email Address</a>
+            </div>
+            <p style="font-size: 14px; color: #6b7280; text-align: center;">
+                Or paste this link in your browser: <br>
+                <span style="color: #6b7280; word-break: break-all;">${verificationLink}</span>
+            </p>
         `;
 
         return this.send({
             to: email,
-            subject: 'Verify Your Email Address',
-            html,
+            subject: 'Verify your email address',
+            html: this.wrapEmail('Verify Your Email', content),
             sender: 'AUTH'
         });
     }
@@ -122,57 +230,25 @@ class EmailService {
     async sendPasswordResetEmail(email: string, token: string, userName?: string): Promise<boolean> {
         const resetLink = `${this.frontendUrl}/auth/reset-password/${token}`;
 
-        const html = `
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <style>
-                    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-                    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                    .header { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
-                    .content { background: #f9fafb; padding: 30px; border-radius: 0 0 8px 8px; }
-                    .button { display: inline-block; background: #3b82f6; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 20px 0; }
-                    .footer { text-align: center; margin-top: 20px; color: #6b7280; font-size: 12px; }
-                    .warning { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px; margin: 15px 0; border-radius: 4px; }
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <div class="header">
-                        ${this.getLogoHtml()}
-                        <h1>Password Reset Request</h1>
-                    </div>
-                    <div class="content">
-                        <p>Hello ${userName || 'there'},</p>
-                        <p>We received a request to reset your password for your MuskX Secure Escrow account. Click the button below to create a new password:</p>
-                        <p style="text-align: center;">
-                            <a href="${resetLink}" class="button">Reset Password</a>
-                        </p>
-                        <p>Or copy and paste this link into your browser:</p>
-                        <p style="word-break: break-all; background: white; padding: 10px; border-radius: 4px;">${resetLink}</p>
-                        <div class="warning">
-                            <strong>⚠️ Security Notice:</strong> This password reset link will expire in 1 hour. If you didn't request this reset, please ignore this email and your password will remain unchanged.
-                        </div>
-                    </div>
-                    <div class="footer">
-                        <p>&copy; ${new Date().getFullYear()} MuskX Secure Escrow. All rights reserved.</p>
-                    </div>
-                </div>
-            </body>
-            </html>
+        const content = `
+            <p>Hello ${userName || 'there'},</p>
+            <p>We received a request to reset your password. If you didn't make this request, you can safely ignore this email.</p>
+            <div style="text-align: center;">
+                <a href="${resetLink}" class="button">Reset Password</a>
+            </div>
+            <p style="font-size: 14px; color: #6b7280; text-align: center; margin-top: 24px;">
+                Link expires in 1 hour.
+            </p>
         `;
 
         return this.send({
             to: email,
-            subject: 'Reset Your Password',
-            html,
+            subject: 'Reset your password',
+            html: this.wrapEmail('Password Reset Request', content),
             sender: 'AUTH'
         });
     }
 
-    /**
-     * Send escrow invitation notification
-     */
     /**
      * Send escrow invitation notification
      */
@@ -182,104 +258,51 @@ class EmailService {
         amount: number,
         currency: string,
         escrowId: string,
-        // tradeType, // Unused param, typically would use for subject or message customization.
+        // tradeType, // Unused param
         counterAmount?: number,
         counterCurrency?: string,
-        role?: string // 'BUYER' or 'SELLER' (Initiator's role)
+        role?: string
     ): Promise<boolean> {
-        // Invite link: /auth/sign-up/invite?email=...&escrowId=...
         const inviteLink = `${this.frontendUrl}/auth/sign-up/invite/${email}`;
-        // Construct detailed message
-        // Example: "Buyer wants to purchase 1 BTC for 50,000 USD"
+
         let intentionMessage = '';
         if (role === 'BUYER') {
-            intentionMessage = `The buyer wants to purchase <strong>${amount} ${currency}</strong>`;
+            intentionMessage = `Buying <strong>${amount} ${currency}</strong>`;
             if (counterAmount && counterCurrency) {
                 intentionMessage += ` for <strong>${counterAmount} ${counterCurrency}</strong>`;
             }
         } else {
-            // Initiator is Seller
-            intentionMessage = `The seller wants to sell <strong>${amount} ${currency}</strong>`;
+            intentionMessage = `Selling <strong>${amount} ${currency}</strong>`;
             if (counterAmount && counterCurrency) {
                 intentionMessage += ` for <strong>${counterAmount} ${counterCurrency}</strong>`;
             }
         }
 
-        const html = `
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <style>
-                    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #1f2937; background-color: #f3f4f6; margin: 0; padding: 0; }
-                    .container { max-width: 600px; margin: 40px auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
-                    .header { background: #10b981; padding: 40px 20px; text-align: center; }
-                    .header h1 { color: white; margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.025em; }
-                    .content { padding: 40px 30px; }
-                    .details-box { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin: 24px 0; }
-                    .detail-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f3f4f6; }
-                    .detail-row:last-child { border-bottom: none; }
-                    .detail-label { color: #6b7280; font-size: 14px; }
-                    .detail-value { font-weight: 600; color: #111827; font-size: 14px; }
-                    .button { display: block; width: 100%; background: #10b981; color: white; padding: 16px 0; text-align: center; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; margin-top: 32px; transition: background-color 0.2s; }
-                    .button:hover { background: #059669; }
-                    .footer { background: #f9fafb; padding: 24px; text-align: center; color: #9ca3af; font-size: 12px; border-top: 1px solid #e5e7eb; }
-                    .price-highlight { font-size: 18px; color: #059669; font-weight: 700; margin-top: 4px; }
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <div class="header">
-                        ${this.getLogoHtml()}
-                        <h1>Secure Escrow Invitation</h1>
-                    </div>
-                    <div class="content">
-                        <p style="font-size: 16px; color: #4b5563; margin-bottom: 24px;">
-                            Hello,
-                        </p>
-                        <p style="font-size: 16px; color: #4b5563; margin-bottom: 24px;">
-                            You have been invited by <strong>${inviterEmail}</strong> to participate in a secured transaction on our platform.
-                        </p>
-
-                        <div class="details-box">
-                            <div style="text-align: center; margin-bottom: 20px;">
-                                <div style="font-size: 14px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">Transaction Summary</div>
-                                <div style="margin-top: 8px; font-size: 16px;">${intentionMessage}</div>
-                            </div>
-                            
-                            <div class="detail-row">
-                                <span class="detail-label">Asset</span>
-                                <span class="detail-value">${amount} ${currency}</span>
-                            </div>
-                            ${counterAmount ? `
-                            <div class="detail-row">
-                                <span class="detail-label">Price / Value</span>
-                                <span class="detail-value">${counterAmount} ${counterCurrency}</span>
-                            </div>` : ''}
-                            <div class="detail-row">
-                                <span class="detail-label">Payment Method</span>
-                                <span class="detail-value">Escrow Secured</span>
-                            </div>
-                        </div>
-                        <p>TransactonID: ${escrowId}
-                        <p style="font-size: 15px; color: #6b7280; text-align: center; margin-bottom: 8px;">
-                            To review the full agreement and accept this transaction, please proceed below.
-                        </p>
-
-                        <a href="${inviteLink}" class="button">View Transaction Details</a>
-                    </div>
-                    <div class="footer">
-                        <p>&copy; ${new Date().getFullYear()} MuskX Secure Escrow. All rights reserved.</p>
-                        <p>This email was sent to ${email}. If you were not expecting this, please ignore it.</p>
-                    </div>
+        const content = `
+            <p style="text-align: center; color: #6b7280; margin-bottom: 32px;">
+                You've been invited by <strong>${inviterEmail}</strong> to a secure transaction.
+            </p>
+            
+            <div class="data-box">
+                <div class="data-row" style="margin-bottom: 16px; border-bottom: 1px solid #eee; padding-bottom: 16px;">
+                    <span class="data-label">Transaction ID</span>
+                    <span class="data-value" style="font-family: monospace;">${escrowId}</span>
                 </div>
-            </body>
-            </html>
+                <div class="data-row">
+                    <span class="data-label">Summary</span>
+                    <span class="data-value" style="text-align: right;">${intentionMessage}</span>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <a href="${inviteLink}" class="button">View Transaction Details</a>
+            </div>
         `;
 
         return this.send({
             to: email,
             subject: `Action Required: Escrow Invitation from ${inviterEmail}`,
-            html,
+            html: this.wrapEmail('Secure Transaction Invitation', content),
             sender: 'INFO'
         });
     }
@@ -288,44 +311,20 @@ class EmailService {
      * Send KYC submission confirmation
      */
     async sendKYCSubmissionConfirmation(email: string, firstName?: string): Promise<boolean> {
-        const html = `
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <style>
-                    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-                    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                    .header { background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
-                    .content { background: #f9fafb; padding: 30px; border-radius: 0 0 8px 8px; }
-                    .footer { text-align: center; margin-top: 20px; color: #6b7280; font-size: 12px; }
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <div class="header">
-                        ${this.getLogoHtml()}
-                        <h1>KYC Documents Received</h1>
-                    </div>
-                    <div class="content">
-                        <p>Hello ${firstName || 'there'},</p>
-                        <p>Thank you for submitting your KYC (Know Your Customer) documents. We have received your information and our team is currently reviewing it.</p>
-                        <p>You will receive an email notification once your verification is complete. This process typically takes 1-3 business days.</p>
-                        <p style="margin-top: 20px; color: #6b7280; font-size: 14px;">
-                            If you have any questions, please don't hesitate to contact our support team.
-                        </p>
-                    </div>
-                    <div class="footer">
-                        <p>&copy; ${new Date().getFullYear()} MuskX Secure Escrow. All rights reserved.</p>
-                    </div>
-                </div>
-            </body>
-            </html>
+        const content = `
+            <p>Hello ${firstName || 'there'},</p>
+            <p>We've received your identity verification documents. Our team is currently reviewing them.</p>
+            <div class="data-box" style="text-align: center; color: #6b7280;">
+                Estimated Review Time<br>
+                <strong style="color: #111827; font-size: 18px;">1-3 Business Days</strong>
+            </div>
+            <p>We'll notify you as soon as the review is complete.</p>
         `;
 
         return this.send({
             to: email,
-            subject: 'KYC Documents Submitted Successfully',
-            html,
+            subject: 'KYC Documents Received',
+            html: this.wrapEmail('Documents Submitted', content),
             sender: 'INFO'
         });
     }
@@ -336,48 +335,19 @@ class EmailService {
     async sendKYCApproval(email: string, firstName?: string): Promise<boolean> {
         const dashboardLink = `${this.frontendUrl}/trader/dashboard`;
 
-        const html = `
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <style>
-                    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-                    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                    .header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
-                    .content { background: #f9fafb; padding: 30px; border-radius: 0 0 8px 8px; }
-                    .button { display: inline-block; background: #10b981; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 20px 0; }
-                    .success { background: #d1fae5; border-left: 4px solid #10b981; padding: 12px; margin: 15px 0; border-radius: 4px; }
-                    .footer { text-align: center; margin-top: 20px; color: #6b7280; font-size: 12px; }
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <div class="header">
-                        ${this.getLogoHtml()}
-                        <h1>✅ KYC Verification Approved</h1>
-                    </div>
-                    <div class="content">
-                        <p>Hello ${firstName || 'there'},</p>
-                        <div class="success">
-                            <strong>Congratulations!</strong> Your KYC verification has been approved.
-                        </div>
-                        <p>You now have full access to all features of the MuskX Secure Escrow, including the ability to initiate and participate in escrow transactions.</p>
-                        <p style="text-align: center;">
-                            <a href="${dashboardLink}" class="button">Go to Dashboard</a>
-                        </p>
-                    </div>
-                    <div class="footer">
-                        <p>&copy; ${new Date().getFullYear()} MuskX Secure Escrow. All rights reserved.</p>
-                    </div>
-                </div>
-            </body>
-            </html>
+        const content = `
+            <p>Hello ${firstName || 'there'},</p>
+            <p>Great news! Your identity has been verified successfully.</p>
+            <p>You now have full access to all MuskX Secure Escrow features.</p>
+            <div style="text-align: center;">
+                <a href="${dashboardLink}" class="button">Go to Dashboard</a>
+            </div>
         `;
 
         return this.send({
             to: email,
-            subject: 'KYC Verification Approved',
-            html,
+            subject: 'You are verified',
+            html: this.wrapEmail('Verification Approved', content),
             sender: 'INFO'
         });
     }
@@ -388,49 +358,25 @@ class EmailService {
     async sendKYCRejection(email: string, reason: string, firstName?: string): Promise<boolean> {
         const kycLink = `${this.frontendUrl}/trader/kyc`;
 
-        const html = `
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <style>
-                    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-                    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                    .header { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
-                    .content { background: #f9fafb; padding: 30px; border-radius: 0 0 8px 8px; }
-                    .button { display: inline-block; background: #ef4444; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 20px 0; }
-                    .reason { background: #fee2e2; border-left: 4px solid #ef4444; padding: 12px; margin: 15px 0; border-radius: 4px; }
-                    .footer { text-align: center; margin-top: 20px; color: #6b7280; font-size: 12px; }
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <div class="header">
-                        ${this.getLogoHtml()}
-                        <h1>KYC Verification Update</h1>
-                    </div>
-                    <div class="content">
-                        <p>Hello ${firstName || 'there'},</p>
-                        <p>Unfortunately, we were unable to approve your KYC verification at this time.</p>
-                        <div class="reason">
-                            <strong>Reason:</strong> ${reason}
-                        </div>
-                        <p>Please review the reason above and submit updated documents. Our team is here to help if you have any questions.</p>
-                        <p style="text-align: center;">
-                            <a href="${kycLink}" class="button">Resubmit KYC Documents</a>
-                        </p>
-                    </div>
-                    <div class="footer">
-                        <p>&copy; ${new Date().getFullYear()} MuskX Secure Escrow. All rights reserved.</p>
-                    </div>
-                </div>
-            </body>
-            </html>
+        const content = `
+            <p>Hello ${firstName || 'there'},</p>
+            <p>We were unable to verify your identity with the documents provided.</p>
+            
+            <div class="data-box" style="background-color: #fef2f2; border-color: #fee2e2;">
+                <span style="color: #991b1b; font-weight: 600;">Reason for rejection:</span>
+                <p style="color: #7f1d1d; margin-top: 4px; margin-bottom: 0;">${reason}</p>
+            </div>
+
+            <p>Please review the issue and submit updated documents.</p>
+            <div style="text-align: center;">
+                <a href="${kycLink}" class="button" style="background-color: #dc2626;">Resubmit Documents</a>
+            </div>
         `;
 
         return this.send({
             to: email,
-            subject: 'KYC Verification Update Required',
-            html,
+            subject: 'Action Required: Verification Update',
+            html: this.wrapEmail('Verification Update', content),
             sender: 'INFO'
         });
     }
@@ -447,50 +393,30 @@ class EmailService {
     ): Promise<boolean> {
         const escrowLink = `${this.frontendUrl}/trader/escrow/${escrowId}`;
 
-        const html = `
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <style>
-                    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-                    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                    .header { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
-                    .content { background: #f9fafb; padding: 30px; border-radius: 0 0 8px 8px; }
-                    .button { display: inline-block; background: #8b5cf6; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 20px 0; }
-                    .status { background: #ede9fe; border-left: 4px solid #8b5cf6; padding:12px; margin: 15px 0; border-radius: 4px; }
-                    .footer { text-align: center; margin-top: 20px; color: #6b7280; font-size: 12px; }
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <div class="header">
-                        ${this.getLogoHtml()}
-                        <h1>Escrow Status Updated</h1>
-                    </div>
-                    <div class="content">
-                        <p>Hello ${userName || 'there'},</p>
-                        <p>The status of your escrow transaction has been updated.</p>
-                        <div class="status">
-                            <strong>Previous Status:</strong> ${oldStatus}<br>
-                            <strong>New Status:</strong> ${newStatus}
-                        </div>
-                        <p>Escrow ID: ${escrowId}</p>
-                        <p style="text-align: center;">
-                            <a href="${escrowLink}" class="button">View Escrow Details</a>
-                        </p>
-                    </div>
-                    <div class="footer">
-                        <p>&copy; ${new Date().getFullYear()} MuskX Secure Escrow. All rights reserved.</p>
-                    </div>
+        const content = `
+            <p>Hello ${userName || 'there'},</p>
+            <p>The status of escrow <strong>${escrowId}</strong> has changed.</p>
+            
+            <div class="data-box">
+                <div class="data-row">
+                    <span class="data-label">Previous Status</span>
+                    <span class="data-value" style="color: #6b7280;">${oldStatus}</span>
                 </div>
-            </body>
-            </html>
+                <div class="data-row" style="margin-top: 8px;">
+                    <span class="data-label">New Status</span>
+                    <span class="data-value" style="color: #059669;">${newStatus}</span>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <a href="${escrowLink}" class="button">View Transaction</a>
+            </div>
         `;
 
         return this.send({
             to: email,
-            subject: `Escrow ${escrowId} Status Update`,
-            html,
+            subject: `Escrow Update: ${newStatus}`,
+            html: this.wrapEmail('Status Update', content),
             sender: 'INFO'
         });
     }
@@ -501,45 +427,17 @@ class EmailService {
     async sendAdminNotification(subject: string, message: string, data?: any): Promise<boolean> {
         const adminEmail = (env as any).ADMIN_EMAIL || 'admin@escrow-platform.com';
 
-        const html = `
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <style>
-                    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-                    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                    .header { background: linear-gradient(135deg, #1f2937 0%, #111827 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
-                    .content { background: #f9fafb; padding: 30px; border-radius: 0 0 8px 8px; }
-                    .data { background: white; padding: 15px; border-radius: 4px; font-family: monospace; font-size: 12px; margin: 15px 0; overflow-x: auto; }
-                    .footer { text-align: center; margin-top: 20px; color: #6b7280; font-size: 12px; }
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <div class="header">
-                        ${this.getLogoHtml()}
-                        <h1>Admin Notification</h1>
-                    </div>
-                    <div class="content">
-                        <p><strong>Subject:</strong> ${subject}</p>
-                        <p>${message}</p>
-                        ${data ? `<div class="data"><pre>${JSON.stringify(data, null, 2)}</pre></div>` : ''}
-                        <p style="margin-top: 20px; color: #6b7280; font-size: 14px;">
-                            Timestamp: ${new Date().toISOString()}
-                        </p>
-                    </div>
-                    <div class="footer">
-                        <p>&copy; ${new Date().getFullYear()} MuskX Secure Escrow. All rights reserved.</p>
-                    </div>
-                </div>
-            </body>
-            </html>
+        const content = `
+            <p><strong>${subject}</strong></p>
+            <p>${message}</p>
+            ${data ? `<pre style="background: #f1f5f9; padding: 16px; border-radius: 8px; overflow-x: auto; font-size: 12px; border: 1px solid #e2e8f0;">${JSON.stringify(data, null, 2)}</pre>` : ''}
+            <p style="font-size: 12px; color: #9ca3af; margin-top: 24px;">Timestamp: ${new Date().toISOString()}</p>
         `;
 
         return this.send({
             to: adminEmail,
-            subject: `[Admin Alert] ${subject}`,
-            html,
+            subject: `[Admin] ${subject}`,
+            html: this.wrapEmail('Admin Notification', content),
             sender: 'INFO'
         });
     }
@@ -550,54 +448,24 @@ class EmailService {
     async sendShadowUserInvitation(email: string, invitedBy: string): Promise<boolean> {
         const registerLink = `${this.frontendUrl}/auth/sign-up`;
 
-        const html = `
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <style>
-                    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-                    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                    .header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
-                    .content { background: #f9fafb; padding: 30px; border-radius: 0 0 8px 8px; }
-                    .button { display: inline-block; padding: 14px 28px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; text-decoration: none; border-radius: 8px; font-weight: bold; margin: 20px 0; }
-                    .footer { text-align: center; margin-top: 20px; color: #6b7280; font-size: 12px; }
-                    .highlight { background: #d1fae5; padding: 15px; border-radius: 8px; margin: 15px 0; }
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <div class="header">
-                        ${this.getLogoHtml()}
-                        <h1>🎉 You've Been Invited!</h1>
-                    </div>
-                    <div class="content">
-                        <p>Hello,</p>
-                        <div class="highlight">
-                            <strong>${invitedBy}</strong> has invited you to participate in a secure escrow transaction on our platform.
-                        </div>
-                        <p>To view and accept this transaction, you'll need to create an account on our platform.</p>
-                        <p><strong>What is Escrow?</strong></p>
-                        <p>Escrow is a secure way to trade where funds are held safely until both parties fulfill their obligations. This protects both buyers and sellers.</p>
-                        <p style="text-align: center;">
-                            <a href="${registerLink}" class="button">Create Your Account</a>
-                        </p>
-                        <p style="color: #6b7280; font-size: 14px;">Once registered, you'll be able to view and accept the escrow transaction.</p>
-                    </div>
-                    <div class="footer">
-                        <p>&copy; ${new Date().getFullYear()} MuskX Secure Escrow. All rights reserved.</p>
-                    </div>
-                </div>
-            </body>
-            </html>
+        const content = `
+            <p>Hello,</p>
+            <p><strong>${invitedBy}</strong> has invited you to a secure escrow transaction.</p>
+            <p>Escrow protects both buyers and sellers by holding funds safely until all terms are met.</p>
+            
+            <div style="text-align: center;">
+                <a href="${registerLink}" class="button">Create Account & View</a>
+            </div>
         `;
 
         return this.send({
             to: email,
-            subject: `${invitedBy} invited you to an Escrow Transaction`,
-            html,
+            subject: `${invitedBy} invited you to a transaction`,
+            html: this.wrapEmail('You\'ve Been Invited', content),
             sender: 'INFO'
         });
     }
+
     /**
      * Send welcome email with funding instructions for invited users
      */
@@ -605,61 +473,35 @@ class EmailService {
         const dashboardLink = `${this.frontendUrl}/dashboard`;
 
         const escrowListHtml = escrows.map(escrow => `
-            <div style="background: white; padding: 10px; margin: 10px 0; border: 1px solid #e5e7eb; border-radius: 4px;">
-                <div style="font-weight: bold;">Escrow ID: ${escrow.id}</div>
-                <div>Amount: ${escrow.amount} ${escrow.buyCurrency || escrow.sellCurrency}</div>
-                <a href="${this.frontendUrl}/trader/escrow/${escrow.id}" style="color: #10b981; text-decoration: none; font-size: 12px;">View Details</a>
+            <div style="padding: 16px; border-bottom: 1px solid #eee;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-weight: 600; font-size: 14px;">Escrow #${escrow.id}</div>
+                        <div style="color: #6b7280; font-size: 13px;">${escrow.amount} ${escrow.buyCurrency || escrow.sellCurrency}</div>
+                    </div>
+                    <a href="${this.frontendUrl}/trader/escrow/${escrow.id}" style="color: #059669; text-decoration: none; font-weight: 600; font-size: 13px;">View</a>
+                </div>
             </div>
         `).join('');
 
-        const html = `
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <style>
-                    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-                    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                    .header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
-                    .content { background: #f9fafb; padding: 30px; border-radius: 0 0 8px 8px; }
-                    .button { display: inline-block; background: #10b981; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 20px 0; }
-                    .footer { text-align: center; margin-top: 20px; color: #6b7280; font-size: 12px; }
-                    .escrow-list { background: #f3f4f6; padding: 15px; border-radius: 8px; margin: 20px 0; }
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <div class="header">
-                        ${this.getLogoHtml()}
-                        <h1>Welcome to MuskX Secure Escrow!</h1>
-                    </div>
-                    <div class="content">
-                        <p>Hello ${firstName || 'there'},</p>
-                        <p>Your account has been successfully created and verified.</p>
-                        <p>You have pending escrow transactions waiting for your attention. Here are your funding instructions:</p>
-                        
-                        <div class="escrow-list">
-                            <strong>Your Pending Escrows:</strong>
-                            ${escrowListHtml}
-                        </div>
+        const content = `
+            <p>Hello ${firstName || 'there'},</p>
+            <p>Your account is ready. You have pending transactions waiting for your attention.</p>
+            
+            <div class="data-box" style="padding: 0;">
+                <div style="padding: 16px; background: #f9fafb; border-bottom: 1px solid #eee; font-weight: 600; font-size: 13px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em;">Pending Actions</div>
+                ${escrowListHtml}
+            </div>
 
-                        <p>To fund these transactions or view more details, please visit your dashboard.</p>
-
-                        <p style="text-align: center;">
-                            <a href="${dashboardLink}" class="button">Go to Dashboard</a>
-                        </p>
-                    </div>
-                    <div class="footer">
-                        <p>&copy; ${new Date().getFullYear()} MuskX Secure Escrow. All rights reserved.</p>
-                    </div>
-                </div>
-            </body>
-            </html>
+            <div style="text-align: center;">
+                <a href="${dashboardLink}" class="button">Go to Dashboard</a>
+            </div>
         `;
 
         return this.send({
             to: email,
-            subject: 'Welcome! Funding Instructions for Your Escrows',
-            html,
+            subject: 'Welcome to MuskX Secure Escrow',
+            html: this.wrapEmail('Account Ready', content),
             sender: 'INFO'
         });
     }
