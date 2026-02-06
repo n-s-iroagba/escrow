@@ -5,6 +5,7 @@ import API_ROUTES from '@/constants/api-routes';
 import { useParams, useRouter } from 'next/navigation';
 import { TradeType, PaymentMethod } from '@/constants/enums';
 import { Copy, ArrowRight, Banknote, ShieldCheck, CheckCircle } from 'lucide-react';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { useState, useEffect } from 'react';
 import Script from 'next/script';
 import { useRequiredAuth } from '@/hooks/useAuthContext';
@@ -91,7 +92,24 @@ export default function FundEscrowPage() {
     }, [paypalLoaded, escrow, id, fundEscrow, amountToPay]);
 
 
-    if (loadingDetails || loadingEscrow) return <div className="p-12 text-center text-gray-500">Loading funding options...</div>;
+    if (loadingDetails || loadingEscrow) {
+        return (
+            <div className="min-h-screen bg-[#f6f8f6] p-8 font-display flex items-center justify-center">
+                <div className="max-w-2xl w-full bg-white rounded-3xl shadow-xl p-8 border border-gray-100 space-y-8">
+                    <div className="text-center space-y-4">
+                        <Skeleton className="h-8 w-48 mx-auto" />
+                        <Skeleton className="h-4 w-96 mx-auto" />
+                        <Skeleton className="h-6 w-32 mx-auto rounded-full" />
+                    </div>
+                    <div className="space-y-6">
+                        <Skeleton className="h-64 rounded-2xl" />
+                        <Skeleton className="h-16 rounded-xl" />
+                        <Skeleton className="h-16 rounded-xl" />
+                    </div>
+                </div>
+            </div>
+        );
+    }
     if (!escrow || !fundingDetails) return <div className="p-12 text-center text-red-500">Unable to load transaction data</div>;
 
     const handleCopy = (text: string) => {

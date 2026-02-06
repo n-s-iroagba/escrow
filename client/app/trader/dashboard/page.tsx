@@ -59,14 +59,7 @@ export default function DashboardPage() {
     const totalVolume = myEscrows.reduce((acc: number, curr: any) => acc + parseFloat(curr.amount || 0), 0);
 
     if (loading) {
-        return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-                <div className="animate-pulse flex flex-col items-center">
-                    <div className="w-16 h-16 rounded-xl bg-emerald-500/30 mb-4 shadow-lg shadow-emerald-500/30"></div>
-                    <p className="text-emerald-600 font-semibold">Loading your dashboard...</p>
-                </div>
-            </div>
-        );
+        // Fallthrough to skeleton UI
     }
 
     return (
@@ -120,7 +113,7 @@ export default function DashboardPage() {
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <p className="text-sm font-semibold truncate">{user?.email || 'Trader'}</p>
-                                        <p className="text-xs text-emerald-400/80 capitalize">{user?.role === 'client' ? 'Trader' : 'Admin'}</p>
+                                        <p className="text-xs text-emerald-400/80 capitalize">{user?.role === 'CLIENT' ? 'Trader' : 'Admin'}</p>
                                     </div>
                                 </div>
                             </div>
@@ -209,7 +202,7 @@ export default function DashboardPage() {
                 </div>
 
                 {/* KYC Alert */}
-                {!isVerified && user?.role !== 'ADMIN' && (
+                {!isVerified && user?.role !== 'ADMIN' && !kycLoading && (
                     <div className="bg-white rounded-xl p-8 lg:p-10 border-2 border-emerald-100 shadow-xl shadow-emerald-500/5 mb-12 relative overflow-hidden">
                         <div className="absolute right-0 top-0 w-96 h-96 bg-emerald-500/5 rounded-full blur-3xl -mr-48 -mt-48"></div>
                         <div className="absolute left-0 bottom-0 w-80 h-80 bg-emerald-500/5 rounded-full blur-3xl -ml-40 -mb-40"></div>
@@ -233,6 +226,18 @@ export default function DashboardPage() {
                             >
                                 Verify Now <ArrowRight className="w-5 h-5 text-emerald-400" />
                             </button>
+                        </div>
+                    </div>
+                )}
+                {kycLoading && !isVerified && user?.role !== 'ADMIN' && (
+                    <div className="bg-white rounded-xl p-10 border-2 border-gray-100 shadow-sm mb-12">
+                        <div className="flex items-center gap-6">
+                            <Skeleton className="w-20 h-20 rounded-xl" />
+                            <div className="flex-1 space-y-3">
+                                <Skeleton className="h-8 w-1/3" />
+                                <Skeleton className="h-4 w-2/3" />
+                            </div>
+                            <Skeleton className="w-40 h-14 rounded-xl" />
                         </div>
                     </div>
                 )}
@@ -281,7 +286,12 @@ export default function DashboardPage() {
                             )}
                         </div>
 
-                        {pendingFundingEscrows.length === 0 ? (
+                        {loading ? (
+                            <div className="space-y-5">
+                                <Skeleton className="h-32 rounded-xl bg-white border-2 border-gray-100" />
+                                <Skeleton className="h-32 rounded-xl bg-white border-2 border-gray-100" />
+                            </div>
+                        ) : pendingFundingEscrows.length === 0 ? (
                             <div className="bg-white rounded-xl p-12 text-center border-2 border-emerald-100 shadow-xl shadow-emerald-500/5">
                                 <div className="w-20 h-20 bg-emerald-50 rounded-xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-emerald-500/20">
                                     <CheckCircle2 className="w-10 h-10 text-emerald-500" />
@@ -358,7 +368,14 @@ export default function DashboardPage() {
                             </div>
 
                             <div className="bg-white rounded-xl border-2 border-gray-100 shadow-xl overflow-hidden">
-                                {myEscrows.length === 0 ? (
+                                {loading ? (
+                                    <div className="p-6 space-y-4">
+                                        <Skeleton className="h-10 w-full" />
+                                        <Skeleton className="h-10 w-full" />
+                                        <Skeleton className="h-10 w-full" />
+                                        <Skeleton className="h-10 w-full" />
+                                    </div>
+                                ) : myEscrows.length === 0 ? (
                                     <div className="p-12 text-center text-gray-400">No transaction history yet.</div>
                                 ) : (
                                     <div className="overflow-x-auto">
@@ -440,7 +457,11 @@ export default function DashboardPage() {
                             <div className="space-y-5">
                                 <div className="flex items-center justify-between p-4 bg-emerald-50 rounded-lg">
                                     <span className="text-gray-600 text-sm font-semibold">Total Trades</span>
-                                    <span className="font-bold text-gray-900 text-lg font-display">{myEscrows.length}</span>
+                                    {loading ? (
+                                        <Skeleton className="h-6 w-8 bg-emerald-100" />
+                                    ) : (
+                                        <span className="font-bold text-gray-900 text-lg font-display">{myEscrows.length}</span>
+                                    )}
                                 </div>
                             </div>
                         </div>
