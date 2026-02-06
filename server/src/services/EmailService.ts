@@ -314,11 +314,8 @@ class EmailService {
         const content = `
             <p>Hello ${firstName || 'there'},</p>
             <p>We've received your identity verification documents. Our team is currently reviewing them.</p>
-            <div class="data-box" style="text-align: center; color: #6b7280;">
-                Estimated Review Time<br>
-                <strong style="color: #111827; font-size: 18px;">1-3 Business Days</strong>
-            </div>
-            <p>We'll notify you as soon as the review is complete.</p>
+        
+            <p>You can continue with your transactions.</p>
         `;
 
         return this.send({
@@ -477,7 +474,7 @@ class EmailService {
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <div>
                         <div style="font-weight: 600; font-size: 14px;">Escrow #${escrow.id}</div>
-                        <div style="color: #6b7280; font-size: 13px;">${escrow.amount} ${escrow.buyCurrency || escrow.sellCurrency}</div>
+                        <div style="color: #6b7280; font-size: 13px;">${escrow.buyAmount} ${escrow.buyCurrency}(BUY) to be traded for ${escrow.sellAmount} ${escrow.sellCurrency}(SELL)</div>
                     </div>
                     <a href="${this.frontendUrl}/trader/escrow/${escrow.id}" style="color: #059669; text-decoration: none; font-weight: 600; font-size: 13px;">View</a>
                 </div>
