@@ -118,7 +118,8 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
         return ApiResponse.error(res, 'Invalid credentials', 401);
     }
 
-    const isMatch = await password === user.password;
+    const bcrypt = await import('bcrypt');
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
         return ApiResponse.error(res, 'Invalid credentials', 401);
     }
