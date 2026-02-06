@@ -14,7 +14,6 @@ export interface IEscrow {
   feePayer: string;
   buyCurrency: string;
   sellCurrency: string;
-  amount: number;
   state: string;
   counterPartyConfirmationDeadline: Date;
   buyerConfirmedFunding?: boolean;
@@ -43,7 +42,6 @@ class Escrow extends Model<IEscrow> implements IEscrow {
   declare public feePayer: string;
   declare public buyCurrency: string;
   declare public sellCurrency: string;
-  declare public amount: number;
   declare public state: string;
   declare public counterPartyConfirmationDeadline: Date;
   declare public buyerConfirmedFunding?: boolean;
@@ -112,13 +110,7 @@ Escrow.init(
       allowNull: false,
       field: 'sell_currency',
     },
-    amount: {
-      type: DataTypes.DECIMAL(20, 8),
-      allowNull: false,
-      validate: {
-        min: 0,
-      },
-    },
+
     state: {
       type: DataTypes.ENUM(...Object.values(EscrowState)),
       allowNull: false,
@@ -187,7 +179,7 @@ Escrow.init(
     createdAt: { type: DataTypes.DATE },
     updatedAt: { type: DataTypes.DATE },
     paymentMethod: {
-      type: DataTypes.STRING(10),
+      type: DataTypes.STRING(100),
       allowNull: false,
       field: 'payment_method',
     }

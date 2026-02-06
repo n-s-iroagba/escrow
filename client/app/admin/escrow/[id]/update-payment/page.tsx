@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { useGet, usePut } from '@/hooks/useApiQuery';
+import { useGet, usePost } from '@/hooks/useApiQuery';
 import API_ROUTES from '@/constants/api-routes';
 import { EscrowState, TradeType } from '@/constants/enums';
 import {
@@ -24,8 +24,8 @@ export default function AdminUpdatePaymentPage() {
         { enabled: !!id }
     );
 
-    const { put: updateEscrow, isPending: isSaving } = usePut(
-        API_ROUTES.ESCROWS.ADMIN_UPDATE(id as string),
+    const { post: fundEscrow, isPending: isSaving } = usePost(
+        API_ROUTES.ESCROWS.FUND(id as string),
         {
             onSuccess: () => {
                 alert('Payment details updated successfully');
@@ -77,25 +77,18 @@ export default function AdminUpdatePaymentPage() {
     }, [escrow]);
 
     const handleSaveBuyer = () => {
-        const type = escrow.tradeType === TradeType.CRYPTO_TO_FIAT ? 'BANK' : 'CRYPTO';
-        updateEscrow({
-            balanceUpdates: {
-                type,
-                role: 'BUYER',
-                amount: parseFloat(buyerAmount),
-                confirmed: buyerConfirmed
-            }
+        fundEscrow({
+            role: 'BUYER',
+            amount: parseFloat(buyerAmount),
+            confirmed: buyerConfirmed
         });
     };
 
     const handleSaveSeller = () => {
-        updateEscrow({
-            balanceUpdates: {
-                type: 'CRYPTO',
-                role: 'SELLER',
-                amount: parseFloat(sellerAmount),
-                confirmed: sellerConfirmed
-            }
+        fundEscrow({
+            role: 'SELLER',
+            amount: parseFloat(sellerAmount),
+            confirmed: sellerConfirmed
         });
     };
 

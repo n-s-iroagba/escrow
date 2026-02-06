@@ -13,6 +13,10 @@ class CustodialWalletRepository {
         return await CustodialWallet.findOne({ where: { currency } });
     }
 
+    async findAllByCurrency(currency: string): Promise<CustodialWallet[]> {
+        return await CustodialWallet.findAll({ where: { currency } });
+    }
+
     async findById(id: string): Promise<CustodialWallet | null> {
         return await CustodialWallet.findByPk(id);
     }

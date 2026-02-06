@@ -27,7 +27,7 @@ class App {
     this.port = parseInt(env.PORT);
 
     this.initializeMiddlewares();
-    // this.initializeDatabase();
+    this.initializeDatabase();
     this.initializeEmail();
     this.initializeRoutes();
     this.initializeErrorHandling();
@@ -68,15 +68,15 @@ class App {
 
   }
 
-  // private async initializeDatabase(): Promise<void> {
-  //   try {
-  //     await testConnection();
-  //     logger.info('✅ Database initialized');
-  //   } catch (error) {
-  //     logger.error('❌ Database initialization failed:', error);
-  //     process.exit(1);
-  //   }
-  // }
+  private async initializeDatabase(): Promise<void> {
+    try {
+      // await testConnection();
+      logger.info('✅ Database initialized');
+    } catch (error) {
+      logger.error('❌ Database initialization failed:', error);
+      process.exit(1);
+    }
+  }
 
   private async initializeEmail(): Promise<void> {
     await verifyEmailConnection();

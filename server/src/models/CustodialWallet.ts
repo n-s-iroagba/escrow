@@ -6,8 +6,8 @@ export interface ICustodialWallet {
   id: string;
   currency: string;
   address: string;
-  privateKey: string; // Encrypted
-  publicKey: string;
+  network: string; // Encrypted
+
   createdAt: Date;
   updatedAt: Date;
 }
@@ -16,8 +16,7 @@ class CustodialWallet extends Model<ICustodialWallet> implements ICustodialWalle
   public id!: string;
   public currency!: string;
   public address!: string;
-  public privateKey!: string;
-  public publicKey!: string;
+  public network!: string;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 
@@ -47,15 +46,9 @@ CustodialWallet.init(
       allowNull: false,
       unique: true,
     },
-    privateKey: {
-      type: DataTypes.TEXT,
+    network: {
+      type: DataTypes.STRING,
       allowNull: false,
-      field: 'private_key',
-    },
-    publicKey: {
-      type: DataTypes.TEXT,
-      allowNull: false,
-      field: 'public_key',
     },
     createdAt: { type: DataTypes.DATE },
     updatedAt: { type: DataTypes.DATE }

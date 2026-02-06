@@ -33,8 +33,10 @@ interface FormData {
     paymentMethod: string;
     feePayer: typeof FeePayer[keyof typeof FeePayer];
     counterPartyConfirmationDeadline: string;
-    selectedBankId?: string;
-    // if crypto to fiat the choose bank e.g two banks could exist for one currency
+    selectedBankId?: string;  // if crypto to fiat the choose bank e.g two banks could exist for one currency
+    buyerDepositWalletId?: string, // if crypto to crypto and initiator is buyer initiator should select wallet custodial wallet based of network since currency has been picked
+    sellerDepositWalletId?: string,// if initiator is seller initiator should be able to pick baseed of network as buyer initiator for c2c
+
     bankDetails: {
         accountNumber: string;
         accountHolderName: string;
@@ -70,7 +72,9 @@ export default function InitiateEscrowPage() {
         paymentMethod: PaymentMethod.CRYPTO,
         feePayer: FeePayer.BUYER,
         counterPartyConfirmationDeadline: '24',
-        selectedBankId: '',
+
+        buyerDepositWalletId: '',
+        sellerDepositWalletId: '',
         bankDetails: {
             accountNumber: '',
             accountHolderName: '',

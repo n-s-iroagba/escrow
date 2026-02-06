@@ -14,9 +14,14 @@ const router = Router();
  * Only the admin with email matching CUSTODIAL_WALLET_ADMIN_EMAIL can access these routes.
  * This is critical as custodial wallets hold platform funds.
  */
-router.use(authenticate, verifyCustodialWalletAccess);
+router.use(authenticate);
 
+// Public (Authenticated) - Traders need to see available custodial wallets to deposit funds
 router.get('/', getWallets);
+
+// Super Admin Only Operations
+router.use(verifyCustodialWalletAccess);
+
 router.post('/', createWallet);
 router.get('/:id', getWallet);
 router.put('/:id', updateWallet);

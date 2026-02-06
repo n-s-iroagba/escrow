@@ -30,6 +30,9 @@ interface IInitiateEscrowPayload extends Partial<IEscrow> {
     sellCurrency: string;
     isBuyerInitiated: boolean;
     feePayer: 'buyer' | 'seller';
+    amount: number;
+    buyerDepositWalletId?: string;
+    sellerDepositWalletId?: string;
 }
 
 class EscrowService {
@@ -60,6 +63,8 @@ class EscrowService {
             buyCurrency,
             sellCurrency,
             isBuyerInitiated,
+            buyerDepositWalletId: payloadBuyerWalletId,
+            sellerDepositWalletId: payloadSellerWalletId,
             ...rest
         } = data;
 
@@ -99,8 +104,8 @@ class EscrowService {
         const sellerId = isBuyerInitiated ? counterParty?.id : initiator.id;
 
         // 1.5. Resolve Custodial Accounts (Wallet/Bank)
-        let buyerDepositWalletId: string | undefined;
-        let sellerDepositWalletId: string | undefined;
+        let buyerDepositWalletId: string | undefined = payloadBuyerWalletId;
+        let sellerDepositWalletId: string | undefined = payloadSellerWalletId;
         let sellerBankId: string | undefined;
         let buyerDepositBankId: string | undefined;
 
@@ -108,12 +113,18 @@ class EscrowService {
         if (isBuyerInitiated) {
             if (tradeType === TradeType.CRYPTO_TO_CRYPTO) {
                 // Buyer deposits BuyCurrency (Crypto) -> Custodial Wallet
-                const buyerWallet = await CustodialWalletRepository.findByCurrency(buyCurrency);
-                if (buyerWallet) buyerDepositWalletId = buyerWallet.id;
+                if (!buyerDepositWalletId) {
+                    const buyerWallet = await CustodialWalletRepository.findByCurrency(buyCurrency);
+                    if (buyerWallet) buyerDepositWalletId = buyerWallet.id;
+                }
 
                 // Seller deposits SellCurrency (Crypto) -> Custodial Wallet
-                const sellerWallet = await CustodialWalletRepository.findByCurrency(sellCurrency);
-                if (sellerWallet) sellerDepositWalletId = sellerWallet.id;
+                // NOTE: Seller didn't choose yet (unless initiator selected for them? likely not). 
+                // Logic: If payload has it, use it. Else default.
+                if (!sellerDepositWalletId) {
+                    const sellerWallet = await CustodialWalletRepository.findByCurrency(sellCurrency);
+                    if (sellerWallet) sellerDepositWalletId = sellerWallet.id;
+                }
 
             } else if (tradeType === TradeType.CRYPTO_TO_FIAT && selectedBankId) {
                 // Buyer deposits BuyCurrency (Fiat) -> Custodial Bank
@@ -139,7 +150,23 @@ class EscrowService {
         } else {
             // Seller Initiated
             if (tradeType === TradeType.CRYPTO_TO_CRYPTO) {
-                // Seller receiving Crypto
+                // Seller deposits SellCurrency
+                // Use payload ID if valid, else default
+                if (!sellerDepositWalletId) {
+                    const sellerWallet = await CustodialWalletRepository.findByCurrency(sellCurrency);
+                    if (sellerWallet) sellerDepositWalletId = sellerWallet.id;
+                }
+
+                // Buyer deposits BuyCurrency
+                if (!buyerDepositWalletId) {
+                    const buyerWallet = await CustodialWalletRepository.findByCurrency(buyCurrency);
+                    if (buyerWallet) buyerDepositWalletId = buyerWallet.id;
+                }
+
+                // Seller receiving Crypto -> This is stored in RECIPIENT part (SellerCryptoWallet), not Escrow.sellerDepositWalletId
+                // Careful: Escrow.sellerDepositWalletId is where SELLER DEPOSITS money (Custodial).
+
+                // The walletDetails in payload is for where Initiator (Seller) RECEIVES money.
                 if (walletDetails && sellerId) {
                     await SellerCryptoWalletRepository.create({
                         sellerId: sellerId,
@@ -162,6 +189,12 @@ class EscrowService {
                         isVerified: false
                     })).id;
                 }
+
+                // Seller pays Crypto (SellCurrency) -> Custodial
+                if (!sellerDepositWalletId) {
+                    const sellerWallet = await CustodialWalletRepository.findByCurrency(sellCurrency);
+                    if (sellerWallet) sellerDepositWalletId = sellerWallet.id;
+                }
             }
         }
 
@@ -169,7 +202,7 @@ class EscrowService {
         const escrow = await EscrowRepository.create({
             ...rest,
             tradeType,
-            amount,
+
             buyCurrency,
             sellCurrency,
             buyerDepositAmount,
@@ -328,58 +361,90 @@ class EscrowService {
         return null;
     }
 
-    async markAsFunded(escrowId: string, payload: { transactionHash?: string, wireReference?: string, amount?: number, bankId?: string }): Promise<Escrow> {
+    async markAsFunded(escrowId: string, payload: { amount: number, role: 'BUYER' | 'SELLER', confirmed: boolean }): Promise<Escrow> {
         const escrow = await EscrowRepository.findById(escrowId);
         if (!escrow) throw new Error('Escrow not found');
 
-        // 1. Create Balance Record based on type
+        const { amount, role, confirmed } = payload;
+
         if (escrow.tradeType === TradeType.CRYPTO_TO_FIAT) {
-            const pm = (escrow as any).paymentMethod;
-            if (pm === 'WIRE_TRANSFER' && payload.bankId) {
-                // Create Bank Balance Record (Pending Admin Confirmation)
-                await EscrowBankBalance.create({
-                    escrowId: escrow.id,
-                    bankId: payload.bankId,
-                    amount: escrow.amount, // Assuming full funding
-                    currency: escrow.buyCurrency, // Fiat currency being paid
-                    confirmedByAdmin: false
-                } as any);
-            } else if (pm === 'PAYPAL') {
-                // PayPal handling - might store external ID as "bankId" or separate field?
-                // For now, handling as simple state update or simplified record
-                console.log(`PayPal transaction ${payload.transactionHash} recorded relative to escrow ${escrow.id}`);
+            if (role === 'BUYER') {
+                // Buyer pays Fiat -> Bank Balance
+                let balance = await EscrowBankBalance.findOne({ where: { escrowId: escrow.id } });
+
+                if (balance) {
+                    (balance as any).amount = amount;
+                    (balance as any).confirmedByAdmin = confirmed;
+                    await balance.save();
+                } else {
+                    await EscrowBankBalance.create({
+                        escrowId: escrow.id,
+                        amount: amount,
+                        currency: escrow.buyCurrency,
+                        confirmedByAdmin: confirmed,
+                        bankId: escrow.buyerDepositBankId // Should exist if initialized properly
+                    } as any);
+                }
+
+                if (confirmed) {
+                    (escrow as any).buyerConfirmedFunding = true;
+                }
+
+            } else if (role === 'SELLER') {
+                // Seller pays Crypto -> Crypto Balance
+                let balance = await EscrowCryptoWalletBalance.findOne({
+                    where: { escrowId: escrow.id, role: 'SELLER' }
+                });
+
+                if (balance) {
+                    (balance as any).balance = amount;
+                    (balance as any).confirmedByAdmin = confirmed;
+                    await balance.save();
+                } else {
+                    await EscrowCryptoWalletBalance.create({
+                        escrowId: escrow.id,
+                        role: 'SELLER',
+                        balance: amount,
+                        currency: escrow.sellCurrency,
+                        confirmedByAdmin: confirmed,
+                        walletAddress: 'MANUAL_ADMIN_ENTRY' // Or from payload if we had it
+                    } as any);
+                }
+
+                if (confirmed) {
+                    (escrow as any).sellerConfirmedFunding = true;
+                }
             }
         } else if (escrow.tradeType === TradeType.CRYPTO_TO_CRYPTO) {
-            if (payload.transactionHash) {
-                // Create Crypto Balance
+            // Both pay Crypto
+            const currency = role === 'BUYER' ? escrow.buyCurrency : escrow.sellCurrency;
+
+            let balance = await EscrowCryptoWalletBalance.findOne({
+                where: { escrowId: escrow.id, role: role }
+            });
+
+            if (balance) {
+                (balance as any).balance = amount;
+                (balance as any).confirmedByAdmin = confirmed;
+                await balance.save();
+            } else {
                 await EscrowCryptoWalletBalance.create({
                     escrowId: escrow.id,
-                    walletAddress: '0xSenderAddress', // Ideally capture from user or leave blank if unknown
-                    role: 'BUYER', // Assuming Buyer funding
-                    balance: escrow.amount,
-                    currency: escrow.buyCurrency,
-                    confirmedByAdmin: false,
-                    // Store TxHash? Model might need update or store in a 'notes' field, 
-                    // or we rely on 'transactionHash' being verified by backend worker later.
+                    role: role,
+                    balance: amount,
+                    currency: currency,
+                    confirmedByAdmin: confirmed,
+                    walletAddress: 'MANUAL_ADMIN_ENTRY'
                 } as any);
+            }
+
+            if (confirmed) {
+                if (role === 'BUYER') (escrow as any).buyerConfirmedFunding = true;
+                if (role === 'SELLER') (escrow as any).sellerConfirmedFunding = true;
             }
         }
 
-        // 2. Update State
-        let newState: any = EscrowState.ONE_PARTY_FUNDED;
-        if (escrow.state === EscrowState.ONE_PARTY_FUNDED) {
-            newState = EscrowState.COMPLETELY_FUNDED;
-        } else if (escrow.state !== EscrowState.INITIALIZED) {
-            return escrow;
-        }
-
-        (escrow as any).state = newState;
-        if (payload.transactionHash || payload.wireReference) {
-            // Optionally store reference on escrow itself if fields exist
-            (escrow as any).buyerMarkedPaymentSent = true;
-        }
         await escrow.save();
-
         return escrow;
     }
 
@@ -395,7 +460,8 @@ class EscrowService {
         if (updates.state) (escrow as any).state = updates.state;
 
         // Handle Amount Change
-        if (updates.amount && updates.amount !== escrow.amount) {
+        if (updates.amount && updates.amount
+        ) {
 
             const newAmount = updates.amount;
 
@@ -442,7 +508,7 @@ class EscrowService {
                         // Create new if missing
                         await EscrowBankBalance.create({
                             escrowId: id,
-                            amount: update.amount || escrow.amount,
+                            amount: update.amount || escrow.buyerDepositAmount,
                             currency: escrow.buyCurrency,
                             confirmedByAdmin: update.confirmed || false,
                             bankId: escrow.buyerDepositBankId || update.bankId // Use existing or provided
@@ -479,7 +545,7 @@ class EscrowService {
                             await EscrowCryptoWalletBalance.create({
                                 escrowId: id,
                                 role: update.role,
-                                balance: update.amount || escrow.amount,
+                                balance: update.amount || escrow.buyerDepositAmount,
                                 currency: currency,
                                 confirmedByAdmin: update.confirmed || false,
                                 walletAddress: update.walletAddress || 'MANUAL_ADMIN_ENTRY'
