@@ -1,0 +1,42 @@
+# Server Configuration
+NODE_ENV=development
+PORT=5000
+API_VERSION=v1 
+API_BASE_URL=http://localhost:5000/api
+
+# Database Configuration
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=escrow
+DB_USER=root
+DB_PASSWORD=97chocho
+
+# JWT Configuration
+JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
+JWT_EXPIRES_IN=24h
+
+# Email Configuration (for notifications)
+# Email Configuration (for notifications)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=465
+SMTP_AUTH_USER=nnamdisolomon1@gmail.com
+SMTP_AUTH_PASS=ygiy pmzy rpkr yiib
+SMTP_INFO_USER=nnamdisolomon1@gmail.com
+SMTP_INFO_PASS=ygiy pmzy rpkr yiib
+SMTP_FROM=MuskXSecureEscrow
+
+# Frontend URLs
+FRONTEND_URL=http://localhost:3000
+VERIFICATION_BASE_URL=http://localhost:3000/verify-email
+RESET_PASSWORD_BASE_URL=http://localhost:3000/reset-password
+
+# Logging
+LOG_LEVEL=info
+
+# Security - Custodial Wallet Access
+# CRITICAL: Only this admin email can manage custodial wallets (which hold platform funds)
+CUSTODIAL_WALLET_ADMIN_EMAIL=nnamdisolomon1@gmail.com
+
+# Crypto Wallet Configuration (for demo)
+BTC_NETWORK=testnet
+ETH_NETWORK=sepolia

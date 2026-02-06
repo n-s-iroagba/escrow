@@ -64,12 +64,12 @@ export const errorHandler = (
   }
 
   // If it's not an operational error (programming error), hide details in production
-  const isOperational = error instanceof AppError && error.isOperational;
+  // const isOperational = error instanceof AppError && error.isOperational;
 
-  if (process.env.NODE_ENV === 'production' && !isOperational) {
-    error.message = 'Something went wrong';
-    error.statusCode = 500;
-  }
+  // if (process.env.NODE_ENV === 'production' && !isOperational) {
+  //   error.message = 'Something went wrong';
+  //   error.statusCode = 500;
+  // }
 
   // Send error response
   ApiResponse.error(

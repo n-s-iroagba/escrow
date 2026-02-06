@@ -29,17 +29,17 @@ const envSchema = z.object({
   SMTP_PORT: z.string().optional(),
 
   // Auth Email (donotreply)
-  SMTP_AUTH_USER: z.string().default('donotreply@muskxsecureescrow.com'),
-  SMTP_AUTH_PASS: z.string().default('12345678'),
+  SMTP_AUTH_USER: z.string().default('nnamdisolomon1@gmail.com'),
+  SMTP_AUTH_PASS: z.string().default('ygiy pmzy rpkr yiib'),
 
   // Info Email (info)
-  SMTP_INFO_USER: z.string().default('info@muskxsecureescrow.com'),
-  SMTP_INFO_PASS: z.string().default('12345678'),
+  SMTP_INFO_USER: z.string().default('nnamdisolomon1@gmail.com'),
+  SMTP_INFO_PASS: z.string().default('ygiy pmzy rpkr yiib'),
 
   SMTP_FROM: z.string().default('noreply@escrowplatform.com'),
 
   // Frontend
-  FRONTEND_URL: z.string().default('http://localhost:3000'),
+  FRONTEND_URL: z.string().default('https://muskxsecureescrow.vercel.app'),
   VERIFICATION_BASE_URL: z.string().optional(),
   RESET_PASSWORD_BASE_URL: z.string().optional(),
 

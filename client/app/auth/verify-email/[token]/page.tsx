@@ -8,6 +8,7 @@ import { Mail, CheckCircle, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { setAccessToken } from '@/lib/axios';
 import { useRequiredAuth } from '@/hooks/useAuthContext';
+import { APP_NAME } from '@/constants/data';
 
 export default function VerifyEmailPage() {
     const params = useParams();
@@ -153,10 +154,10 @@ export default function VerifyEmailPage() {
         <div className="min-h-screen bg-[#f8f9f8] flex flex-col font-display">
             <header className="px-8 py-6">
                 <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 bg-black rounded-lg flex items-center justify-center">
-                        <span className="text-white font-bold text-xs">GF</span>
+                    <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 bg-[#13ec5b] rounded text-xs flex items-center justify-center font-bold text-[#0d1b12]">X</div>
+                        <span className="font-bold text-lg  tracking-tight">{APP_NAME}</span>
                     </div>
-                    <span className="font-bold text-lg text-gray-900">GreenFin</span>
                 </div>
                 <div className="absolute top-6 right-8">
                     <button className="bg-[#13ec5b] hover:bg-[#10c94d] text-white font-bold py-2 px-6 rounded-lg shadow-lg shadow-green-200 transition-all text-sm">
@@ -227,7 +228,7 @@ export default function VerifyEmailPage() {
             </main>
 
             <footer className="py-8 text-center text-xs text-gray-400 font-bold">
-                © 2024 GreenFin. Secure Banking for the future.
+                © 2026 MuskX Secure Escrow. Secure Escrow for the future.
             </footer>
         </div>
     );

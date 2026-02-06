@@ -1,8 +1,6 @@
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
-import helmet from 'helmet';
 
-import rateLimit from 'express-rate-limit';
 import env from './config/env';
 import logger from './config/logger';
 import { testConnection } from './config/database';
@@ -17,6 +15,7 @@ import userRoutes from './routers/userRoutes';
 import authRoutes from './routers/authRoutes';
 import sellerBankAccountRoutes from './routers/sellerBankAccountRoutes';
 
+
 class App {
 
   public app: Application;
@@ -24,6 +23,7 @@ class App {
 
   constructor() {
     this.app = express();
+    this.app.set('trust proxy', 1); // Enable trust proxy for load balancers/reverse proxies
     this.port = parseInt(env.PORT);
 
     this.initializeMiddlewares();
@@ -35,11 +35,11 @@ class App {
 
   private initializeMiddlewares(): void {
     // Security middleware
-    this.app.use(helmet());
+
 
     // CORS configuration
     this.app.use(cors({
-      origin: env.FRONTEND_URL,
+      origin: 'https://muskxsecureescrow.vercel.app',
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
@@ -49,14 +49,9 @@ class App {
     this.app.use(requestLogger);
 
     // Rate limiting
-    const limiter = rateLimit({
-      windowMs: 15 * 60 * 1000, // 15 minutes
-      max: 100, // limit each IP to 100 requests per windowMs
-      message: 'Too many requests from this IP, please try again later.',
-    });
 
-    // Apply rate limiting to all requests
-    this.app.use(limiter);
+
+
 
     // Request parsing
     this.app.use(express.json({ limit: '10mb' }));
@@ -70,6 +65,8 @@ class App {
 
   private async initializeDatabase(): Promise<void> {
     try {
+      // await User.sync({ force: true }); // Removed to prevent dropping table with FK constraints
+
       await testConnection();
       logger.info('✅ Database initialized');
     } catch (error) {
@@ -95,20 +92,20 @@ class App {
     });
 
     // API routes will be added here
-    this.app.use(`/api/${env.API_VERSION}`, (_req: Request, _res: Response, next) => {
+    this.app.use(`/api/v1'`, (_req: Request, _res: Response, next) => {
       // API routes will be mounted here
       next();
     });
 
-    this.app.use(`/api/${env.API_VERSION}/escrow`, escrowRoutes);
-    this.app.use(`/api/${env.API_VERSION}/kyc`, kycRoutes);
-    this.app.use(`/api/${env.API_VERSION}/banks`, bankRoutes);
-    this.app.use(`/api/${env.API_VERSION}/custodial-wallets`, custodialWalletRoutes);
-    this.app.use(`/api/${env.API_VERSION}/auth`, authRoutes);
-    this.app.use(`/api/${env.API_VERSION}/users`, userRoutes);
-    this.app.use(`/api/${env.API_VERSION}/seller-banks`, sellerBankAccountRoutes);
-    this.app.use(`/api/${env.API_VERSION}/buyer-wallets`, require('./routers/buyerCryptoWalletRoutes').default);
-    this.app.use(`/api/${env.API_VERSION}/seller-wallets`, require('./routers/sellerCryptoWalletRoutes').default);
+    this.app.use(`/api/v1/escrow`, escrowRoutes);
+    this.app.use(`/api/v1/kyc`, kycRoutes);
+    this.app.use(`/api/v1/banks`, bankRoutes);
+    this.app.use(`/api/v1/custodial-wallets`, custodialWalletRoutes);
+    this.app.use(`/api/v1/auth`, authRoutes);
+    this.app.use(`/api/v1/users`, userRoutes);
+    this.app.use(`/api/v1/seller-banks`, sellerBankAccountRoutes);
+    this.app.use(`/api/v1/buyer-wallets`, require('./routers/buyerCryptoWalletRoutes').default);
+    this.app.use(`/api/v1/seller-wallets`, require('./routers/sellerCryptoWalletRoutes').default);
 
 
     // 404 handler
