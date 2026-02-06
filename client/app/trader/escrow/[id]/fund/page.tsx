@@ -4,7 +4,7 @@ import { useGet, usePost } from '@/hooks/useApiQuery';
 import API_ROUTES from '@/constants/api-routes';
 import { useParams, useRouter } from 'next/navigation';
 import { TradeType, PaymentMethod } from '@/constants/enums';
-import { Copy, ArrowRight, Banknote, ShieldCheck } from 'lucide-react';
+import { Copy, ArrowRight, Banknote, ShieldCheck, CheckCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import Script from 'next/script';
 import { useRequiredAuth } from '@/hooks/useAuthContext';
@@ -23,6 +23,7 @@ export default function FundEscrowPage() {
     const [wireRef, setWireRef] = useState('');
     const [cryptoTxHash, setCryptoTxHash] = useState('');
     const [paypalLoaded, setPaypalLoaded] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
 
     // Fetch generic funding details (System wallets/banks)
     const { data: fundingDetails, loading: loadingDetails } = useGet(
@@ -39,7 +40,10 @@ export default function FundEscrowPage() {
         API_ROUTES.ESCROWS.FUND(id as string),
         {
             onSuccess: () => {
-                router.push(`/trader/escrow/${id}`);
+                setShowSuccess(true);
+                setTimeout(() => {
+                    router.push(`/trader/escrow/${id}`);
+                }, 5000);
             }
         }
     );
@@ -199,6 +203,29 @@ export default function FundEscrowPage() {
 
     return (
         <div className="min-h-screen bg-[#f6f8f6] p-8 font-display text-[#0d1b12] flex items-center justify-center">
+
+            {/* Success Modal */}
+            {showSuccess && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+                    <div className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl text-center transform animate-[fadeIn_0.3s_ease-out]">
+                        <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <CheckCircle className="w-8 h-8 text-green-500" />
+                        </div>
+                        <h2 className="text-xl font-bold mb-2">Payment Initiated!</h2>
+                        <p className="text-gray-500 mb-6 leading-relaxed">
+                            Your transaction status will be updated in the next <strong>5 minutes</strong>.
+                            <br />
+                            Please be patient while we verify your payment.
+                        </p>
+                        <button
+                            onClick={() => router.push(`/trader/escrow/${id}`)}
+                            className="bg-[#13ec5b] hover:bg-[#10c94d] text-[#0d1b12] font-bold py-3 px-6 rounded-xl w-full shadow-lg shadow-green-200"
+                        >
+                            Return to Transaction
+                        </button>
+                    </div>
+                </div>
+            )}
 
             {/* PayPal Maintenance Modal */}
             {isPayPal && (
