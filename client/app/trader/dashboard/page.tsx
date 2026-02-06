@@ -309,13 +309,27 @@ export default function DashboardPage() {
                                                 <span className="px-4 py-2 bg-amber-50 text-amber-700 text-xs font-bold rounded-lg border-2 border-amber-200 shadow-sm text-center">
                                                     FUNDING PENDING
                                                 </span>
-                                                <button
-                                                    data-testid="fund-now-button"
-                                                    onClick={() => router.push(`/trader/escrow/${escrow.id}/fund`)}
-                                                    className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white px-6 py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-500/30 group-hover:shadow-xl font-display"
-                                                >
-                                                    Fund Now <ChevronRight className="w-4 h-4" />
-                                                </button>
+                                                <div className="relative group/tooltip">
+                                                    <button
+                                                        data-testid="fund-now-button"
+                                                        disabled={!isVerified}
+                                                        onClick={() => router.push(`/trader/escrow/${escrow.id}/fund`)}
+                                                        className={`hover:from-emerald-600 hover:to-emerald-700 text-white px-6 py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 transition-all font-display ${!isVerified
+                                                            ? 'bg-gray-300 cursor-not-allowed'
+                                                            : 'bg-gradient-to-r from-emerald-500 to-emerald-600 shadow-lg shadow-emerald-500/30 group-hover:shadow-xl'
+                                                            }`}
+                                                    >
+                                                        Fund Now <ChevronRight className="w-4 h-4" />
+                                                    </button>
+                                                    {!isVerified && (
+                                                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max invisible group-hover/tooltip:visible opacity-0 group-hover/tooltip:opacity-100 transition-all z-10">
+                                                            <div className="bg-gray-900 text-white text-xs py-2 px-3 rounded-lg shadow-xl relative">
+                                                                Please verify your KYC to proceed
+                                                                <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
