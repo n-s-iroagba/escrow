@@ -1,7 +1,7 @@
 // src/lib/apiutils.ts
 import API_ROUTES from '@/constants/api-routes';
 import axios, { AxiosResponse } from 'axios';
-const route = (process.env.NODE_ENV === 'production' ? 'https://escrow_server_app.fly.dev/api/v1' : 'http://localhost:5000/api/v1');
+const route = (process.env.NODE_ENV === 'production' ? 'https://escrow-server-app.fly.dev/api/v1' : 'http://localhost:5000/api/v1');
 // Single axios instance
 const api = axios.create({
   baseURL: route,
