@@ -16,11 +16,18 @@ const FIAT_CURRENCIES = ['USD', 'EUR', 'GBP'];
 // $60,000 threshold for payment method restrictions
 const WIRE_TRANSFER_THRESHOLD = 60000;
 
+interface CustodialWallet {
+    id: string;
+    currency: string;
+    network: string;
+    address: string;
+}
+
 interface Bank {
     id: string;
     name: string;
     currency: string;
-    accountNumber?: string;
+    // Add other bank properties as needed
 }
 
 interface FormData {
@@ -33,9 +40,9 @@ interface FormData {
     paymentMethod: string;
     feePayer: typeof FeePayer[keyof typeof FeePayer];
     counterPartyConfirmationDeadline: string;
-    selectedBankId?: string;  // if crypto to fiat the choose bank e.g two banks could exist for one currency
-    buyerDepositWalletId?: string, // if crypto to crypto and initiator is buyer initiator should select wallet custodial wallet based of network since currency has been picked
-    sellerDepositWalletId?: string,// if initiator is seller initiator should be able to pick baseed of network as buyer initiator for c2c
+    selectedBankId?: string;
+    buyerDepositWalletId?: string;
+    sellerDepositWalletId?: string;
 
     bankDetails: {
         accountNumber: string;
@@ -44,11 +51,10 @@ interface FormData {
         iban: string;
         swift: string;
     };
-    //sellers bank details if crypto to fiat initiator is seller
     walletDetails: {
         walletAddress: string;
         network: string;
-    };//buyer wallet details if fiat to crypto or crypto to crypto or seller wallet(initiator wallet details if crypto to crypto)
+    };
 }
 
 export default function InitiateEscrowPage() {
@@ -97,19 +103,15 @@ export default function InitiateEscrowPage() {
     // Determine available currencies based on trade type and role
     const availableBuyCurrencies = useMemo(() => {
         if (isCryptoToFiat) {
-            // Crypto to Fiat: Buyer receives Fiat, Seller receives Crypto
             return isBuyer ? FIAT_CURRENCIES : CRYPTO_CURRENCIES;
         }
-        // Crypto to Crypto: Both receive crypto
         return CRYPTO_CURRENCIES;
     }, [isCryptoToFiat, isBuyer]);
 
     const availableSellCurrencies = useMemo(() => {
         if (isCryptoToFiat) {
-            // Crypto to Fiat: Buyer sends Crypto, Seller sends Fiat
             return isBuyer ? CRYPTO_CURRENCIES : FIAT_CURRENCIES;
         }
-        // Crypto to Crypto: Both send crypto
         return CRYPTO_CURRENCIES;
     }, [isCryptoToFiat, isBuyer]);
 
@@ -118,12 +120,9 @@ export default function InitiateEscrowPage() {
         if (!isCryptoToFiat || !isBuyer) {
             return [{ value: PaymentMethod.CRYPTO, label: 'Cryptocurrency' }];
         }
-
-        // Crypto to Fiat + Buyer
         if (amount >= WIRE_TRANSFER_THRESHOLD) {
             return [{ value: PaymentMethod.WIRE_TRANSFER, label: 'Wire Transfer (Required for amounts ≥$60,000)' }];
         }
-
         return [
             { value: PaymentMethod.PAYPAL, label: 'PayPal' },
             { value: PaymentMethod.WIRE_TRANSFER, label: 'Wire Transfer' },
@@ -137,6 +136,22 @@ export default function InitiateEscrowPage() {
         { enabled: shouldFetchBanks }
     );
 
+    // Fetch Custodial Wallets for Deposit Network Selection
+    const depositCurrency = useMemo(() => {
+        if (isBuyer) {
+            return isCryptoToFiat ? null : formData.buyCurrency;
+        } else {
+            return formData.sellCurrency;
+        }
+    }, [isBuyer, isCryptoToFiat, formData.buyCurrency, formData.sellCurrency]);
+
+    const { data: depositWallets } = useGet<CustodialWallet[]>(
+        depositCurrency ? API_ROUTES.WALLETS.GET_BY_CURRENCY(depositCurrency) : null,
+        { enabled: !!depositCurrency }
+    );
+
+
+
     // Validate counterparty
     const { post: validateCounterparty, isPending: isValidating } = usePost<{ email: string }, { exists: boolean; userId?: string }>(
         API_ROUTES.ESCROWS.VALIDATE_COUNTERPARTY
@@ -147,8 +162,15 @@ export default function InitiateEscrowPage() {
         onSuccess: (data: any) => router.push(`/trader/escrow/${data.id}`),
     });
 
-    // Reset currencies when trade type or role changes
+    // Reset currencies and wallets when trade type or role changes
     useEffect(() => {
+        setFormData(prev => ({
+            ...prev,
+            buyerDepositWalletId: '',
+            sellerDepositWalletId: '',
+            selectedBankId: ''
+        }));
+
         if (isCryptoToFiat) {
             if (isBuyer) {
                 setFormData(prev => ({
@@ -272,6 +294,9 @@ export default function InitiateEscrowPage() {
             paymentMethod: formData.paymentMethod,
             feePayer: formData.feePayer,
             counterPartyConfirmationDeadline: new Date(Date.now() + (parseInt(formData.counterPartyConfirmationDeadline || '24') * 60 * 60 * 1000)),
+            buyerDepositWalletId: formData.buyerDepositWalletId || undefined,
+            sellerDepositWalletId: formData.sellerDepositWalletId || undefined,
+            selectedBankId: formData.selectedBankId || undefined,
         };
 
         // Add preferred bank for buyer in Crypto to Fiat (mapped to selectedBankId)
@@ -512,6 +537,33 @@ export default function InitiateEscrowPage() {
                                                 <option key={bank.id} value={bank.id}>{bank.name}</option>
                                             ))}
                                         </select>
+                                    </div>
+                                )}
+
+                                {/* Deposit Network Selection */}
+                                {depositCurrency && depositWallets && depositWallets.length > 0 && (
+                                    <div className="mb-6">
+                                        <label className="block text-sm font-semibold text-slate-700 mb-2">
+                                            <span className="flex items-center gap-2">
+                                                <Wallet className="w-4 h-4" />
+                                                Deposit Network (for {depositCurrency})
+                                            </span>
+                                        </label>
+                                        <select
+                                            data-testid="deposit-network-select"
+                                            name={isBuyer ? 'buyerDepositWalletId' : 'sellerDepositWalletId'}
+                                            value={isBuyer ? (formData.buyerDepositWalletId || '') : (formData.sellerDepositWalletId || '')}
+                                            onChange={handleInputChange}
+                                            className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-emerald-500 outline-none"
+                                        >
+                                            <option value="">Select network...</option>
+                                            {depositWallets.map(wallet => (
+                                                <option key={wallet.id} value={wallet.id}>
+                                                    {wallet.network} ({wallet.currency})
+                                                </option>
+                                            ))}
+                                        </select>
+                                        <p className="mt-1 text-slate-400 text-xs">Select the network you will use to deposit funds</p>
                                     </div>
                                 )}
 

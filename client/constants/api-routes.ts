@@ -40,6 +40,7 @@ const API_ROUTES = {
     },
     WALLETS: {
         GET_ALL: '/custodial-wallets',
+        GET_BY_CURRENCY: (currency: string) => `/custodial-wallets?currency=${currency}`,
         CREATE: '/custodial-wallets',
         GET_ONE: (id: string) => `/custodial-wallets/${id}`,
         UPDATE: (id: string) => `/custodial-wallets/${id}`,
