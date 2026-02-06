@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     // Skip auth check on specific public pages that might cause issues
     // specifically the admin signup page which shouldn't check for current user
-    const shouldCheckAuth = !pathname?.includes('/auth');
+    const shouldCheckAuth = !pathname?.includes('/');
 
     const { data: fetchedUser, loading } = useGet<User>(
         API_ROUTES.AUTH.ME, {
