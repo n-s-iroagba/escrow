@@ -244,28 +244,45 @@ export default function DashboardPage() {
 
                 {/* Stats Grid */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6 mb-12">
-                    <StatCard
-                        title="Pending"
-                        value={pendingFundingEscrows.length}
-                        icon={<Clock className="w-6 h-6" />}
-                        color="amber"
+                    {loading ? (
+                        <>
+                            <Skeleton className="h-40 rounded-xl bg-white border-2 border-gray-100" />
+                            <Skeleton className="h-40 rounded-xl bg-white border-2 border-gray-100" />
+                            <Skeleton className="h-40 rounded-xl bg-white border-2 border-gray-100" />
+                            <Skeleton className="h-40 rounded-xl bg-white border-2 border-gray-100" />
+                        </>
+                    ) : (
+                        <>
+                            <StatCard
+                                title="Pending"
+                                value={pendingFundingEscrows.length}
+                                icon={<Clock className="w-6 h-6" />}
+                                color="amber"
 
-                    />
-                    <StatCard
-                        title="Completed"
-                        value={completedCount}
-                        icon={<CheckCircle2 className="w-6 h-6" />}
-                        color="green"
+                            />
+                            <StatCard
+                                title="Completed"
+                                value={completedCount}
+                                icon={<CheckCircle2 className="w-6 h-6" />}
+                                color="green"
 
-                    />
-                    <StatCard
-                        title="Total Trades"
-                        value={myEscrows.length}
-                        icon={<Activity className="w-6 h-6" />}
-                        color="green"
-                        trend="Since joining"
-                    />
+                            />
+                            <StatCard
+                                title="Total Trades"
+                                value={myEscrows.length}
+                                icon={<Activity className="w-6 h-6" />}
+                                color="green"
+                                trend="Since joining"
+                            />
+                            <StatCard
+                                title="Volume"
+                                value={`$${totalVolume.toLocaleString()}`}
+                                icon={<TrendingUp className="w-6 h-6" />}
+                                color="green"
 
+                            />
+                        </>
+                    )}
                 </div>
 
                 {/* Main Grid */}

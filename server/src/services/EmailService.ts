@@ -21,6 +21,18 @@ class EmailService {
     }
 
     /**
+     * Get the branded logo HTML
+     */
+    private getLogoHtml(): string {
+        return `
+        <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 20px;">
+            <div style="width: 24px; height: 24px; background-color: #13ec5b; border-radius: 4px; color: #0d1b12; font-size: 12px; font-weight: bold; display: flex; align-items: center; justify-content: center; text-align: center; line-height: 24px; font-family: sans-serif;">X</div>
+            <span style="font-weight: bold; font-size: 18px; letter-spacing: -0.025em; color: #ffffff; font-family: sans-serif;">MuskX Secure Escrow</span>
+        </div>
+        `;
+    }
+
+    /**
      * Base method to send any email
      */
     private async send(options: EmailOptions): Promise<boolean> {
@@ -73,11 +85,12 @@ class EmailService {
             <body>
                 <div class="container">
                     <div class="header">
-                        <h1>Welcome to Escrow Platform!</h1>
+                        ${this.getLogoHtml()}
+                        <h1>Welcome to MuskX Secure Escrow!</h1>
                     </div>
                     <div class="content">
                         <p>Hello ${userName || 'there'},</p>
-                        <p>Thank you for signing up with Escrow Platform. To complete your registration, please verify your email address by clicking the button below:</p>
+                        <p>Thank you for signing up with MuskX Secure Escrow. To complete your registration, please verify your email address by clicking the button below:</p>
                         <p style="text-align: center;">
                             <a href="${verificationLink}" class="button">Verify Email Address</a>
                         </p>
@@ -88,7 +101,7 @@ class EmailService {
                         </p>
                     </div>
                     <div class="footer">
-                        <p>&copy; ${new Date().getFullYear()} Escrow Platform. All rights reserved.</p>
+                        <p>&copy; ${new Date().getFullYear()} MuskX Secure Escrow. All rights reserved.</p>
                     </div>
                 </div>
             </body>
@@ -126,11 +139,12 @@ class EmailService {
             <body>
                 <div class="container">
                     <div class="header">
+                        ${this.getLogoHtml()}
                         <h1>Password Reset Request</h1>
                     </div>
                     <div class="content">
                         <p>Hello ${userName || 'there'},</p>
-                        <p>We received a request to reset your password for your Escrow Platform account. Click the button below to create a new password:</p>
+                        <p>We received a request to reset your password for your MuskX Secure Escrow account. Click the button below to create a new password:</p>
                         <p style="text-align: center;">
                             <a href="${resetLink}" class="button">Reset Password</a>
                         </p>
@@ -141,7 +155,7 @@ class EmailService {
                         </div>
                     </div>
                     <div class="footer">
-                        <p>&copy; ${new Date().getFullYear()} Escrow Platform. All rights reserved.</p>
+                        <p>&copy; ${new Date().getFullYear()} MuskX Secure Escrow. All rights reserved.</p>
                     </div>
                 </div>
             </body>
@@ -215,6 +229,7 @@ class EmailService {
             <body>
                 <div class="container">
                     <div class="header">
+                        ${this.getLogoHtml()}
                         <h1>Secure Escrow Invitation</h1>
                     </div>
                     <div class="content">
@@ -253,7 +268,7 @@ class EmailService {
                         <a href="${inviteLink}" class="button">View Transaction Details</a>
                     </div>
                     <div class="footer">
-                        <p>&copy; ${new Date().getFullYear()} GreenWealth Escrow. All rights reserved.</p>
+                        <p>&copy; ${new Date().getFullYear()} MuskX Secure Escrow. All rights reserved.</p>
                         <p>This email was sent to ${email}. If you were not expecting this, please ignore it.</p>
                     </div>
                 </div>
@@ -288,6 +303,7 @@ class EmailService {
             <body>
                 <div class="container">
                     <div class="header">
+                        ${this.getLogoHtml()}
                         <h1>KYC Documents Received</h1>
                     </div>
                     <div class="content">
@@ -299,7 +315,7 @@ class EmailService {
                         </p>
                     </div>
                     <div class="footer">
-                        <p>&copy; ${new Date().getFullYear()} Escrow Platform. All rights reserved.</p>
+                        <p>&copy; ${new Date().getFullYear()} MuskX Secure Escrow. All rights reserved.</p>
                     </div>
                 </div>
             </body>
@@ -337,6 +353,7 @@ class EmailService {
             <body>
                 <div class="container">
                     <div class="header">
+                        ${this.getLogoHtml()}
                         <h1>✅ KYC Verification Approved</h1>
                     </div>
                     <div class="content">
@@ -344,13 +361,13 @@ class EmailService {
                         <div class="success">
                             <strong>Congratulations!</strong> Your KYC verification has been approved.
                         </div>
-                        <p>You now have full access to all features of the Escrow Platform, including the ability to initiate and participate in escrow transactions.</p>
+                        <p>You now have full access to all features of the MuskX Secure Escrow, including the ability to initiate and participate in escrow transactions.</p>
                         <p style="text-align: center;">
                             <a href="${dashboardLink}" class="button">Go to Dashboard</a>
                         </p>
                     </div>
                     <div class="footer">
-                        <p>&copy; ${new Date().getFullYear()} Escrow Platform. All rights reserved.</p>
+                        <p>&copy; ${new Date().getFullYear()} MuskX Secure Escrow. All rights reserved.</p>
                     </div>
                 </div>
             </body>
@@ -388,6 +405,7 @@ class EmailService {
             <body>
                 <div class="container">
                     <div class="header">
+                        ${this.getLogoHtml()}
                         <h1>KYC Verification Update</h1>
                     </div>
                     <div class="content">
@@ -402,7 +420,7 @@ class EmailService {
                         </p>
                     </div>
                     <div class="footer">
-                        <p>&copy; ${new Date().getFullYear()} Escrow Platform. All rights reserved.</p>
+                        <p>&copy; ${new Date().getFullYear()} MuskX Secure Escrow. All rights reserved.</p>
                     </div>
                 </div>
             </body>
@@ -446,6 +464,7 @@ class EmailService {
             <body>
                 <div class="container">
                     <div class="header">
+                        ${this.getLogoHtml()}
                         <h1>Escrow Status Updated</h1>
                     </div>
                     <div class="content">
@@ -461,7 +480,7 @@ class EmailService {
                         </p>
                     </div>
                     <div class="footer">
-                        <p>&copy; ${new Date().getFullYear()} Escrow Platform. All rights reserved.</p>
+                        <p>&copy; ${new Date().getFullYear()} MuskX Secure Escrow. All rights reserved.</p>
                     </div>
                 </div>
             </body>
@@ -498,6 +517,7 @@ class EmailService {
             <body>
                 <div class="container">
                     <div class="header">
+                        ${this.getLogoHtml()}
                         <h1>Admin Notification</h1>
                     </div>
                     <div class="content">
@@ -509,7 +529,7 @@ class EmailService {
                         </p>
                     </div>
                     <div class="footer">
-                        <p>&copy; ${new Date().getFullYear()} Escrow Platform. All rights reserved.</p>
+                        <p>&copy; ${new Date().getFullYear()} MuskX Secure Escrow. All rights reserved.</p>
                     </div>
                 </div>
             </body>
@@ -547,6 +567,7 @@ class EmailService {
             <body>
                 <div class="container">
                     <div class="header">
+                        ${this.getLogoHtml()}
                         <h1>🎉 You've Been Invited!</h1>
                     </div>
                     <div class="content">
@@ -563,7 +584,7 @@ class EmailService {
                         <p style="color: #6b7280; font-size: 14px;">Once registered, you'll be able to view and accept the escrow transaction.</p>
                     </div>
                     <div class="footer">
-                        <p>&copy; ${new Date().getFullYear()} Escrow Platform. All rights reserved.</p>
+                        <p>&copy; ${new Date().getFullYear()} MuskX Secure Escrow. All rights reserved.</p>
                     </div>
                 </div>
             </body>
@@ -608,7 +629,8 @@ class EmailService {
             <body>
                 <div class="container">
                     <div class="header">
-                        <h1>Welcome to GreenWealth!</h1>
+                        ${this.getLogoHtml()}
+                        <h1>Welcome to MuskX Secure Escrow!</h1>
                     </div>
                     <div class="content">
                         <p>Hello ${firstName || 'there'},</p>
@@ -627,7 +649,7 @@ class EmailService {
                         </p>
                     </div>
                     <div class="footer">
-                        <p>&copy; ${new Date().getFullYear()} Escrow Platform. All rights reserved.</p>
+                        <p>&copy; ${new Date().getFullYear()} MuskX Secure Escrow. All rights reserved.</p>
                     </div>
                 </div>
             </body>

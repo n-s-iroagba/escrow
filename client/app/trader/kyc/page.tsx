@@ -7,6 +7,7 @@ import { useRequiredAuth } from '@/hooks/useAuthContext';
 import { useRouter } from 'next/navigation';
 import { ShieldCheck, Upload, FileText, CheckCircle, Clock, XCircle, AlertTriangle, Loader2, Image as ImageIcon, User, CreditCard } from 'lucide-react';
 import { uploadFile } from '@/utils';
+import { Skeleton } from '@/components/ui/Skeleton';
 
 export default function KYCPage() {
     const { user } = useRequiredAuth(true);
@@ -78,10 +79,18 @@ export default function KYCPage() {
     };
 
     if (loading) return (
-        <div className="min-h-screen flex items-center justify-center bg-[#f6f8f6]">
-            <div className="animate-pulse flex flex-col items-center gap-3">
-                <ShieldCheck className="w-10 h-10 text-gray-300" />
-                <p className="text-gray-400 font-medium">Checking verification status...</p>
+        <div className="min-h-screen flex items-center justify-center bg-[#f6f8f6] p-8">
+            <div className="max-w-md w-full bg-white rounded-3xl shadow-sm border border-gray-100 p-8 space-y-6">
+                <div className="flex justify-center mb-6">
+                    <Skeleton className="w-20 h-20 rounded-full" />
+                </div>
+                <div className="space-y-3 text-center">
+                    <Skeleton className="h-8 w-48 mx-auto" />
+                    <Skeleton className="h-4 w-64 mx-auto" />
+                </div>
+                <div className="pt-4">
+                    <Skeleton className="h-12 w-full rounded-xl" />
+                </div>
             </div>
         </div>
     );

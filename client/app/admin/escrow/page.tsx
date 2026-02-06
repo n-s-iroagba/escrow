@@ -103,7 +103,8 @@ export default function AdminEscrowListPage() {
                                         <th className="text-left p-4 font-semibold">Initiator</th>
                                         <th className="text-left p-4 font-semibold">Amount</th>
                                         <th className="text-left p-4 font-semibold">Trade</th>
-                                        <th className="text-left p-4 font-semibold">Status</th>
+                                        <th className="text-left p-4 font-semibold">Buyer Funding Status</th>
+                                        <th className="text-left p-4 font-semibold">Seller Funding Status</th>
                                         <th className="text-left p-4 font-semibold">Action</th>
                                     </tr>
                                 </thead>
@@ -127,7 +128,8 @@ export default function AdminEscrowListPage() {
                                             <td className="p-4 text-sm text-slate-600">
                                                 {escrow.tradeType === 'CRYPTO_TO_CRYPTO' ? 'C2C' : 'C2F'}
                                             </td>
-                                            <td className="p-4">{getStatusBadge(escrow.state)}</td>
+                                            <td className="p-4">{getStatusBadge(escrow.buyerFundingStatus)}</td>
+                                            <td className="p-4">{getStatusBadge(escrow.sellerFundingStatus)}</td>
                                             <td className="p-4">
                                                 <Link
                                                     data-testid="view-escrow-button"
