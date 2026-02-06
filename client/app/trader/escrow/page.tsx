@@ -9,6 +9,7 @@ import { EscrowState } from '@/constants/enums';
 
 export default function EscrowListPage() {
     const [filter, setFilter] = useState<'all' | 'buyer' | 'seller'>('all');
+    const [statusFilter, setStatusFilter] = useState<'incomplete' | 'completed'>('incomplete');
 
     const { data: escrows, loading, error } = useGet(
         filter === 'all' ? API_ROUTES.ESCROWS.GET_ALL : `${API_ROUTES.ESCROWS.GET_ALL}?role=${filter}`
@@ -51,20 +52,37 @@ export default function EscrowListPage() {
 
                 {/* Filter and Content */}
                 <div className="space-y-6">
-                    {/* Filters */}
-                    <div className="flex items-center gap-2 bg-white p-1.5 rounded-2xl border border-gray-100 shadow-sm w-fit">
-                        {(['all', 'buyer', 'seller'] as const).map((f) => (
-                            <button
-                                key={f}
-                                data-testid={`filter-${f}-button`}
-                                onClick={() => setFilter(f)}
-                                className={`px-5 py-2 rounded-xl text-sm font-bold transition-all ${filter === f
-                                    ? 'bg-[#0d1b12] text-white shadow-md'
-                                    : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'}`}
-                            >
-                                {f.charAt(0).toUpperCase() + f.slice(1)}
-                            </button>
-                        ))}
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        {/* Status Filter (Completed/Incomplete) */}
+                        <div className="bg-gray-100 p-1 rounded-xl flex items-center">
+                            {(['incomplete', 'completed'] as const).map((s) => (
+                                <button
+                                    key={s}
+                                    onClick={() => setStatusFilter(s)}
+                                    className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${statusFilter === s
+                                        ? 'bg-white text-[#0d1b12] shadow-sm'
+                                        : 'text-gray-500 hover:text-gray-700'}`}
+                                >
+                                    {s === 'incomplete' ? 'Active' : 'Completed'}
+                                </button>
+                            ))}
+                        </div>
+
+                        {/* Role Filters */}
+                        <div className="flex items-center gap-2 bg-white p-1.5 rounded-2xl border border-gray-100 shadow-sm w-fit">
+                            {(['all', 'buyer', 'seller'] as const).map((f) => (
+                                <button
+                                    key={f}
+                                    data-testid={`filter-${f}-button`}
+                                    onClick={() => setFilter(f)}
+                                    className={`px-5 py-2 rounded-xl text-sm font-bold transition-all ${filter === f
+                                        ? 'bg-[#0d1b12] text-white shadow-md'
+                                        : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'}`}
+                                >
+                                    {f.charAt(0).toUpperCase() + f.slice(1)}
+                                </button>
+                            ))}
+                        </div>
                     </div>
 
                     {/* Content */}
@@ -81,75 +99,87 @@ export default function EscrowListPage() {
                             <p className="text-red-600 font-bold mb-2">Unable to load transactions</p>
                             <button onClick={() => window.location.reload()} className="text-sm underline text-red-500">Try Again</button>
                         </div>
-                    ) : escrows?.length === 0 ? (
-                        <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-16 text-center">
-                            <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                                <Wallet className="w-10 h-10 text-gray-300" />
-                            </div>
-                            <h3 className="text-xl font-bold mb-2">No Transactions Yet</h3>
-                            <p className="text-gray-500 mb-8 max-w-sm mx-auto">
-                                Start your first secure transaction to see it listed here.
-                            </p>
-                            <Link
-                                href="/trader/escrow/initiate"
-                                className="inline-flex items-center gap-2 text-[#0d1b12] hover:text-green-600 font-bold transition-colors"
-                            >
-                                Create Escrow <ChevronRight className="w-4 h-4" />
-                            </Link>
-                        </div>
                     ) : (
                         <div className="grid gap-4">
-                            {escrows?.map((escrow: any) => {
-                                const needsFunding = escrow.state === EscrowState.INITIALIZED || escrow.state === EscrowState.ONE_PARTY_FUNDED;
-                                const isCrypto = escrow.tradeType === 'CRYPTO_TO_CRYPTO';
-
-                                return (
-                                    <Link
-                                        key={escrow.id}
-                                        href={`/trader/escrow/${escrow.id}`}
-                                        className="group block"
-                                    >
-                                        <div
-                                            data-testid="escrow-card"
-                                            className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-green-200 transition-all cursor-pointer relative overflow-hidden"
+                            {escrows?.filter((e: any) => {
+                                const isCompleted = e.state === EscrowState.RELEASED || e.state === EscrowState.CANCELLED;
+                                return statusFilter === 'completed' ? isCompleted : !isCompleted;
+                            }).length === 0 ? (
+                                <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-16 text-center">
+                                    <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                                        <Wallet className="w-10 h-10 text-gray-300" />
+                                    </div>
+                                    <h3 className="text-xl font-bold mb-2">No {statusFilter === 'incomplete' ? 'Active' : 'Completed'} Transactions</h3>
+                                    <p className="text-gray-500 mb-8 max-w-sm mx-auto">
+                                        {statusFilter === 'incomplete'
+                                            ? "You don't have any pending transactions at the moment."
+                                            : "You haven't completed any transactions yet."}
+                                    </p>
+                                    {statusFilter === 'incomplete' && (
+                                        <Link
+                                            href="/trader/escrow/initiate"
+                                            className="inline-flex items-center gap-2 text-[#0d1b12] hover:text-green-600 font-bold transition-colors"
                                         >
-                                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-                                                <div className="flex items-center gap-5">
-                                                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 shadow-sm ${isCrypto ? 'bg-purple-50 text-purple-600' : 'bg-blue-50 text-blue-600'}`}>
-                                                        {isCrypto ? <Coins className="w-7 h-7" /> : <Banknote className="w-7 h-7" />}
+                                            Create Escrow <ChevronRight className="w-4 h-4" />
+                                        </Link>
+                                    )}
+                                </div>
+                            ) : (
+                                escrows?.filter((e: any) => {
+                                    const isCompleted = e.state === EscrowState.RELEASED || e.state === EscrowState.CANCELLED;
+                                    return statusFilter === 'completed' ? isCompleted : !isCompleted;
+                                }).map((escrow: any) => {
+                                    const needsFunding = escrow.state === EscrowState.INITIALIZED || escrow.state === EscrowState.ONE_PARTY_FUNDED;
+                                    const isCrypto = escrow.tradeType === 'CRYPTO_TO_CRYPTO';
+
+                                    return (
+                                        <Link
+                                            key={escrow.id}
+                                            href={`/trader/escrow/${escrow.id}`}
+                                            className="group block"
+                                        >
+                                            <div
+                                                data-testid="escrow-card"
+                                                className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-green-200 transition-all cursor-pointer relative overflow-hidden"
+                                            >
+                                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+                                                    <div className="flex items-center gap-5">
+                                                        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 shadow-sm ${isCrypto ? 'bg-purple-50 text-purple-600' : 'bg-blue-50 text-blue-600'}`}>
+                                                            {isCrypto ? <Coins className="w-7 h-7" /> : <Banknote className="w-7 h-7" />}
+                                                        </div>
+                                                        <div>
+                                                            <h3 className="font-bold text-xl flex items-center gap-2">
+                                                                {escrow.amount} <span className="text-gray-400 text-base">{escrow.buyCurrency}</span>
+                                                                <span className="text-gray-300">→</span>
+                                                                <span className="text-gray-400 text-base">{escrow.sellCurrency}</span>
+                                                            </h3>
+                                                            <div className="flex items-center gap-3 text-sm text-gray-400 mt-1.5 font-medium">
+                                                                <span>#{escrow.id.substring(0, 8)}</span>
+                                                                <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
+                                                                <span>{new Date(escrow.createdAt).toLocaleDateString()}</span>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                    <div>
-                                                        <h3 className="font-bold text-xl flex items-center gap-2">
-                                                            {escrow.amount} <span className="text-gray-400 text-base">{escrow.buyCurrency}</span>
-                                                            <span className="text-gray-300">→</span>
-                                                            <span className="text-gray-400 text-base">{escrow.sellCurrency}</span>
-                                                        </h3>
-                                                        <div className="flex items-center gap-3 text-sm text-gray-400 mt-1.5 font-medium">
-                                                            <span>#{escrow.id.substring(0, 8)}</span>
-                                                            <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
-                                                            <span>{new Date(escrow.createdAt).toLocaleDateString()}</span>
+
+                                                    <div className="flex items-center gap-4 self-start sm:self-center">
+                                                        {getStatusBadge(escrow.state)}
+
+                                                        {needsFunding && (
+                                                            <span className="px-3 py-1 bg-[#13ec5b] text-[#0d1b12] text-xs font-bold rounded-full animate-pulse shadow-sm shadow-green-200">
+                                                                Action Required
+                                                            </span>
+                                                        )}
+
+                                                        <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-[#13ec5b] group-hover:text-[#0d1b12] transition-colors ml-2">
+                                                            <ArrowRight className="w-5 h-5" />
                                                         </div>
                                                     </div>
                                                 </div>
-
-                                                <div className="flex items-center gap-4 self-start sm:self-center">
-                                                    {getStatusBadge(escrow.state)}
-
-                                                    {needsFunding && (
-                                                        <span className="px-3 py-1 bg-[#13ec5b] text-[#0d1b12] text-xs font-bold rounded-full animate-pulse shadow-sm shadow-green-200">
-                                                            Action Required
-                                                        </span>
-                                                    )}
-
-                                                    <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-[#13ec5b] group-hover:text-[#0d1b12] transition-colors ml-2">
-                                                        <ArrowRight className="w-5 h-5" />
-                                                    </div>
-                                                </div>
                                             </div>
-                                        </div>
-                                    </Link>
-                                );
-                            })}
+                                        </Link>
+                                    );
+                                })
+                            )}
                         </div>
                     )}
                 </div>

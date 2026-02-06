@@ -366,11 +366,11 @@ class EscrowService {
         return null;
     }
 
-    async markAsFunded(escrowId: string, payload: { amount: number, role: 'BUYER' | 'SELLER', confirmed: boolean }): Promise<Escrow> {
+    async markAsFunded(escrowId: string, payload: { amount: number, role: 'BUYER' | 'SELLER', confirmed: boolean, bankId?: string }): Promise<Escrow> {
         const escrow = await EscrowRepository.findById(escrowId);
         if (!escrow) throw new Error('Escrow not found');
 
-        const { amount, role, confirmed } = payload;
+        const { amount, role, confirmed, bankId } = payload;
 
         if (escrow.tradeType === TradeType.CRYPTO_TO_FIAT) {
             if (role === 'BUYER') {
@@ -387,7 +387,7 @@ class EscrowService {
                         amount: amount,
                         currency: escrow.buyCurrency,
                         confirmedByAdmin: confirmed,
-                        bankId: escrow.buyerDepositBankId // Should exist if initialized properly
+                        bankId: bankId || escrow.buyerDepositBankId // Use payload bankId if available, else fallback to escrow default
                     } as any);
                 }
 

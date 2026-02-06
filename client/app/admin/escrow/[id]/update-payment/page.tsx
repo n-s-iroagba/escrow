@@ -24,6 +24,11 @@ export default function AdminUpdatePaymentPage() {
         { enabled: !!id }
     );
 
+    const { data: fundingDetails } = useGet(
+        API_ROUTES.ESCROWS.GET_FUNDING_DETAILS(id as string),
+        { enabled: !!id }
+    );
+
     const { post: fundEscrow, isPending: isSaving } = usePost(
         API_ROUTES.ESCROWS.FUND(id as string),
         {
@@ -80,7 +85,8 @@ export default function AdminUpdatePaymentPage() {
         fundEscrow({
             role: 'BUYER',
             amount: parseFloat(buyerAmount),
-            confirmed: buyerConfirmed
+            confirmed: buyerConfirmed,
+            bankId: fundingDetails?.adminBank?.id
         });
     };
 
@@ -165,7 +171,7 @@ export default function AdminUpdatePaymentPage() {
                             <button
                                 onClick={handleSaveBuyer}
                                 disabled={isSaving}
-                                className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-200 transition-all mt-2 flex items-center justify-center gap-2"
+                                className="w-full py-4 bg-[#13ec5b] hover:bg-[#10c94d] text-[#0d1b12] font-bold rounded-xl shadow-lg shadow-green-200 transition-all hover:scale-[1.02] mt-2 flex items-center justify-center gap-2"
                             >
                                 <Save className="w-4 h-4" />
                                 Save Buyer Payment
@@ -219,7 +225,7 @@ export default function AdminUpdatePaymentPage() {
                             <button
                                 onClick={handleSaveSeller}
                                 disabled={isSaving}
-                                className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl shadow-lg shadow-purple-200 transition-all mt-2 flex items-center justify-center gap-2"
+                                className="w-full py-4 bg-[#13ec5b] hover:bg-[#10c94d] text-[#0d1b12] font-bold rounded-xl shadow-lg shadow-green-200 transition-all hover:scale-[1.02] mt-2 flex items-center justify-center gap-2"
                             >
                                 <Save className="w-4 h-4" />
                                 Save Seller Payment
