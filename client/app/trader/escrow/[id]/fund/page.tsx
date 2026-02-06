@@ -44,11 +44,11 @@ export default function FundEscrowPage() {
         }
     );
 
-    const isBuyer = user?.id === escrow.buyerId;
-    const isSeller = user?.id === escrow.sellerId;
+    const isBuyer = escrow ? user?.id === escrow.buyerId : false;
+    const isSeller = escrow ? user?.id === escrow.sellerId : false;
 
     // Determine amount to pay based on role
-    const amountToPay = isBuyer ? (escrow as any).buyerDepositAmount : (escrow as any).sellerDepositAmount;
+    const amountToPay = escrow ? (isBuyer ? (escrow as any).buyerDepositAmount : (escrow as any).sellerDepositAmount) : 0;
 
     // Initialize PayPal Buttons when SDK is ready and it's a PayPal transaction
     useEffect(() => {
@@ -119,6 +119,52 @@ export default function FundEscrowPage() {
     let showBank = false;
     let targetWallet = null;
     let paymentCurrency = '';
+
+    // Check if the user has provided their reception details (Bank/Wallet)
+    // If they haven't, they shouldn't be funding yet because we need to know where to send the assets they are buying (or receiving).
+    let missingRecipientDetails = false;
+
+    if (isBuyer) {
+        // Buyer is buying Crypto. They MUST have a Buyer Crypto Wallet set up to receive it.
+        // (escrow.buyerRecipientDetails comes from getEscrowById)
+        if (!(escrow as any).buyerRecipientDetails) {
+            missingRecipientDetails = true;
+        }
+    } else if (isSeller) {
+        if (escrow.tradeType === TradeType.CRYPTO_TO_FIAT) {
+            // Seller is selling Crypto for Fiat. They MUST have a Bank Account set up to receive Fiat.
+            if (!(escrow as any).sellerRecipientDetails) {
+                missingRecipientDetails = true;
+            }
+        } else if (escrow.tradeType === TradeType.CRYPTO_TO_CRYPTO) {
+            // Seller is swapping Crypto. They MUST have a Wallet set up to receive the other Crypto.
+            if (!(escrow as any).sellerRecipientDetails) {
+                missingRecipientDetails = true;
+            }
+        }
+    }
+
+    if (missingRecipientDetails) {
+        return (
+            <div className="min-h-screen bg-[#f6f8f6] p-8 font-display text-[#0d1b12] flex items-center justify-center">
+                <div className="max-w-md w-full bg-white rounded-3xl shadow-xl p-8 border border-gray-100 text-center">
+                    <div className="w-16 h-16 bg-yellow-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <ShieldCheck className="w-8 h-8 text-yellow-500" />
+                    </div>
+                    <h2 className="text-xl font-bold mb-2">Setup Required</h2>
+                    <p className="text-gray-500 mb-6">
+                        Before you can fund this transaction, you must provide your <strong>receiving details</strong> (Bank Account or Wallet) so we know where to send your assets when the trade completes.
+                    </p>
+                    <button
+                        onClick={() => router.push(`/trader/escrow/${id}`)}
+                        className="bg-[#13ec5b] hover:bg-[#10c94d] text-[#0d1b12] font-bold py-3 px-6 rounded-xl w-full shadow-lg shadow-green-200 transition-all"
+                    >
+                        Go to Transaction Details
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     if (escrow.tradeType === TradeType.CRYPTO_TO_CRYPTO) {
         showCrypto = true;
@@ -202,7 +248,7 @@ export default function FundEscrowPage() {
                         <div className="bg-gray-50 p-6 rounded-2xl border border-gray-200">
                             <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
                                 <Banknote className="w-5 h-5 text-gray-400" />
-                                Bank Wire Details (Administrator)
+                                Escrow Bank Wire Details
                             </h3>
                             {/* Only show details if they exist in fundingDetails.adminBank */}
                             {fundingDetails.adminBank ? (
@@ -232,7 +278,7 @@ export default function FundEscrowPage() {
                                     </div>
                                 </div>
                             ) : (
-                                <p className="text-red-500">Admin bank details unavailable.</p>
+                                <p className="text-red-500">System bank details unavailable.</p>
                             )}
 
                             <div className="mt-6 p-4 bg-white rounded-xl border border-blue-100 text-blue-800 text-sm">
@@ -288,6 +334,11 @@ export default function FundEscrowPage() {
                                 <div className="bg-gray-800 p-2 rounded-lg">
                                     <span className="font-mono font-bold">{paymentCurrency}</span>
                                 </div>
+
+
+                            </div>
+                            <div className="text-gray-400 p-2 rounded-lg">
+                                <span className="font-mono font-bold">***NETWORK***: {targetWallet.network}(ensure the network is correct else funds will be permanently lost)</span>
                             </div>
 
                             <div className="bg-black/30 p-4 rounded-xl backdrop-blur-sm border border-white/10 mb-4">
@@ -295,6 +346,9 @@ export default function FundEscrowPage() {
                                 <div className="flex items-center gap-3 mt-1">
                                     <code className="text-sm font-mono break-all flex-1 text-green-400">{targetWallet?.walletAddress || targetWallet?.address || 'Address Generation Pending...'}</code>
                                     <button onClick={() => handleCopy(targetWallet?.walletAddress || targetWallet?.address)} className="hover:text-green-400 transition-colors"><Copy className="w-4 h-4" /></button>
+                                </div>
+                                <div className="text-gray-400 p-2 rounded-lg">
+                                    <span className="font-mono font-bold">***NETWORK***: {targetWallet.network}</span>
                                 </div>
                             </div>
                         </div>

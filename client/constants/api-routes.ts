@@ -48,6 +48,12 @@ const API_ROUTES = {
     SELLER_BANKS: {
         CREATE: '/seller-banks',
         GET_ALL: '/seller-banks'
+    },
+    BUYER_WALLETS: {
+        CREATE: '/buyer-wallets'
+    },
+    SELLER_WALLETS: {
+        CREATE: '/seller-wallets'
     }
 }
 export default API_ROUTES

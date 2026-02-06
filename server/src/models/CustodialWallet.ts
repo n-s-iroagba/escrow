@@ -6,19 +6,18 @@ export interface ICustodialWallet {
   id: string;
   currency: string;
   address: string;
-  network: string; // Encrypted
-
+  network: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
 class CustodialWallet extends Model<ICustodialWallet> implements ICustodialWallet {
-  public id!: string;
-  public currency!: string;
-  public address!: string;
-  public network!: string;
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  declare public id: string;
+  declare public currency: string;
+  declare public address: string;
+  declare public network: string;
+  declare public readonly createdAt: Date;
+  declare public readonly updatedAt: Date;
 
   toJSON() {
     const values = { ...this.get() };

@@ -107,6 +107,8 @@ class App {
     this.app.use(`/api/${env.API_VERSION}/auth`, authRoutes);
     this.app.use(`/api/${env.API_VERSION}/users`, userRoutes);
     this.app.use(`/api/${env.API_VERSION}/seller-banks`, sellerBankAccountRoutes);
+    this.app.use(`/api/${env.API_VERSION}/buyer-wallets`, require('./routers/buyerCryptoWalletRoutes').default);
+    this.app.use(`/api/${env.API_VERSION}/seller-wallets`, require('./routers/sellerCryptoWalletRoutes').default);
 
 
     // 404 handler

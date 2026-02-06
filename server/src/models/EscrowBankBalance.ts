@@ -15,15 +15,15 @@ export interface IEscrowBankBalance {
 }
 
 class EscrowBankBalance extends Model<IEscrowBankBalance> implements IEscrowBankBalance {
-  public id!: string;
-  public escrowId!: string;
-  public bankId!: string;
-  public amount!: number;
-  public currency!: string;
-  public confirmedByAdmin!: boolean;
-  public confirmedAt?: Date;
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  declare public id: string;
+  declare public escrowId: string;
+  declare public bankId: string;
+  declare public amount: number;
+  declare public currency: string;
+  declare public confirmedByAdmin: boolean;
+  declare public confirmedAt?: Date;
+  declare public readonly createdAt: Date;
+  declare public readonly updatedAt: Date;
 }
 
 

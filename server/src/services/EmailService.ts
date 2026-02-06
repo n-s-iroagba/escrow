@@ -159,48 +159,102 @@ class EmailService {
     /**
      * Send escrow invitation notification
      */
+    /**
+     * Send escrow invitation notification
+     */
     async sendEscrowInvitation(
         email: string,
         inviterEmail: string,
         amount: number,
         currency: string,
-        escrowId: string
+        escrowId: string,
+        // tradeType, // Unused param, typically would use for subject or message customization.
+        counterAmount?: number,
+        counterCurrency?: string,
+        role?: string // 'BUYER' or 'SELLER' (Initiator's role)
     ): Promise<boolean> {
-        const escrowLink = `${this.frontendUrl}/trader/escrow/${escrowId}`;
+        // Invite link: /auth/sign-up/invite?email=...&escrowId=...
+        const inviteLink = `${this.frontendUrl}/auth/sign-up/invite/${email}`;
+        // Construct detailed message
+        // Example: "Buyer wants to purchase 1 BTC for 50,000 USD"
+        let intentionMessage = '';
+        if (role === 'BUYER') {
+            intentionMessage = `The buyer wants to purchase <strong>${amount} ${currency}</strong>`;
+            if (counterAmount && counterCurrency) {
+                intentionMessage += ` for <strong>${counterAmount} ${counterCurrency}</strong>`;
+            }
+        } else {
+            // Initiator is Seller
+            intentionMessage = `The seller wants to sell <strong>${amount} ${currency}</strong>`;
+            if (counterAmount && counterCurrency) {
+                intentionMessage += ` for <strong>${counterAmount} ${counterCurrency}</strong>`;
+            }
+        }
 
         const html = `
             <!DOCTYPE html>
             <html>
             <head>
                 <style>
-                    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-                    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                    .header { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
-                    .content { background: #f9fafb; padding: 30px; border-radius: 0 0 8px 8px; }
-                    .button { display: inline-block; background: #8b5cf6; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 20px 0; }
-                    .amount { font-size: 28px; font-weight: bold; color: #8b5cf6; text-align: center; margin: 20px 0; }
-                    .footer { text-align: center; margin-top: 20px; color: #6b7280; font-size: 12px; }
+                    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #1f2937; background-color: #f3f4f6; margin: 0; padding: 0; }
+                    .container { max-width: 600px; margin: 40px auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+                    .header { background: #10b981; padding: 40px 20px; text-align: center; }
+                    .header h1 { color: white; margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.025em; }
+                    .content { padding: 40px 30px; }
+                    .details-box { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin: 24px 0; }
+                    .detail-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f3f4f6; }
+                    .detail-row:last-child { border-bottom: none; }
+                    .detail-label { color: #6b7280; font-size: 14px; }
+                    .detail-value { font-weight: 600; color: #111827; font-size: 14px; }
+                    .button { display: block; width: 100%; background: #10b981; color: white; padding: 16px 0; text-align: center; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; margin-top: 32px; transition: background-color 0.2s; }
+                    .button:hover { background: #059669; }
+                    .footer { background: #f9fafb; padding: 24px; text-align: center; color: #9ca3af; font-size: 12px; border-top: 1px solid #e5e7eb; }
+                    .price-highlight { font-size: 18px; color: #059669; font-weight: 700; margin-top: 4px; }
                 </style>
             </head>
             <body>
                 <div class="container">
                     <div class="header">
-                        <h1>New Escrow Transaction</h1>
+                        <h1>Secure Escrow Invitation</h1>
                     </div>
                     <div class="content">
-                        <p>Hello,</p>
-                        <p>You have been invited to participate in an escrow transaction by <strong>${inviterEmail}</strong>.</p>
-                        <div class="amount">${amount} ${currency}</div>
-                        <p>Please log in to your account to view the details and accept or decline this transaction:</p>
-                        <p style="text-align: center;">
-                            <a href="${escrowLink}" class="button">View Escrow Details</a>
+                        <p style="font-size: 16px; color: #4b5563; margin-bottom: 24px;">
+                            Hello,
                         </p>
-                        <p style="margin-top: 20px; color: #6b7280; font-size: 14px;">
-                            Escrow ID: ${escrowId}
+                        <p style="font-size: 16px; color: #4b5563; margin-bottom: 24px;">
+                            You have been invited by <strong>${inviterEmail}</strong> to participate in a secured transaction on our platform.
                         </p>
+
+                        <div class="details-box">
+                            <div style="text-align: center; margin-bottom: 20px;">
+                                <div style="font-size: 14px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">Transaction Summary</div>
+                                <div style="margin-top: 8px; font-size: 16px;">${intentionMessage}</div>
+                            </div>
+                            
+                            <div class="detail-row">
+                                <span class="detail-label">Asset</span>
+                                <span class="detail-value">${amount} ${currency}</span>
+                            </div>
+                            ${counterAmount ? `
+                            <div class="detail-row">
+                                <span class="detail-label">Price / Value</span>
+                                <span class="detail-value">${counterAmount} ${counterCurrency}</span>
+                            </div>` : ''}
+                            <div class="detail-row">
+                                <span class="detail-label">Payment Method</span>
+                                <span class="detail-value">Escrow Secured</span>
+                            </div>
+                        </div>
+                        <p>TransactonID: ${escrowId}
+                        <p style="font-size: 15px; color: #6b7280; text-align: center; margin-bottom: 8px;">
+                            To review the full agreement and accept this transaction, please proceed below.
+                        </p>
+
+                        <a href="${inviteLink}" class="button">View Transaction Details</a>
                     </div>
                     <div class="footer">
-                        <p>&copy; ${new Date().getFullYear()} Escrow Platform. All rights reserved.</p>
+                        <p>&copy; ${new Date().getFullYear()} GreenWealth Escrow. All rights reserved.</p>
+                        <p>This email was sent to ${email}. If you were not expecting this, please ignore it.</p>
                     </div>
                 </div>
             </body>
@@ -209,7 +263,7 @@ class EmailService {
 
         return this.send({
             to: email,
-            subject: 'New Escrow Transaction Invitation',
+            subject: `Action Required: Escrow Invitation from ${inviterEmail}`,
             html,
             sender: 'INFO'
         });

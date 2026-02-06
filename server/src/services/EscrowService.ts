@@ -239,9 +239,14 @@ class EscrowService {
         await EmailService.sendEscrowInvitation(
             counterPartyEmail,
             initiatorEmail,
-            Number(amount),
-            isBuyerInitiated ? buyCurrency! : sellCurrency!,
-            escrow.id
+            isBuyerInitiated ? buyCurrency === 'USD' || buyCurrency === 'EUR' || buyCurrency === 'GBP' ? buyerDepositAmount : amount : amount, // Show what initiator is offering? Or primary amount? 
+            // Better logic: Show the PRIMARY amount/currency of the deal defined by Initiator
+            isBuyerInitiated ? buyCurrency : sellCurrency,
+            escrow.id,
+            // tradeType removed from signature
+            isBuyerInitiated ? sellerDepositAmount : buyerDepositAmount, // Counter Amount
+            isBuyerInitiated ? sellCurrency : buyCurrency, // Counter Currency
+            isBuyerInitiated ? 'BUYER' : 'SELLER'
         );
 
         return escrow;
