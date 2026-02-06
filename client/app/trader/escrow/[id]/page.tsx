@@ -25,7 +25,7 @@ export default function EscrowDetailsPage() {
     const { data: escrow, loading, error } = useGet(API_ROUTES.ESCROWS.GET_ONE(id as string), {
         enabled: !!id
     });
-    const { user } = useRequiredAuth();
+    const { user } = useRequiredAuth(true);
     console.log(user)
 
     if (loading) return (

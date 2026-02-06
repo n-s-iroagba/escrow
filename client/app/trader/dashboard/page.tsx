@@ -2,7 +2,7 @@
 
 import { useGet } from '@/hooks/useApiQuery';
 import API_ROUTES from '@/constants/api-routes';
-import { useAuthContext } from '@/hooks/useAuthContext';
+import { useRequiredAuth } from '@/hooks/useAuthContext';
 import { useRouter } from 'next/navigation';
 import {
     ShieldAlert,
@@ -30,7 +30,7 @@ import { APP_NAME } from '@/constants/data';
 import { useState } from 'react';
 
 export default function DashboardPage() {
-    const { user } = useAuthContext();
+    const { user } = useRequiredAuth(true);
     const router = useRouter();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 

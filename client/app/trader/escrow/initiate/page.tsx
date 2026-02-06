@@ -488,7 +488,7 @@ export default function InitiateEscrowPage() {
                                 )}
 
                                 {/* Preferred Bank for Buyer in Crypto to Fiat */}
-                                {isCryptoToFiat && isBuyer && banks && banks.length && formData.paymentMethod !== PaymentMethod.PAYPAL && (
+                                {isCryptoToFiat && isBuyer && banks && banks.length > 0 && formData.paymentMethod !== PaymentMethod.PAYPAL && (
                                     <div>
                                         <label className="block text-sm font-semibold text-slate-700 mb-2">
                                             <span className="flex items-center gap-2">

@@ -10,9 +10,9 @@ import {
     resendVerification,
     getMe
 } from '../controllers/AuthController';
+import { authenticate } from '@/middleware/auth';
 
 const router = Router();
-import { authenticate } from '../middleware/auth';
 
 router.post('/register', register);
 router.post('/login', login);

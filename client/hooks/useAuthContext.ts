@@ -1,15 +1,15 @@
 import { useContext } from "react";
 import { AuthContext } from "../lib/context/AuthContext";
 
-export const useAuthContext = () => {
+export const useAuthContext = (enabled: boolean) => {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error('useAuthContext must be used within AuthProvider');
   }
   return context;
 };
-export const useRequiredAuth = () => {
-  const context = useAuthContext();
+export const useRequiredAuth = (enabled: boolean = true) => {
+  const context = useAuthContext(enabled);
   if (!context.user) {
     // Optionally redirect here if we had router access, 
     // or just let the layout handle protection.

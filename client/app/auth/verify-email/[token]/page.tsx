@@ -7,6 +7,7 @@ import API_ROUTES from '@/constants/api-routes';
 import { Mail, CheckCircle, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { setAccessToken } from '@/lib/axios';
+import { useRequiredAuth } from '@/hooks/useAuthContext';
 
 export default function VerifyEmailPage() {
     const params = useParams();
@@ -14,6 +15,7 @@ export default function VerifyEmailPage() {
     const searchParams = useSearchParams();
     const paramToken = params.token as string;
     const email = searchParams.get('email');
+    const { setUser } = useRequiredAuth(false);
 
     const initialCode = /^\d{6}$/.test(paramToken) ? paramToken : '';
 
@@ -22,7 +24,7 @@ export default function VerifyEmailPage() {
 
     const [timeLeft, setTimeLeft] = useState(300); // 5 minutes in seconds
     const [canResend, setCanResend] = useState(false);
-    const [user, setUser] = useState(null);
+
 
 
     useEffect(() => {

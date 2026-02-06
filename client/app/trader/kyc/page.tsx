@@ -3,13 +3,13 @@
 import { useState, useRef } from 'react';
 import { useGet, usePost } from '@/hooks/useApiQuery';
 import API_ROUTES from '@/constants/api-routes';
-import { useAuthContext } from '@/hooks/useAuthContext';
+import { useRequiredAuth } from '@/hooks/useAuthContext';
 import { useRouter } from 'next/navigation';
 import { ShieldCheck, Upload, FileText, CheckCircle, Clock, XCircle, AlertTriangle, Loader2, Image as ImageIcon } from 'lucide-react';
 import { uploadFile } from '@/utils';
 
 export default function KYCPage() {
-    const { user } = useAuthContext();
+    const { user } = useRequiredAuth(true);
     const router = useRouter();
     const [formData, setFormData] = useState({
         fullName: '',

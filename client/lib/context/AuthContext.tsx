@@ -8,6 +8,7 @@ import {
     useEffect,
 
 } from 'react';
+import { usePathname } from 'next/navigation';
 
 import API_ROUTES from '@/constants/api-routes';
 import { useGet } from '@/hooks/useApiQuery';
@@ -34,9 +35,16 @@ export const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
+    const pathname = usePathname();
+
+    // Skip auth check on specific public pages that might cause issues
+    // specifically the admin signup page which shouldn't check for current user
+    const shouldCheckAuth = !pathname?.includes('/auth');
 
     const { data: fetchedUser, loading } = useGet<User>(
-        API_ROUTES.AUTH.ME
+        API_ROUTES.AUTH.ME, {
+        enabled: shouldCheckAuth,
+    }
     );
 
     useEffect(() => {
@@ -45,7 +53,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
     }, [fetchedUser]);
 
-    // Fix: Pass an object to value prop, not comma-separated values
     return (
         <AuthContext.Provider value={{ user, setUser, loading }}>
             {children}
