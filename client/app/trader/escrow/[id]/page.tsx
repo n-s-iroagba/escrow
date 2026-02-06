@@ -365,6 +365,10 @@ export default function EscrowDetailsPage() {
                                         <span>Total Required</span>
                                         <span className="font-mono">{Number(escrow.buyerDepositAmount)}</span>
                                     </div>
+                                    <div className="flex justify-between font-bold text-slate-900 text-sm">
+                                        <span>Status</span>
+                                        <span className="font-mono">{escrow.buyerConfirmedFunding ? 'Funded' : 'Not Funded'}</span>
+                                    </div>
                                 </div>
                                 <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
                                     <div className="flex justify-between items-center mb-2">
@@ -374,6 +378,10 @@ export default function EscrowDetailsPage() {
                                     <div className="flex justify-between font-bold text-slate-900 text-sm">
                                         <span>Total Required</span>
                                         <span className="font-mono">{Number(escrow.sellerDepositAmount)}</span>
+                                    </div>
+                                    <div className="flex justify-between font-bold text-slate-900 text-sm">
+                                        <span>Status</span>
+                                        <span className="font-mono">{escrow.sellerConfirmedFunding ? 'Funded' : 'Not Funded'}</span>
                                     </div>
                                 </div>
                             </div>

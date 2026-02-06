@@ -59,8 +59,8 @@ export const DocumentType = {
 } as const;
 
 export const WalletRole = {
-  BUYING: 'BUYING',
-  SELLING: 'SELLING',
+  BUYER: 'BUYER',
+  SELLER: 'SELLER',
 } as const;
 
 // Token types

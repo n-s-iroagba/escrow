@@ -6,6 +6,7 @@ import API_ROUTES from '@/constants/api-routes';
 import Link from 'next/link';
 import { Plus, ArrowRight, Wallet, Coins, Banknote, ChevronRight, Search, Filter } from 'lucide-react';
 import { EscrowState } from '@/constants/enums';
+import { Skeleton } from '@/components/ui/Skeleton';
 
 export default function EscrowListPage() {
     const [filter, setFilter] = useState<'all' | 'buyer' | 'seller'>('all');
@@ -89,8 +90,20 @@ export default function EscrowListPage() {
                     {loading ? (
                         <div className="space-y-4">
                             {[1, 2, 3].map((i) => (
-                                <div key={i} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm animate-pulse">
-                                    <div className="h-16 bg-gray-100 rounded-xl"></div>
+                                <div key={i} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+                                        <div className="flex items-center gap-5">
+                                            <Skeleton className="w-14 h-14 rounded-2xl" />
+                                            <div className="space-y-2">
+                                                <Skeleton className="h-7 w-48" />
+                                                <Skeleton className="h-4 w-32" />
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-4">
+                                            <Skeleton className="h-8 w-24 rounded-full" />
+                                            <Skeleton className="w-10 h-10 rounded-full" />
+                                        </div>
+                                    </div>
                                 </div>
                             ))}
                         </div>
@@ -129,7 +142,7 @@ export default function EscrowListPage() {
                                     const isCompleted = e.state === EscrowState.RELEASED || e.state === EscrowState.CANCELLED;
                                     return statusFilter === 'completed' ? isCompleted : !isCompleted;
                                 }).map((escrow: any) => {
-                                    const needsFunding = escrow.state === EscrowState.INITIALIZED || escrow.state === EscrowState.ONE_PARTY_FUNDED;
+                                    const needsFunding = escrow.buyerConfirmedFunding === false || escrow.sellerConfirmedFunding === false;
                                     const isCrypto = escrow.tradeType === 'CRYPTO_TO_CRYPTO';
 
                                     return (

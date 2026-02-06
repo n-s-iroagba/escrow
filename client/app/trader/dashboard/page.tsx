@@ -23,8 +23,10 @@ import {
     Award,
     Activity,
     Menu,
+    Menu,
     X
 } from 'lucide-react';
+import { Skeleton } from '@/components/ui/Skeleton';
 import Link from 'next/link';
 import { APP_NAME } from '@/constants/data';
 import { useState } from 'react';
@@ -46,14 +48,14 @@ export default function DashboardPage() {
     const pendingFundingEscrows = myEscrows.filter((e: any) => {
         const isBuyer = e.buyerId === user?.id;
         const isSeller = e.sellerId === user?.id;
-        return (e.state === 'INITIALIZED' || e.state === 'ONE_PARTY_FUNDED') && (isBuyer || isSeller);
+        return (e.buyerConfirmedFunding === false || e.sellerConfirmedFunding === false) && (isBuyer || isSeller);
     });
 
     const loading = escrowsLoading || (user?.role === 'ADMIN' ? false : kycLoading);
     const kycStatus = kycData?.status || 'NOT_STARTED';
     const isVerified = kycStatus === 'APPROVED' || kycStatus === 'VERIFIED';
 
-    const completedCount = myEscrows.filter((e: any) => e.state === 'COMPLETED' || e.state === 'COMPLETELY_FUNDED').length;
+    const completedCount = myEscrows.filter((e: any) => (e.buyerConfirmedFunding === true && e.sellerConfirmedFunding === true)).length;
     const totalVolume = myEscrows.reduce((acc: number, curr: any) => acc + parseFloat(curr.amount || 0), 0);
 
     if (loading) {
@@ -118,7 +120,7 @@ export default function DashboardPage() {
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <p className="text-sm font-semibold truncate">{user?.email || 'Trader'}</p>
-                                        <p className="text-xs text-emerald-400/80 capitalize">{user?.role?.toLowerCase()}</p>
+                                        <p className="text-xs text-emerald-400/80 capitalize">{user?.role === 'client' ? 'Trader' : 'Admin'}</p>
                                     </div>
                                 </div>
                             </div>
@@ -258,13 +260,7 @@ export default function DashboardPage() {
                         color="green"
                         trend="Since joining"
                     />
-                    <StatCard
-                        title="Volume"
-                        value={`$${totalVolume.toLocaleString()}`}
-                        icon={<TrendingUp className="w-6 h-6" />}
-                        color="green"
 
-                    />
                 </div>
 
                 {/* Main Grid */}
