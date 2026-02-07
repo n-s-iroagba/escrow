@@ -87,12 +87,14 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
         accessToken = tokens.accessToken;
 
         // Set Refresh Token Cookie
+
         res.cookie('refreshToken', tokens.refreshToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+            secure: process.env.NODE_ENV === 'production',                 // REQUIRED for SameSite=None
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',             // REQUIRED for cross-domain
+            maxAge: 7 * 24 * 60 * 60 * 1000,
         });
+
     } else {
         // Standard flow
         await EmailService.sendVerificationEmail(email, verificationToken, username);
@@ -133,11 +135,10 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
     // Set Refresh Token Cookie
     res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict', // or 'lax' depending on frontend hosting
-        maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+        secure: process.env.NODE_ENV === 'production',                 // REQUIRED for SameSite=None
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',             // REQUIRED for cross-domain
+        maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-
     return ApiResponse.success(res, {
         user: {
             id: user.id,
@@ -160,6 +161,7 @@ export const logout = asyncHandler(async (_req: Request, res: Response) => {
 });
 
 export const refreshAccessToken = asyncHandler(async (req: Request, res: Response) => {
+    console.log(req.cookies);
     const refreshToken = req.cookies?.refreshToken;
 
     if (!refreshToken) {
@@ -179,9 +181,9 @@ export const refreshAccessToken = asyncHandler(async (req: Request, res: Respons
         // Rotate refresh token
         res.cookie('refreshToken', tokens.refreshToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            maxAge: 7 * 24 * 60 * 60 * 1000
+            secure: process.env.NODE_ENV === 'production',                 // REQUIRED for SameSite=None
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',             // REQUIRED for cross-domain
+            maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
         return ApiResponse.success(res, { accessToken: tokens.accessToken }, 'Token refreshed', 200);
@@ -210,7 +212,14 @@ export const verifyEmail = asyncHandler(async (req: Request, res: Response) => {
     user.emailVerificationToken = null; // clear
     user.emailVerificationTokenExpires = null;
     const tokens = generateTokens(user.id, user.email);
+
     await user.save();
+    res.cookie('refreshToken', tokens.refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',                 // REQUIRED for SameSite=None
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',             // REQUIRED for cross-domain
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
 
     return ApiResponse.success(res, { user, accessToken: tokens.accessToken }, 'Email verified successfully', 200);
 });
@@ -259,9 +268,9 @@ export const resetPassword = asyncHandler(async (req: Request, res: Response) =>
     // Set Refresh Token Cookie
     res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+        secure: process.env.NODE_ENV === 'production',                 // REQUIRED for SameSite=None
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',             // REQUIRED for cross-domain
+        maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     return ApiResponse.success(res, {

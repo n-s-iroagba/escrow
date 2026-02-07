@@ -135,9 +135,9 @@ api.interceptors.response.use(
         clearTokens();
 
         // Ensure we don't loop indefinitely
-        // if (typeof window !== 'undefined' && window.location.pathname !== '/auth/login') {
-        //   window.location.href = '/auth/login';
-        // }
+        if (typeof window !== 'undefined' && window.location.pathname !== '/auth/login') {
+          window.location.href = '/auth/login';
+        }
 
         return Promise.reject(refreshError);
       }

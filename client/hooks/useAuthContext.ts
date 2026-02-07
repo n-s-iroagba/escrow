@@ -17,8 +17,6 @@ export const useAuthContext = (shouldFetch: boolean = false) => {
 
 export const useRequiredAuth = () => {
   const context = useAuthContext(true);
-  if (!context.user) {
-    return useAuthContext(true)
-  }
+
   return context;
 };
