@@ -1,5 +1,5 @@
 import sequelize from '@/config/database';
-import { DataTypes, Model } from 'sequelize';
+import { DataTypes, Model, Optional } from 'sequelize';
 
 
 export interface IEscrowBankBalance {
@@ -14,7 +14,9 @@ export interface IEscrowBankBalance {
   updatedAt: Date;
 }
 
-class EscrowBankBalance extends Model<IEscrowBankBalance> implements IEscrowBankBalance {
+export interface IEscrowBankBalanceCreationAttributes extends Optional<IEscrowBankBalance, 'id' | 'createdAt' | 'updatedAt' | 'confirmedAt' | 'confirmedByAdmin'> { }
+
+class EscrowBankBalance extends Model<IEscrowBankBalance, IEscrowBankBalanceCreationAttributes> implements IEscrowBankBalance {
   declare public id: string;
   declare public escrowId: string;
   declare public bankId: string;

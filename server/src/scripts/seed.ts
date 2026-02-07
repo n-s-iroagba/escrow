@@ -1,21 +1,11 @@
 import Bank from '../models/Bank';
 import CustodialWallet from '../models/CustodialWallet';
-import sequelize from '../config/database';
 import { Currency } from '../utils/constants';
 
-const seed = async () => {
+export const seed = async () => {
     try {
         console.log('🌱 Starting database seed...');
 
-        // Connect to database
-        await sequelize.authenticate();
-        console.log('✅ Connected to database.');
-
-        // Sync models (optional, but ensures tables exist)
-        // Sync models (optional, but ensures tables exist)
-        if (process.env.NODE_ENV === 'development') {
-            await sequelize.sync({ force: true });
-        }
 
         // --- Seed Banks ---
         const banks = [
@@ -124,4 +114,4 @@ const seed = async () => {
     }
 };
 
-seed();
+// seed();

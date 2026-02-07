@@ -29,7 +29,7 @@ interface AuthContextType {
     user: User | null;
     setUser: Dispatch<SetStateAction<User | null>>;
     loading: boolean;
-    checkAuth: () => void;
+    checkAuth: (shouldFetch: boolean) => void;
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null);
@@ -39,7 +39,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [shouldFetch, setShouldFetch] = useState(false);
 
 
-    const checkAuth = () => {
+
+    const checkAuth = (shouldFetch: boolean) => {
         if (!shouldFetch) {
             setShouldFetch(true);
         }

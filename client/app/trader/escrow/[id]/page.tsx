@@ -22,6 +22,7 @@ import { AddSellerBankForm } from '@/components/escrow/AddSellerBankForm';
 import { Skeleton } from '@/components/ui/Skeleton';
 
 export default function EscrowDetailsPage() {
+
     const { id } = useParams();
     const router = useRouter();
     const { data: escrow, loading, error } = useGet(API_ROUTES.ESCROWS.GET_ONE(id as string), {

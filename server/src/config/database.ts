@@ -2,6 +2,7 @@ import { Sequelize, SequelizeOptions } from 'sequelize-typescript';
 import env from './env';
 
 
+
 // Database configuration
 const dbConfig: SequelizeOptions = {
   host: env.DB_HOST,
@@ -64,6 +65,7 @@ if (env.DATABASE_URL) {
 export const testConnection = async (): Promise<void> => {
   try {
     await sequelize.authenticate();
+
 
     // await sequelize.sync({
     //   force: true
