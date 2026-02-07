@@ -28,7 +28,7 @@ export default function EscrowDetailsPage() {
         enabled: !!id
     });
 
-    const { user } = useRequiredAuth(true);
+    const { user } = useRequiredAuth();
 
     // Skeleton Layout when loading
     if (loading) return (
