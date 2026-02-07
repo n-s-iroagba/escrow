@@ -114,6 +114,7 @@ export default function InviteSignUpPage() {
                                         className="w-full h-12 pl-12 pr-4 rounded-xl border border-gray-200 focus:border-[#13ec5b] focus:ring-4 focus:ring-green-500/10 outline-none transition-all font-medium"
                                     />
                                 </div>
+                                <p className="text-xs text-gray-500 mt-2">username must be at least 3 characters long and must not be an email.</p>
                             </div>
 
                             <div>
