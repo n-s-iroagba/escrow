@@ -247,7 +247,7 @@ export default function FundEscrowPage() {
             )}
 
             {/* PayPal Maintenance Modal */}
-            {isPayPal && (
+            {isPayPal && isBuyer && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
                     <div className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl text-center">
                         <div className="w-16 h-16 bg-yellow-50 rounded-full flex items-center justify-center mx-auto mb-4">
