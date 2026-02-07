@@ -7,8 +7,10 @@ import Link from 'next/link';
 import { Plus, ArrowRight, Wallet, Coins, Banknote, ChevronRight, Search, Filter } from 'lucide-react';
 import { EscrowState } from '@/constants/enums';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { useRequiredAuth } from '@/hooks/useAuthContext';
 
 export default function EscrowListPage() {
+    const { user } = useRequiredAuth();
     const [filter, setFilter] = useState<'all' | 'buyer' | 'seller'>('all');
     const [statusFilter, setStatusFilter] = useState<'incomplete' | 'completed'>('incomplete');
 

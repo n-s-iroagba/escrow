@@ -17,8 +17,10 @@ import {
     ChevronRight
 } from 'lucide-react';
 import Link from 'next/link';
+import { useRequiredAuth } from '@/hooks/useAuthContext';
 
 export default function AdminDashboardPage() {
+    const { user } = useRequiredAuth();
     const router = useRouter();
 
     const { data: users, loading: usersLoading } = useGet(API_ROUTES.USERS.GET_ALL);

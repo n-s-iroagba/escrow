@@ -14,11 +14,12 @@ import {
     Coins,
     CheckCircle2
 } from 'lucide-react';
+import { useRequiredAuth } from '@/hooks/useAuthContext';
 
 export default function AdminUpdatePaymentPage() {
     const { id } = useParams();
     const router = useRouter();
-
+    const { user } = useRequiredAuth();
     const { data: escrow, loading, error, refetch } = useGet(
         API_ROUTES.ESCROWS.GET_ONE(id as string),
         { enabled: !!id }

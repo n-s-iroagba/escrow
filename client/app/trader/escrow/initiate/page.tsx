@@ -59,6 +59,7 @@ interface FormData {
 
 export default function InitiateEscrowPage() {
     const router = useRouter();
+    const { user } = useRequiredAuth();
     const [step, setStep] = useState(1);
     const [counterpartyStatus, setCounterpartyStatus] = useState<{
         checked: boolean;
@@ -93,7 +94,7 @@ export default function InitiateEscrowPage() {
             network: 'mainnet'
         }
     });
-    const { user } = useRequiredAuth();
+
 
     // Determine if trade involves fiat
     const isCryptoToFiat = formData.tradeType === TradeType.CRYPTO_TO_FIAT;

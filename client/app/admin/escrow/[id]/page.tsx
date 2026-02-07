@@ -18,12 +18,13 @@ import {
     Ban,
     Unlock
 } from 'lucide-react';
+import { useRequiredAuth } from '@/hooks/useAuthContext';
 
 export default function AdminEscrowDetailsPage() {
     const params = useParams();
     const router = useRouter();
     const id = params.id as string;
-
+    const { user } = useRequiredAuth();
     const { data: escrow, loading, refetch } = useGet(API_ROUTES.ESCROWS.GET_ONE(id));
 
     const { put: updateState, isPending: isUpdating } = usePut(

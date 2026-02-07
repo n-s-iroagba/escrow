@@ -6,11 +6,12 @@ import API_ROUTES from '@/constants/api-routes';
 import Link from 'next/link';
 import { Eye, Search, Filter, FileText, ChevronRight, X } from 'lucide-react';
 import { EscrowState } from '@/constants/enums';
+import { useRequiredAuth } from '@/hooks/useAuthContext';
 
 export default function AdminEscrowListPage() {
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState<string | null>(null);
-
+    const { user } = useRequiredAuth();
     const { data: escrows, loading, error } = useGet(API_ROUTES.ESCROWS.GET_ADMIN_ALL);
 
     const filteredEscrows = (escrows || []).filter((e: any) => {
