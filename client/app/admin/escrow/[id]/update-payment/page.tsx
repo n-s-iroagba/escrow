@@ -86,8 +86,7 @@ export default function AdminUpdatePaymentPage() {
             role: 'BUYER',
             amount: parseFloat(buyerAmount),
             confirmed: buyerConfirmed,
-            bankId: 1
-            // fundingDetails?.adminBank?.id
+            bankId: fundingDetails?.adminBank?.id
         });
     };
 
