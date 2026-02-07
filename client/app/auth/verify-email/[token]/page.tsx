@@ -16,7 +16,7 @@ export default function VerifyEmailPage() {
     const searchParams = useSearchParams();
     const paramToken = params.token as string;
     const email = searchParams.get('email');
-    const { setUser } = useRequiredAuth(false);
+    const { setUser } = useRequiredAuth();
 
     const initialCode = /^\d{6}$/.test(paramToken) ? paramToken : '';
 

@@ -10,7 +10,7 @@ import { uploadFile } from '@/utils';
 import { Skeleton } from '@/components/ui/Skeleton';
 
 export default function KYCPage() {
-    const { user } = useRequiredAuth(true);
+    const { user } = useRequiredAuth();
     const router = useRouter();
     const [formData, setFormData] = useState({
         fullName: '',
