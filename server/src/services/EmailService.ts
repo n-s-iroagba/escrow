@@ -267,12 +267,12 @@ class EmailService {
 
         let intentionMessage = '';
         if (role === 'BUYER') {
-            intentionMessage = `Buying <strong>${amount} ${currency}</strong>`;
+            intentionMessage = `Buyer is willing to buy <strong>${amount} ${currency}</strong>`;
             if (counterAmount && counterCurrency) {
                 intentionMessage += ` for <strong>${counterAmount} ${counterCurrency}</strong>`;
             }
         } else {
-            intentionMessage = `Selling <strong>${amount} ${currency}</strong>`;
+            intentionMessage = `Seller is willing to sell <strong>${amount} ${currency}</strong>`;
             if (counterAmount && counterCurrency) {
                 intentionMessage += ` for <strong>${counterAmount} ${counterCurrency}</strong>`;
             }
@@ -289,7 +289,8 @@ class EmailService {
                     <span class="data-value" style="font-family: monospace;">${escrowId}</span>
                 </div>
                 <div class="data-row">
-                    <span class="data-label">Summary</span>
+                    <span class="data-label">Summary  : </span> 
+                    <br/>
                     <span class="data-value" style="text-align: right;">${intentionMessage}</span>
                 </div>
             </div>
