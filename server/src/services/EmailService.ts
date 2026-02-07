@@ -502,6 +502,94 @@ class EmailService {
             sender: 'INFO'
         });
     }
+
+    /**
+     * Send notification to Seller that Buyer has funded
+     */
+    async sendBuyerFundedNotification(
+        email: string,
+        escrowId: string,
+        amount: number,
+        currency: string,
+        userName?: string
+    ): Promise<boolean> {
+        const escrowLink = `${this.frontendUrl}/trader/escrow/${escrowId}`;
+
+        const content = `
+            <p>Hello ${userName || 'there'},</p>
+            <p>Good news! The buyer has successfully funded the transaction.</p>
+            
+            <div class="data-box">
+                <div class="data-row" style="border-bottom: 1px solid #eee; padding-bottom: 12px; margin-bottom: 12px;">
+                    <span class="data-label">Transaction ID</span>
+                    <span class="data-value" style="font-family: monospace;">${escrowId}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Amount Funded</span>
+                    <span class="data-value" style="color: #059669;">${amount} ${currency}</span>
+                </div>
+            </div>
+
+            <p style="text-align: center; color: #6b7280; font-size: 14px; margin-bottom: 24px;">
+                The funds are now secured in escrow. Please proceed with the next steps of your agreement.
+            </p>
+
+            <div style="text-align: center;">
+                <a href="${escrowLink}" class="button">View Transaction</a>
+            </div>
+        `;
+
+        return this.send({
+            to: email,
+            subject: `Action Required: Buyer has funded Escrow #${escrowId}`,
+            html: this.wrapEmail('Funds Received', content),
+            sender: 'INFO'
+        });
+    }
+
+    /**
+     * Send notification to Buyer that Seller has funded
+     */
+    async sendSellerFundedNotification(
+        email: string,
+        escrowId: string,
+        amount: number,
+        currency: string,
+        userName?: string
+    ): Promise<boolean> {
+        const escrowLink = `${this.frontendUrl}/trader/escrow/${escrowId}`;
+
+        const content = `
+            <p>Hello ${userName || 'there'},</p>
+            <p>The seller has deposited the agreed assets into the secure escrow.</p>
+            
+            <div class="data-box">
+                <div class="data-row" style="border-bottom: 1px solid #eee; padding-bottom: 12px; margin-bottom: 12px;">
+                    <span class="data-label">Transaction ID</span>
+                    <span class="data-value" style="font-family: monospace;">${escrowId}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Asset Deposited</span>
+                    <span class="data-value" style="color: #059669;">${amount} ${currency}</span>
+                </div>
+            </div>
+
+            <p style="text-align: center; color: #6b7280; font-size: 14px; margin-bottom: 24px;">
+                We have verified the assets are secure. You can now proceed with confidence.
+            </p>
+
+            <div style="text-align: center;">
+                <a href="${escrowLink}" class="button">View Transaction</a>
+            </div>
+        `;
+
+        return this.send({
+            to: email,
+            subject: `Update: Seller has funded Escrow #${escrowId}`,
+            html: this.wrapEmail('Assets Secured', content),
+            sender: 'INFO'
+        });
+    }
 }
 
 export default new EmailService();

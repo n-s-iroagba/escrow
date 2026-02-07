@@ -393,6 +393,20 @@ class EscrowService {
 
                 if (confirmed) {
                     (escrow as any).buyerConfirmedFunding = true;
+
+
+                    const seller = await User.findByPk(escrow.sellerId, { include: ['kycDocument'] });
+
+                    if (seller) {
+                        const sellerName = (seller as any).kycDocument?.fullName || escrow.sellerEmail;
+                        await EmailService.sendBuyerFundedNotification(
+                            escrow.sellerEmail,
+                            escrow.id,
+                            amount,
+                            escrow.buyCurrency, // Amount is in BuyCurrency (Fiat)
+                            sellerName
+                        );
+                    }
                 }
 
             } else if (role === 'SELLER') {
@@ -418,6 +432,19 @@ class EscrowService {
 
                 if (confirmed) {
                     (escrow as any).sellerConfirmedFunding = true;
+
+                    const buyer = await User.findByPk(escrow.buyerId, { include: ['kycDocument'] });
+
+                    if (buyer) {
+                        const buyerName = (buyer as any).kycDocument?.fullName || escrow.buyerEmail;
+                        await EmailService.sendSellerFundedNotification(
+                            escrow.buyerEmail,
+                            escrow.id,
+                            amount,
+                            escrow.sellCurrency, // Amount is in SellCurrency
+                            buyerName
+                        );
+                    }
                 }
             }
         } else if (escrow.tradeType === TradeType.CRYPTO_TO_CRYPTO) {
@@ -444,8 +471,36 @@ class EscrowService {
             }
 
             if (confirmed) {
-                if (role === 'BUYER') (escrow as any).buyerConfirmedFunding = true;
-                if (role === 'SELLER') (escrow as any).sellerConfirmedFunding = true;
+                if (role === 'BUYER') {
+                    (escrow as any).buyerConfirmedFunding = true;
+                    // Send Email to Seller
+                    const seller = await User.findByPk(escrow.sellerId, { include: ['kycDocument'] });
+                    if (seller) {
+                        const sellerName = (seller as any).kycDocument?.fullName || seller.email;
+                        await EmailService.sendBuyerFundedNotification(
+                            seller.email,
+                            escrow.id,
+                            amount,
+                            currency,
+                            sellerName
+                        );
+                    }
+                }
+                if (role === 'SELLER') {
+                    (escrow as any).sellerConfirmedFunding = true;
+                    // Send Email to Buyer
+                    const buyer = await User.findByPk(escrow.buyerId, { include: ['kycDocument'] });
+                    if (buyer) {
+                        const buyerName = (buyer as any).kycDocument?.fullName || buyer.email;
+                        await EmailService.sendSellerFundedNotification(
+                            buyer.email,
+                            escrow.id,
+                            amount,
+                            currency,
+                            buyerName
+                        );
+                    }
+                }
             }
         }
 
