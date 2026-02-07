@@ -108,7 +108,7 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     console.log('Axios Interceptor: Error Response:', error); // Debug Log
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (error.response?.status === 401) {
       originalRequest._retry = true;
 
       try {
@@ -135,9 +135,9 @@ api.interceptors.response.use(
         clearTokens();
 
         // Ensure we don't loop indefinitely
-        if (typeof window !== 'undefined' && window.location.pathname !== '/auth/login') {
-          window.location.href = '/auth/login';
-        }
+        // if (typeof window !== 'undefined' && window.location.pathname !== '/auth/login') {
+        //   window.location.href = '/auth/login';
+        // }
 
         return Promise.reject(refreshError);
       }

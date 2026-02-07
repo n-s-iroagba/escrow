@@ -3,7 +3,7 @@ import cors from 'cors';
 
 import env from './config/env';
 import logger from './config/logger';
-import { testConnection } from './config/database';
+
 import { verifyEmailConnection } from './config/mailer';
 import { errorHandler } from './utils/errorHandler';
 import { requestLogger } from './middlewares/requestLogger';
@@ -14,6 +14,8 @@ import custodialWalletRoutes from './routers/custodialWalletRoutes';
 import userRoutes from './routers/userRoutes';
 import authRoutes from './routers/authRoutes';
 import sellerBankAccountRoutes from './routers/sellerBankAccountRoutes';
+// import { seed } from './scripts/seed';
+// import { testConnection } from './config/database';
 
 
 
@@ -69,7 +71,7 @@ class App {
     try {
       // await User.sync({ force: true }); // Removed to prevent dropping table with FK constraints
 
-      await testConnection();
+      // await testConnection();
       // await seed()
 
       logger.info('✅ Database initialized');
