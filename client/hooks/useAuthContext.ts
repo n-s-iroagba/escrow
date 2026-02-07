@@ -10,7 +10,7 @@ export const useAuthContext = (shouldFetch: boolean = false) => {
   // Trigger auth check when hook is consumed/mounted
   useEffect(() => {
     context.checkAuth(shouldFetch);
-  }, [context]);
+  }, [context, shouldFetch]);
 
   return context;
 };
