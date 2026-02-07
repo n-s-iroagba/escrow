@@ -68,6 +68,8 @@ class EscrowService {
             ...rest
         } = data;
 
+        console.log('Initiate Escrow Payload:', JSON.stringify(data, null, 2));
+
         // Calculate Deposit Amounts
         let buyerDepositAmount = 0;
         let sellerDepositAmount = 0;
@@ -111,19 +113,26 @@ class EscrowService {
 
 
         if (isBuyerInitiated) {
+            console.log(`Buyer Initiated: TradeType=${tradeType}, Buy=${buyCurrency}, Sell=${sellCurrency}`);
             if (tradeType === TradeType.CRYPTO_TO_CRYPTO) {
                 // Buyer deposits BuyCurrency (Crypto) -> Custodial Wallet
                 if (!buyerDepositWalletId) {
+                    console.log(`Looking for Buyer Custodial Wallet for ${buyCurrency}`);
                     const buyerWallet = await CustodialWalletRepository.findByCurrency(buyCurrency);
                     if (buyerWallet) buyerDepositWalletId = buyerWallet.id;
+                    console.log(`Found Buyer Wallet: ${buyerWallet?.id}`);
+                } else {
+                    console.log(`Using Payload Buyer Wallet ID: ${buyerDepositWalletId}`);
                 }
 
                 // Seller deposits SellCurrency (Crypto) -> Custodial Wallet
                 // NOTE: Seller didn't choose yet (unless initiator selected for them? likely not). 
                 // Logic: If payload has it, use it. Else default.
                 if (!sellerDepositWalletId) {
+                    console.log(`Looking for Seller Custodial Wallet for ${sellCurrency}`);
                     const sellerWallet = await CustodialWalletRepository.findByCurrency(sellCurrency);
                     if (sellerWallet) sellerDepositWalletId = sellerWallet.id;
+                    console.log(`Found Seller Wallet: ${sellerWallet?.id}`);
                 }
 
             } else if (tradeType === TradeType.CRYPTO_TO_FIAT && selectedBankId) {
@@ -149,18 +158,25 @@ class EscrowService {
             }
         } else {
             // Seller Initiated
+            console.log(`Seller Initiated: TradeType=${tradeType}, Buy=${buyCurrency}, Sell=${sellCurrency}`);
             if (tradeType === TradeType.CRYPTO_TO_CRYPTO) {
                 // Seller deposits SellCurrency
                 // Use payload ID if valid, else default
                 if (!sellerDepositWalletId) {
+                    console.log(`Looking for Seller Custodial Wallet for ${sellCurrency}`);
                     const sellerWallet = await CustodialWalletRepository.findByCurrency(sellCurrency);
                     if (sellerWallet) sellerDepositWalletId = sellerWallet.id;
+                    console.log(`Found Seller Wallet: ${sellerWallet?.id}`);
+                } else {
+                    console.log(`Using Payload Seller Wallet ID: ${sellerDepositWalletId}`);
                 }
 
                 // Buyer deposits BuyCurrency
                 if (!buyerDepositWalletId) {
+                    console.log(`Looking for Buyer Custodial Wallet for ${buyCurrency}`);
                     const buyerWallet = await CustodialWalletRepository.findByCurrency(buyCurrency);
                     if (buyerWallet) buyerDepositWalletId = buyerWallet.id;
+                    console.log(`Found Buyer Wallet: ${buyerWallet?.id}`);
                 }
 
                 // Seller receiving Crypto -> This is stored in RECIPIENT part (SellerCryptoWallet), not Escrow.sellerDepositWalletId
