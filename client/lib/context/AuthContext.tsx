@@ -29,21 +29,25 @@ interface AuthContextType {
     user: User | null;
     setUser: Dispatch<SetStateAction<User | null>>;
     loading: boolean;
+    checkAuth: () => void;
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
-    const pathname = usePathname();
+    const [shouldFetch, setShouldFetch] = useState(false);
 
-    // Skip auth check on public pages (home and auth routes)
-    const isPublicPage = pathname === '/' || pathname?.startsWith('/auth');
-    const shouldCheckAuth = !isPublicPage;
+
+    const checkAuth = () => {
+        if (!shouldFetch) {
+            setShouldFetch(true);
+        }
+    };
 
     const { data: fetchedUser, loading } = useGet<User>(
         API_ROUTES.AUTH.ME, {
-        enabled: shouldCheckAuth,
+        enabled: shouldFetch,
     }
     );
 
@@ -54,7 +58,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }, [fetchedUser]);
 
     return (
-        <AuthContext.Provider value={{ user, setUser, loading }}>
+        <AuthContext.Provider value={{ user, setUser, loading, checkAuth }}>
             {children}
         </AuthContext.Provider>
     );

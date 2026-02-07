@@ -9,6 +9,7 @@ import { Skeleton } from '@/components/ui/Skeleton';
 import { useState, useEffect } from 'react';
 import Script from 'next/script';
 import { useRequiredAuth } from '@/hooks/useAuthContext';
+import { IEscrow, CryptoWallet } from '@/types/escrow';
 
 declare global {
     interface Window {
@@ -32,7 +33,7 @@ export default function FundEscrowPage() {
         { enabled: !!id }
     );
 
-    const { data: escrow, loading: loadingEscrow } = useGet(
+    const { data: escrow, loading: loadingEscrow } = useGet<IEscrow>(
         API_ROUTES.ESCROWS.GET_ONE(id as string),
         { enabled: !!id }
     );
@@ -53,7 +54,7 @@ export default function FundEscrowPage() {
     const isSeller = escrow ? user?.id === escrow.sellerId : false;
 
     // Determine amount to pay based on role
-    const amountToPay = escrow ? (isBuyer ? (escrow as any).buyerDepositAmount : (escrow as any).sellerDepositAmount) : 0;
+    const amountToPay = escrow ? (isBuyer ? escrow.buyerDepositAmount : escrow.sellerDepositAmount) : 0;
 
     // Initialize PayPal Buttons when SDK is ready and it's a PayPal transaction
     useEffect(() => {
@@ -133,13 +134,13 @@ export default function FundEscrowPage() {
         });
     };
 
-    const isWire = escrow.tradeType === TradeType.CRYPTO_TO_FIAT && (escrow as any).paymentMethod === PaymentMethod.WIRE_TRANSFER;
-    const isPayPal = escrow.tradeType === TradeType.CRYPTO_TO_FIAT && (escrow as any).paymentMethod === PaymentMethod.PAYPAL;
+    const isWire = escrow.tradeType === TradeType.CRYPTO_TO_FIAT && escrow.paymentMethod === PaymentMethod.WIRE_TRANSFER;
+    const isPayPal = escrow.tradeType === TradeType.CRYPTO_TO_FIAT && escrow.paymentMethod === PaymentMethod.PAYPAL;
 
     // Logic for what to show based on User Role & Trade Type (User Rules)
     let showCrypto = false;
     let showBank = false;
-    let targetWallet = null;
+    let targetWallet: CryptoWallet | null = null;
     let paymentCurrency = '';
 
     // Check if the user has provided their reception details (Bank/Wallet)
@@ -149,18 +150,18 @@ export default function FundEscrowPage() {
     if (isBuyer) {
         // Buyer is buying Crypto. They MUST have a Buyer Crypto Wallet set up to receive it.
         // (escrow.buyerRecipientDetails comes from getEscrowById)
-        if (!(escrow as any).buyerRecipientDetails) {
+        if (!escrow.buyerRecipientDetails) {
             missingRecipientDetails = true;
         }
     } else if (isSeller) {
         if (escrow.tradeType === TradeType.CRYPTO_TO_FIAT) {
             // Seller is selling Crypto for Fiat. They MUST have a Bank Account set up to receive Fiat.
-            if (!(escrow as any).sellerRecipientDetails) {
+            if (!escrow.sellerRecipientDetails) {
                 missingRecipientDetails = true;
             }
         } else if (escrow.tradeType === TradeType.CRYPTO_TO_CRYPTO) {
             // Seller is swapping Crypto. They MUST have a Wallet set up to receive the other Crypto.
-            if (!(escrow as any).sellerRecipientDetails) {
+            if (!escrow.sellerRecipientDetails) {
                 missingRecipientDetails = true;
             }
         }
@@ -390,7 +391,7 @@ export default function FundEscrowPage() {
                                 <label className="text-xs text-gray-400 uppercase font-bold tracking-wider">Custodial Address</label>
                                 <div className="flex items-center gap-3 mt-1">
                                     <code className="text-sm font-mono break-all flex-1 text-green-400">{targetWallet?.walletAddress || targetWallet?.address || 'Address Generation Pending...'}</code>
-                                    <button onClick={() => handleCopy(targetWallet?.walletAddress || targetWallet?.address)} className="hover:text-green-400 transition-colors"><Copy className="w-4 h-4" /></button>
+                                    <button onClick={() => handleCopy((targetWallet?.walletAddress || targetWallet?.address) as string)} className="hover:text-green-400 transition-colors"><Copy className="w-4 h-4" /></button>
                                 </div>
                                 <div className="text-gray-400 p-2 rounded-lg">
                                     <span className="font-mono font-bold">***NETWORK***: {targetWallet.network}</span>

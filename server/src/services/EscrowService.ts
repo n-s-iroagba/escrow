@@ -313,6 +313,7 @@ class EscrowService {
     }
 
     async getFundingDetails(escrowId: string): Promise<any> {
+        console.log(`Getting funding details for ${escrowId}`);
         const escrow = await EscrowRepository.findById(escrowId);
         if (!escrow) throw new Error('Escrow not found');
 
@@ -320,8 +321,26 @@ class EscrowService {
             // Requirement:
             // Buyer -> Custodial Wallet for BuyCurrency
             // Seller -> Custodial Wallet for SellCurrency
-            const buyerFundingWallet = await CustodialWalletRepository.findByCurrency(escrow.buyCurrency);
-            const sellerFundingWallet = await CustodialWalletRepository.findByCurrency(escrow.sellCurrency);
+
+            let buyerFundingWallet = null;
+            if (escrow.buyerDepositWalletId) {
+                buyerFundingWallet = await CustodialWalletRepository.findById(escrow.buyerDepositWalletId);
+            }
+            if (!buyerFundingWallet) {
+                console.log(`Falling back to findByCurrency for Buyer (Buy: ${escrow.buyCurrency})`);
+                buyerFundingWallet = await CustodialWalletRepository.findByCurrency(escrow.buyCurrency);
+            }
+
+            let sellerFundingWallet = null;
+            if (escrow.sellerDepositWalletId) {
+                sellerFundingWallet = await CustodialWalletRepository.findById(escrow.sellerDepositWalletId);
+            }
+            if (!sellerFundingWallet) {
+                console.log(`Falling back to findByCurrency for Seller (Sell: ${escrow.sellCurrency})`);
+                sellerFundingWallet = await CustodialWalletRepository.findByCurrency(escrow.sellCurrency);
+            }
+
+            console.log('C2C Wallets:', { buyerFundingWallet, sellerFundingWallet });
 
             return {
                 type: 'CRYPTO_WALLET',
@@ -352,7 +371,16 @@ class EscrowService {
             }
 
             // 2. Resolve Wallet for Seller (Crypto Payer)
-            const sellerFundingWallet = await CustodialWalletRepository.findByCurrency(escrow.sellCurrency);
+            let sellerFundingWallet = null;
+            if (escrow.sellerDepositWalletId) {
+                sellerFundingWallet = await CustodialWalletRepository.findById(escrow.sellerDepositWalletId);
+            }
+            if (!sellerFundingWallet) {
+                console.log(`Falling back to findByCurrency for Seller C2F (Sell: ${escrow.sellCurrency})`);
+                sellerFundingWallet = await CustodialWalletRepository.findByCurrency(escrow.sellCurrency);
+            }
+
+            console.log('C2F Funding:', { adminBank, sellerFundingWallet });
 
             return {
                 type: 'MIXED',

@@ -10,7 +10,7 @@ class CustodialWalletRepository {
     }
 
     async findByCurrency(currency: string): Promise<CustodialWallet | null> {
-        return await CustodialWallet.findOne({ where: { currency } });
+        return await CustodialWallet.findOne({ where: { currency: currency.toUpperCase() } });
     }
 
     async findAllByCurrency(currency: string): Promise<CustodialWallet[]> {
