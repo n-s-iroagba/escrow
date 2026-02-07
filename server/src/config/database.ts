@@ -65,9 +65,9 @@ export const testConnection = async (): Promise<void> => {
   try {
     await sequelize.authenticate();
 
-    await sequelize.sync({
-      force: true
-    });
+    // await sequelize.sync({
+    //   force: true
+    // });
     console.log('✅ Database synchronized (alter: true)');
 
     console.log('✅ Database connection established successfully.');
