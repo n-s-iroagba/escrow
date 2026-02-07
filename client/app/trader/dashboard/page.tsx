@@ -59,7 +59,7 @@ export default function DashboardPage() {
     const totalVolume = myEscrows.reduce((acc: number, curr: any) => acc + parseFloat(curr.amount || 0), 0);
 
     if (loading) {
-        // Fallthrough to skeleton UI
+        return <div className={`animate-pulse rounded-lg bg-gray-200/80`}>Loading Dashboard...</div>
     }
 
     return (
