@@ -17,7 +17,7 @@ class EmailService {
     private frontendUrl: string;
 
     constructor() {
-        this.frontendUrl = env.FRONTEND_URL || 'http://localhost:3000';
+        this.frontendUrl = env.NODE_ENV === 'production' ? 'https://muskxsecureescrow.vercel.app' : 'http://localhost:3000';
     }
 
     /**
@@ -467,7 +467,7 @@ class EmailService {
      * Send welcome email with funding instructions for invited users
      */
     async sendWelcomeWithFundingInstructions(email: string, escrows: any[], firstName?: string): Promise<boolean> {
-        const dashboardLink = `${this.frontendUrl}/dashboard`;
+        const dashboardLink = `${this.frontendUrl}/trader/dashboard`;
 
         const escrowListHtml = escrows.map(escrow => `
             <div style="padding: 16px; border-bottom: 1px solid #eee;">
