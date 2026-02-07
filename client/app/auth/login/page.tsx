@@ -12,7 +12,7 @@ import { APP_NAME } from '@/constants/data';
 
 export default function LoginPage() {
     const router = useRouter();
-    const { setUser } = useAuthContext();
+    const { setUser } = useAuthContext(false);
     const [formData, setFormData] = useState({
         email: '',
         password: ''

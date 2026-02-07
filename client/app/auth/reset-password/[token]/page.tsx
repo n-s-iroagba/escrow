@@ -12,7 +12,7 @@ import { APP_NAME } from '@/constants/data';
 export default function ResetPasswordPage() {
     const params = useParams();
     const router = useRouter();
-    const { setUser } = useAuthContext();
+    const { setUser } = useAuthContext(false);
     // Safely handle params.token - useParams() returns string | string[]
     const token = Array.isArray(params?.token) ? params.token[0] : params?.token as string;
 
