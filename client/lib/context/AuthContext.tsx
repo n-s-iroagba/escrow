@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 
     const checkAuth = (shouldFetch: boolean) => {
-        if (!shouldFetch) {
+        if (shouldFetch) {
             setShouldFetch(true);
         }
     };

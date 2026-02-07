@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../lib/context/AuthContext";
 
-export const useAuthContext = (shouldFetch: boolean) => {
+export const useAuthContext = (shouldFetch: boolean = false) => {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error('useAuthContext must be used within AuthProvider');
