@@ -32,7 +32,7 @@ import { APP_NAME } from '@/constants/data';
 import { useState } from 'react';
 
 export default function DashboardPage() {
-    const { user } = useRequiredAuth(true);
+    const { user } = useRequiredAuth();
     const router = useRouter();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
