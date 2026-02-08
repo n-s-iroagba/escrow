@@ -222,13 +222,7 @@ export default function FundEscrowPage() {
 
     return (
         <div className="min-h-screen bg-[#f6f8f6] p-8 font-display text-[#0d1b12] flex items-center justify-center">
-            <div className="text-center mb-8">
 
-                <p className="text-gray-500">
-                    Please after payment remember to  <strong className="text-gray-900">Mark as sent</strong>, using the button below.
-                </p>
-
-            </div>
             {/* Success Modal */}
             {showSuccess && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
@@ -284,9 +278,17 @@ export default function FundEscrowPage() {
             <div className="max-w-2xl w-full bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
                 <div className="text-center mb-8">
                     <h1 className="text-2xl font-bold mb-2">Secure Funding</h1>
+
                     <p className="text-gray-500">
                         Please proceed with the payment of <strong className="text-gray-900">{amountToPay} {paymentCurrency || escrow.buyCurrency}</strong>
                     </p>
+                    <div className="text-center mb-8">
+
+                        <p className="text-gray-500">
+                            Please after payment remember to  <strong className="text-gray-900">Mark as sent</strong>, using the button below.
+                        </p>
+
+                    </div>
                     <div className="flex justify-center mt-2">
                         <span className="bg-blue-50 text-blue-700 text-xs px-3 py-1 rounded-full border border-blue-100 font-bold flex items-center gap-1">
                             <ShieldCheck className="w-3 h-3" />
