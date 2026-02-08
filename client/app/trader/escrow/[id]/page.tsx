@@ -359,12 +359,28 @@ export default function EscrowDetailsPage() {
                                                     <label className="text-xs font-bold text-gray-400 uppercase block mb-1">Account Number</label>
                                                     <p className="font-mono font-medium text-sm text-gray-900">{recipientDetails.accountNumber}</p>
                                                 </div>
+                                                <div className="p-3 bg-gray-50 rounded-xl border border-gray-100">
+                                                    <label className="text-xs font-bold text-gray-400 uppercase block mb-1">IBAN</label>
+                                                    <p className="font-mono font-medium text-sm text-gray-900">{recipientDetails.iban}</p>
+                                                </div>
+                                                <div className="p-3 bg-gray-50 rounded-xl border border-gray-100">
+                                                    <label className="text-xs font-bold text-gray-400 uppercase block mb-1">Swift Code</label>
+                                                    <p className="font-mono font-medium text-sm text-gray-900">{recipientDetails.swiftCode}</p>
+                                                </div>
+                                                <div className="p-3 bg-gray-50 rounded-xl border border-gray-100">
+                                                    <label className="text-xs font-bold text-gray-400 uppercase block mb-1">Routing Number</label>
+                                                    <p className="font-mono font-medium text-sm text-gray-900">{recipientDetails.routingNumber}</p>
+                                                </div>
                                             </>
                                         ) : (
                                             <>
                                                 <div className="p-3 bg-gray-50 rounded-xl border border-gray-100">
+                                                    <label className="text-xs font-bold text-gray-400 uppercase block mb-1">Crypto Currency</label>
+                                                    <p className="font-medium text-sm text-gray-900">{recipientDetails.currency}</p>
+                                                </div>
+                                                <div className="p-3 bg-gray-50 rounded-xl border border-gray-100">
                                                     <label className="text-xs font-bold text-gray-400 uppercase block mb-1">Network</label>
-                                                    <p className="font-medium text-sm text-gray-900">{recipientDetails.network || 'Mainnet'}</p>
+                                                    <p className="font-medium text-sm text-gray-900">{recipientDetails.network}</p>
                                                 </div>
                                                 <div className="p-3 bg-gray-50 rounded-xl border border-gray-100">
                                                     <label className="text-xs font-bold text-gray-400 uppercase block mb-1">Wallet Address</label>

@@ -253,7 +253,7 @@ class EscrowService {
                     currency: buyCurrency,
                     createdAt: new Date(),
                     updatedAt: new Date(),
-                    confirmedByAdmin: true
+                    confirmedByAdmin: false
                 });
             }
 
