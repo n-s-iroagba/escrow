@@ -222,7 +222,13 @@ export default function FundEscrowPage() {
 
     return (
         <div className="min-h-screen bg-[#f6f8f6] p-8 font-display text-[#0d1b12] flex items-center justify-center">
+            <div className="text-center mb-8">
 
+                <p className="text-gray-500">
+                    Please after payment remember to  <strong className="text-gray-900">Mark as sent</strong>, using the button below.
+                </p>
+
+            </div>
             {/* Success Modal */}
             {showSuccess && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
