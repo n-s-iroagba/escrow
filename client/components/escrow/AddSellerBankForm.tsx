@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { usePost } from '@/hooks/useApiQuery';
 import API_ROUTES from '@/constants/api-routes';
+import { AlertCircle } from 'lucide-react';
 
 export function AddSellerBankForm({ escrowId }: { escrowId: string }) {
     const { post, isPending } = usePost(API_ROUTES.SELLER_BANKS.CREATE, {
@@ -26,6 +27,12 @@ export function AddSellerBankForm({ escrowId }: { escrowId: string }) {
 
     return (
         <div className="space-y-3 text-left">
+            <div className="flex items-start gap-2 pt-2">
+                <AlertCircle className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
+                <p className="text-xs text-blue-600 leading-snug">
+                    This the bank account you intend to receive your funds in, once you confirm this transaction you can't edit this details.
+                </p>
+            </div>
             <div>
                 <label className="text-xs font-bold text-gray-500 uppercase">Account Holder</label>
                 <input
@@ -87,6 +94,7 @@ export function AddSellerBankForm({ escrowId }: { escrowId: string }) {
                     />
                 </div>
             </div>
+
             <button
                 onClick={handleSubmit}
                 disabled={isPending || !formData.accountNumber}
@@ -94,6 +102,7 @@ export function AddSellerBankForm({ escrowId }: { escrowId: string }) {
             >
                 {isPending ? 'Saving...' : 'Save Bank Details'}
             </button>
+
         </div>
     );
 }

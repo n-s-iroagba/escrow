@@ -365,12 +365,20 @@ export default function EscrowDetailsPage() {
                                                 </div>
                                                 <div className="p-3 bg-gray-50 rounded-xl border border-gray-100">
                                                     <label className="text-xs font-bold text-gray-400 uppercase block mb-1">Swift Code</label>
-                                                    <p className="font-mono font-medium text-sm text-gray-900">{recipientDetails.swiftCode}</p>
+                                                    <p className="font-mono font-medium text-sm text-gray-900">{recipientDetails.swift}</p>
                                                 </div>
                                                 <div className="p-3 bg-gray-50 rounded-xl border border-gray-100">
                                                     <label className="text-xs font-bold text-gray-400 uppercase block mb-1">Routing Number</label>
                                                     <p className="font-mono font-medium text-sm text-gray-900">{recipientDetails.routingNumber}</p>
                                                 </div>
+                                                <div className="flex items-start gap-2 pt-2">
+                                                    <AlertCircle className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
+                                                    <p className="text-xs text-blue-600 leading-snug">
+                                                        This your receiving bank account for this transaction once you confirm this transaction you can't edit this details.
+                                                    </p>
+                                                </div>
+
+
                                             </>
                                         ) : (
                                             <>
@@ -386,14 +394,15 @@ export default function EscrowDetailsPage() {
                                                     <label className="text-xs font-bold text-gray-400 uppercase block mb-1">Wallet Address</label>
                                                     <p className="font-mono text-xs break-all font-medium text-gray-700">{recipientDetails.walletAddress}</p>
                                                 </div>
+                                                <div className="flex items-start gap-2 pt-2">
+                                                    <AlertCircle className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
+                                                    <p className="text-xs text-blue-600 leading-snug">
+                                                        This your receiving wallet address for this transaction once you confirm this transaction you can't edit this details.
+                                                    </p>
+                                                </div>
                                             </>
                                         )}
-                                        <div className="flex items-start gap-2 pt-2">
-                                            <AlertCircle className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
-                                            <p className="text-xs text-blue-600 leading-snug">
-                                                This the receiving bank account for this transaction.
-                                            </p>
-                                        </div>
+
                                     </div>
                                 );
                             })()}
