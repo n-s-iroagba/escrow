@@ -10,6 +10,7 @@ import { useState, useEffect } from 'react';
 import Script from 'next/script';
 import { useRequiredAuth } from '@/hooks/useAuthContext';
 import { IEscrow, CryptoWallet } from '@/types/escrow';
+import toast from 'react-hot-toast';
 
 declare global {
     interface Window {
@@ -115,6 +116,7 @@ export default function FundEscrowPage() {
 
     const handleCopy = (text: string) => {
         navigator.clipboard.writeText(text);
+        toast.success('Copied to clipboard');
     };
 
     const handleWireSubmit = async () => {
