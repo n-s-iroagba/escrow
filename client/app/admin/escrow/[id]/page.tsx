@@ -141,8 +141,8 @@ export default function AdminEscrowDetailsPage() {
                                 </h3>
                             </div>
                             <div className="p-6 space-y-4 text-sm">
-                                <DetailRow label="Expected Amount" value={`${escrow.amount} ${escrow.buyCurrency}`} highlight />
-                                <DetailRow label="Selling" value={escrow.sellCurrency} />
+                                <DetailRow label="Buyer Deposit Amount" value={`${escrow.buyerDepositAmount} ${escrow.buyCurrency}`} highlight />
+                                <DetailRow label="Seller Deposit Amount" value={`${escrow.sellerDepositAmount} ${escrow.sellCurrency}`} highlight />
                                 <DetailRow label="Fee Payer" value={escrow.feePayer} />
                                 <DetailRow label="Confirmation Deadline" value={new Date(escrow.counterPartyConfirmationDeadline).toLocaleDateString()} />
                             </div>

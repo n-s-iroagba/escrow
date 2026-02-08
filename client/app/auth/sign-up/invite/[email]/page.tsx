@@ -59,7 +59,7 @@ export default function InviteSignUpPage() {
             <div className="absolute top-0 w-full flex justify-center p-6 z-10">
                 <div className="flex items-center gap-2">
                     <div className="w-6 h-6 bg-[#13ec5b] rounded text-xs flex items-center justify-center font-bold text-[#0d1b12]">X</div>
-                    <span className="font-bold text-lg text-white  tracking-tight">{APP_NAME}</span>
+                    <span className="font-bold text-lg text-white tracking-tight">{APP_NAME}</span>
                 </div>
             </div>
             <div className="min-h-screen flex bg-[#f6f8f6] font-display items-center justify-center p-4">

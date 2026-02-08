@@ -194,7 +194,7 @@ export default function DashboardPage() {
                             <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-max invisible group-hover/tooltip:visible opacity-0 group-hover/tooltip:opacity-100 transition-all z-10">
                                 <div className="bg-gray-900 text-white text-xs py-2 px-3 rounded-lg shadow-xl relative">
                                     <div className="absolute bottom-full left-1/2 -translate-x-1/2 border-4 border-transparent border-b-gray-900"></div>
-                                    Please verify your KYC to proceed
+                                    Please complete your KYC verification to proceed.
                                 </div>
                             </div>
                         )}
@@ -357,7 +357,7 @@ export default function DashboardPage() {
                                                     {!isVerified && (
                                                         <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max invisible group-hover/tooltip:visible opacity-0 group-hover/tooltip:opacity-100 transition-all z-10">
                                                             <div className="bg-gray-900 text-white text-xs py-2 px-3 rounded-lg shadow-xl relative">
-                                                                Please verify your KYC to proceed
+                                                                Please complete your KYC verification to proceed.
                                                                 <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
                                                             </div>
                                                         </div>

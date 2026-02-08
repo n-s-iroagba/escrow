@@ -27,11 +27,11 @@ describe('Trader Dashboard - KYC Tooltip', () => {
         // In the code: {!isVerified && ( <div ...> ... </div> )}
         // It is rendered when !isVerified.
 
-        cy.contains('Please verify your KYC to proceed').should('exist');
+        cy.contains('Please complete your KYC verification to proceed.').should('exist');
 
         // Improve check by forcing the hover state if needed, but presence check is a good start since it's in the DOM
         cy.get('.group\\/tooltip').first().trigger('mouseover');
-        cy.contains('Please verify your KYC to proceed').should('be.visible');
+        cy.contains('Please complete your KYC verification to proceed.').should('be.visible');
     });
 
     it('should enable fund button when user IS verified', () => {
@@ -52,6 +52,6 @@ describe('Trader Dashboard - KYC Tooltip', () => {
         cy.getByTestId('fund-now-button').first().should('not.have.class', 'cursor-not-allowed');
 
         // Tooltip should not exist
-        cy.contains('Please verify your KYC to proceed').should('not.exist');
+        cy.contains('Please complete your KYC verification to proceed.').should('not.exist');
     });
 });
