@@ -282,6 +282,7 @@ class EmailService {
             <p style="text-align: center; color: #6b7280; margin-bottom: 32px;">
                 You've been invited by <strong>${inviterEmail}</strong> to a secure transaction.
             </p>
+            <p>Escrow protects both buyers and sellers by holding funds safely until all terms are met.</p>
             
             <div class="data-box">
                 <div class="data-row" style="margin-bottom: 16px; border-bottom: 1px solid #eee; padding-bottom: 16px;">
@@ -296,7 +297,7 @@ class EmailService {
             </div>
 
             <div style="text-align: center;">
-                <a href="${inviteLink}" class="button">View Transaction Details</a>
+                <a href="${inviteLink}" target="_blank" class="button">View Transaction Details</a>
             </div>
         `;
 
