@@ -527,8 +527,8 @@ class EmailService {
                     <span class="data-value" style="font-family: monospace;">${escrowId}</span>
                 </div>
                 <div >
-                    <p class="data-label">Amount Funded</p>
-                    <br/>
+                    <p class="data-label">Amount Funded :</p>
+                  
                     <p class="data-value" style="color: #059669;">${amount} ${currency}</p>
                 </div>
             </div>
@@ -572,8 +572,8 @@ class EmailService {
                     <span class="data-value" style="font-family: monospace;">${escrowId}</span>
                 </div>
                 <div >
-                    <p class="data-label">Asset Deposited</p>
-                    <br/>
+                    <p class="data-label">Asset Deposited : </p>
+                  
                     <p class="data-value" style="color: #059669;">${amount} ${currency}</p>
                 </div>
             </div>
