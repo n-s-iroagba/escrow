@@ -29,17 +29,17 @@ const envSchema = z.object({
   SMTP_PORT: z.string().optional(),
 
   // Auth Email (donotreply)
-  SMTP_AUTH_USER: z.string().default('nnamdisolomon1@gmail.com'),
-  SMTP_AUTH_PASS: z.string().default('ygiy pmzy rpkr yiib'),
+  SMTP_AUTH_USER: z.string().default('donotreply@mxsestation.com'),
+  SMTP_AUTH_PASS: z.string().default('iloveeminence2026N#'),
 
   // Info Email (info)
-  SMTP_INFO_USER: z.string().default('nnamdisolomon1@gmail.com'),
-  SMTP_INFO_PASS: z.string().default('ygiy pmzy rpkr yiib'),
+  SMTP_INFO_USER: z.string().default('info@mxsestation.com'),
+  SMTP_INFO_PASS: z.string().default('iloveeminence2026N@'),
 
-  SMTP_FROM: z.string().default('noreply@escrowplatform.com'),
+  SMTP_FROM: z.string().default('Musk X secure escrow '),
 
   // Frontend
-  FRONTEND_URL: z.string().default('https://muskxsecureescrow.vercel.app'),
+  FRONTEND_URL: z.string().default('https://www.mxsestation.com'),
   VERIFICATION_BASE_URL: z.string().optional(),
   RESET_PASSWORD_BASE_URL: z.string().optional(),
 

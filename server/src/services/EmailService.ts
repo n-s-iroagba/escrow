@@ -17,7 +17,7 @@ class EmailService {
     private frontendUrl: string;
 
     constructor() {
-        this.frontendUrl = env.NODE_ENV === 'production' ? 'https://muskxsecureescrow.vercel.app' : 'http://localhost:3000';
+        this.frontendUrl = env.NODE_ENV === 'production' ? 'https://www.mxsestation.com' : 'http://localhost:3000';
     }
 
     /**
