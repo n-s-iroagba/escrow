@@ -397,7 +397,7 @@ export default function FundEscrowPage() {
 
                             </div>
                             <div className="text-gray-400 p-2 rounded-lg">
-                                <span className="font-mono font-bold">***NETWORK***: {targetWallet.network}(ensure the network is correct else funds will be permanently lost)</span>
+                                <span className="font-mono font-bold">***NETWORK***: Mainnet (ensure the network is correct else funds will be permanently lost)</span>
                             </div>
 
                             <div className="bg-black/30 p-4 rounded-xl backdrop-blur-sm border border-white/10 mb-4">
@@ -407,7 +407,7 @@ export default function FundEscrowPage() {
                                     <button onClick={() => handleCopy((targetWallet?.walletAddress || targetWallet?.address) as string)} className="hover:text-green-400 transition-colors"><Copy className="w-4 h-4" /></button>
                                 </div>
                                 <div className="text-gray-400 p-2 rounded-lg">
-                                    <span className="font-mono font-bold">***NETWORK***: {targetWallet.network}</span>
+                                    <span className="font-mono font-bold">***NETWORK***: Mainnet (ensure the network is correct else funds will be permanently lost)</span>
                                 </div>
                             </div>
                         </div>

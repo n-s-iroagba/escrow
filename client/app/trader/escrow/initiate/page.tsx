@@ -724,7 +724,7 @@ export default function InitiateEscrowPage() {
                                                 className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 outline-none"
                                             >
                                                 <option value="mainnet">Mainnet</option>
-                                                <option value="testnet">Testnet</option>
+
                                             </select>
                                         </div>
                                     </>

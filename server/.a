@@ -38,5 +38,5 @@ LOG_LEVEL=info
 CUSTODIAL_WALLET_ADMIN_EMAIL=nnamdisolomon1@gmail.com
 
 # Crypto Wallet Configuration (for demo)
-BTC_NETWORK=testnet
-ETH_NETWORK=sepolia
+BTC_NETWORK=mainnet
+ETH_NETWORK=mainnet
