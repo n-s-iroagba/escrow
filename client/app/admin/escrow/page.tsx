@@ -102,7 +102,8 @@ export default function AdminEscrowListPage() {
                                         <th className="text-left p-4 font-semibold">ID</th>
                                         <th className="text-left p-4 font-semibold">Created</th>
                                         <th className="text-left p-4 font-semibold">Initiator</th>
-                                        <th className="text-left p-4 font-semibold">Amount</th>
+                                        <th className="text-left p-4 font-semibold">Buyer Deposit Amount</th>
+                                        <th className="text-left p-4 font-semibold">Seller Deposit Amount</th>
                                         <th className="text-left p-4 font-semibold">Trade</th>
                                         <th className="text-left p-4 font-semibold">Buyer Funding Status</th>
                                         <th className="text-left p-4 font-semibold">Seller Funding Status</th>
@@ -123,8 +124,12 @@ export default function AdminEscrowListPage() {
                                                 <p className="text-xs text-slate-400">{escrow.isBuyerInitiated ? 'Buyer' : 'Seller'}</p>
                                             </td>
                                             <td className="p-4">
-                                                <span className="font-bold text-slate-900">{escrow.amount}</span>
+                                                <span className="font-bold text-slate-900">{Number(escrow.buyerDepositAmount)}</span>
                                                 <span className="text-slate-400 ml-1 text-sm">{escrow.buyCurrency}</span>
+                                            </td>
+                                            <td className="p-4">
+                                                <span className="font-bold text-slate-900">{Number(escrow.sellerDepositAmount)}</span>
+                                                <span className="text-slate-400 ml-1 text-sm">{escrow.sellCurrency}</span>
                                             </td>
                                             <td className="p-4 text-sm text-slate-600">
                                                 {escrow.tradeType === 'CRYPTO_TO_CRYPTO' ? 'C2C' : 'C2F'}

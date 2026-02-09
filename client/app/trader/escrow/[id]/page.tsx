@@ -297,7 +297,7 @@ export default function EscrowDetailsPage() {
                                     </div>
                                     <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
                                         <span className="text-gray-500 text-xs uppercase tracking-wide font-bold">Purchase Amount</span>
-                                        <p className="font-bold text-base mt-1 font-mono">{escrow.buyerDepositAmount} {escrow.buyCurrency}</p>
+                                        <p className="font-bold text-base mt-1 font-mono">{Number(escrow.buyerDepositAmount)} {escrow.buyCurrency}</p>
                                     </div>
                                     <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
                                         <span className="text-gray-500 text-xs uppercase tracking-wide font-bold">Sale Asset Value</span>

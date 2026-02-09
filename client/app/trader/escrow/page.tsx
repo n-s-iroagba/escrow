@@ -164,9 +164,9 @@ export default function EscrowListPage() {
                                                         </div>
                                                         <div>
                                                             <h3 className="font-bold text-xl flex items-center gap-2">
-                                                                {escrow.amount} <span className="text-gray-400 text-base">{escrow.buyCurrency}</span>
+                                                                {escrow.buyerDepositAmount} <span className="text-gray-400 text-base">{escrow.buyCurrency}</span>
                                                                 <span className="text-gray-300">→</span>
-                                                                <span className="text-gray-400 text-base">{escrow.sellCurrency}</span>
+                                                                <span className="text-gray-400 text-base">{escrow.sellerDepositAmount} {escrow.sellCurrency}</span>
                                                             </h3>
                                                             <div className="flex items-center gap-3 text-sm text-gray-400 mt-1.5 font-medium">
                                                                 <span>#{escrow.id.substring(0, 8)}</span>

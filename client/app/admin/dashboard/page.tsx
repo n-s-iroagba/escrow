@@ -130,7 +130,8 @@ export default function AdminDashboardPage() {
                                 <thead className="bg-slate-50/80 text-xs text-slate-500 uppercase tracking-wider">
                                     <tr>
                                         <th className="text-left p-4 font-semibold">ID</th>
-                                        <th className="text-left p-4 font-semibold">Amount</th>
+                                        <th className="text-left p-4 font-semibold">Buyer Deposit Amount</th>
+                                        <th className="text-left p-4 font-semibold">Seller Deposit Amount</th>
                                         <th className="text-left p-4 font-semibold">Type</th>
                                         <th className="text-left p-4 font-semibold">Status</th>
                                         <th className="text-left p-4 font-semibold">Date</th>
@@ -149,8 +150,12 @@ export default function AdminDashboardPage() {
                                                 <span className="font-mono text-sm text-slate-600">#{escrow.id.substring(0, 8)}</span>
                                             </td>
                                             <td className="p-4">
-                                                <span className="font-bold text-slate-900">{escrow.amount}</span>
+                                                <span className="font-bold text-slate-900">{Number(escrow.buyerDepositAmount)}</span>
                                                 <span className="text-slate-400 ml-1">{escrow.buyCurrency}</span>
+                                            </td>
+                                            <td className="p-4">
+                                                <span className="font-bold text-slate-900">{Number(escrow.sellerDepositAmount)}</span>
+                                                <span className="text-slate-400 ml-1">{escrow.sellCurrency}</span>
                                             </td>
                                             <td className="p-4">
                                                 <span className="text-sm text-slate-600">{escrow.tradeType?.replace(/_/g, ' ')}</span>

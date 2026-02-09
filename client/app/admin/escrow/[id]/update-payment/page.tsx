@@ -135,9 +135,10 @@ export default function AdminUpdatePaymentPage() {
                             <div>
                                 <h3 className="font-bold text-lg text-gray-900">Buyer Payment</h3>
                                 <p className="text-xs text-gray-500 font-medium">
-                                    Expected: {escrow.amount} {escrow.buyCurrency}
+                                    Expected: {escrow.buyerDepositAmount} {escrow.buyCurrency}
                                 </p>
                             </div>
+
                         </div>
 
                         <div className="space-y-4">
@@ -189,7 +190,7 @@ export default function AdminUpdatePaymentPage() {
                             <div>
                                 <h3 className="font-bold text-lg text-gray-900">Seller Payment</h3>
                                 <p className="text-xs text-gray-500 font-medium">
-                                    Expected: {escrow.amount} {escrow.sellCurrency}
+                                    Expected: {escrow.sellerDepositAmount} {escrow.sellCurrency}
                                 </p>
                             </div>
                         </div>

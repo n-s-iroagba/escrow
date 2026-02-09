@@ -329,9 +329,9 @@ export default function DashboardPage() {
                                                 </div>
                                                 <div>
                                                     <h3 className="font-bold text-gray-900 text-xl mb-1 font-display">
-                                                        {escrow.amount} {escrow.buyCurrency}
+                                                        {escrow.buyerDepositAmount} {escrow.buyCurrency}
                                                         <span className="text-emerald-500 font-normal text-lg mx-2">→</span>
-                                                        {escrow.sellCurrency}
+                                                        {escrow.sellerDepositAmount} {escrow.sellCurrency}
                                                     </h3>
                                                     <p className="text-sm text-gray-500">
                                                         ID: <span className="font-mono bg-gray-100 px-2 py-0.5 rounded">#{escrow.id.substring(0, 8)}</span>
