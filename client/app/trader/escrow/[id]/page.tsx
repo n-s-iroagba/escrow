@@ -118,7 +118,7 @@ export default function EscrowDetailsPage() {
                             <span className="text-gray-400 text-sm font-mono">#{escrow.id.substring(0, 8)}</span>
                         </div>
                         <h1 className="text-2xl font-bold flex items-center gap-2">
-                            {escrow.isBuyerInitiated ? escrow.buyerDepositAmount : escrow.sellerDepositAmount} {escrow.isBuyerInitiated ? escrow.buyCurrency : escrow.sellCurrency}
+                            {escrow.isBuyerInitiated ? Number(escrow.buyerDepositAmount) : Number(escrow.sellerDepositAmount)} {escrow.isBuyerInitiated ? escrow.buyCurrency : escrow.sellCurrency}
                             <ArrowRightLeft className="w-5 h-5 text-gray-400" />
                             Transaction
                         </h1>
@@ -146,6 +146,7 @@ export default function EscrowDetailsPage() {
                                     </button>
                                 );
                             }
+
                         })()}
                     </div>
                 </div>
