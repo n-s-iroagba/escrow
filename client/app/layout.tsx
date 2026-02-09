@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Musk Secure Escrow",
-  description: "Musk Secure Escrow",
+  title: "Mxse",
+  description: "Mxse",
 };
 
 export default function RootLayout({
