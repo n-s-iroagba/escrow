@@ -6,6 +6,7 @@ import API_ROUTES from '@/constants/api-routes';
 import { usePost, useGet } from '@/hooks/useApiQuery';
 import { TradeType, PaymentMethod, FeePayer } from '@/constants/enums';
 import { ArrowLeft, ArrowRight, Check, ShieldCheck, Coins, Banknote, Wallet, AlertCircle, UserCheck, Building2 } from 'lucide-react';
+import Loader from '@/components/ui/Loader';
 import Link from 'next/link';
 import { useRequiredAuth } from '@/hooks/useAuthContext';
 
@@ -585,9 +586,9 @@ export default function InitiateEscrowPage() {
                                             type="button"
                                             onClick={handleValidateCounterparty}
                                             disabled={!formData.counterPartyEmail || isValidating}
-                                            className="px-4 rounded-xl bg-slate-100 text-slate-600 font-medium hover:bg-slate-200 disabled:opacity-50 transition-colors"
+                                            className="px-4 rounded-xl bg-slate-100 text-slate-600 font-medium hover:bg-slate-200 disabled:opacity-50 transition-colors flex items-center justify-center min-w-[100px]"
                                         >
-                                            {isValidating ? 'Checking...' : 'Validate'}
+                                            {isValidating ? <Loader size="sm" /> : 'Validate'}
                                         </button>
                                     </div>
                                     {counterpartyStatus.checked && (
@@ -740,7 +741,14 @@ export default function InitiateEscrowPage() {
                                         className="px-8 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-emerald-500/25 hover:from-emerald-600 hover:to-emerald-700 transition-all disabled:opacity-50"
                                     >
                                         <ShieldCheck className="w-5 h-5" />
-                                        {isPending ? 'Creating...' : 'Initialize Escrow'}
+                                        {isPending ? (
+                                            <>
+                                                <Loader size="sm" />
+                                                <span>Creating...</span>
+                                            </>
+                                        ) : (
+                                            'Initialize Escrow'
+                                        )}
                                     </button>
                                 </div>
                             </div>

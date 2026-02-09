@@ -26,8 +26,8 @@ import {
 
     X
 } from 'lucide-react';
-import { Skeleton } from '@/components/ui/Skeleton';
 import Link from 'next/link';
+import Loader from '@/components/ui/Loader';
 import { APP_NAME } from '@/constants/data';
 import { useState } from 'react';
 
@@ -59,7 +59,11 @@ export default function DashboardPage() {
     const totalVolume = myEscrows.reduce((acc: number, curr: any) => acc + parseFloat(curr.amount || 0), 0);
 
     if (loading) {
-        return <div className={`animate-pulse rounded-lg bg-gray-200/80`}>Loading Dashboard...</div>
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-[#f6f8f6]">
+                <Loader size="lg" text="Loading Dashboard..." />
+            </div>
+        )
     }
 
     return (
@@ -230,27 +234,17 @@ export default function DashboardPage() {
                     </div>
                 )}
                 {kycLoading && !isVerified && user?.role !== 'ADMIN' && (
-                    <div className="bg-white rounded-xl p-10 border-2 border-gray-100 shadow-sm mb-12">
-                        <div className="flex items-center gap-6">
-                            <Skeleton className="w-20 h-20 rounded-xl" />
-                            <div className="flex-1 space-y-3">
-                                <Skeleton className="h-8 w-1/3" />
-                                <Skeleton className="h-4 w-2/3" />
-                            </div>
-                            <Skeleton className="w-40 h-14 rounded-xl" />
-                        </div>
+                    <div className="bg-white rounded-xl p-10 border-2 border-gray-100 shadow-sm mb-12 flex items-center justify-center">
+                        <Loader size="md" text="Loading status..." />
                     </div>
                 )}
 
                 {/* Stats Grid */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6 mb-12">
                     {loading ? (
-                        <>
-                            <Skeleton className="h-40 rounded-xl bg-white border-2 border-gray-100" />
-                            <Skeleton className="h-40 rounded-xl bg-white border-2 border-gray-100" />
-                            <Skeleton className="h-40 rounded-xl bg-white border-2 border-gray-100" />
-                            <Skeleton className="h-40 rounded-xl bg-white border-2 border-gray-100" />
-                        </>
+                        <div className="col-span-2 lg:col-span-4 flex justify-center py-12">
+                            <Loader size="lg" />
+                        </div>
                     ) : (
                         <>
                             <StatCard
@@ -304,9 +298,8 @@ export default function DashboardPage() {
                         </div>
 
                         {loading ? (
-                            <div className="space-y-5">
-                                <Skeleton className="h-32 rounded-xl bg-white border-2 border-gray-100" />
-                                <Skeleton className="h-32 rounded-xl bg-white border-2 border-gray-100" />
+                            <div className="flex justify-center py-12">
+                                <Loader size="md" />
                             </div>
                         ) : pendingFundingEscrows.length === 0 ? (
                             <div className="bg-white rounded-xl p-12 text-center border-2 border-emerald-100 shadow-xl shadow-emerald-500/5">
@@ -386,11 +379,8 @@ export default function DashboardPage() {
 
                             <div className="bg-white rounded-xl border-2 border-gray-100 shadow-xl overflow-hidden">
                                 {loading ? (
-                                    <div className="p-6 space-y-4">
-                                        <Skeleton className="h-10 w-full" />
-                                        <Skeleton className="h-10 w-full" />
-                                        <Skeleton className="h-10 w-full" />
-                                        <Skeleton className="h-10 w-full" />
+                                    <div className="p-12 flex justify-center">
+                                        <Loader size="md" />
                                     </div>
                                 ) : myEscrows.length === 0 ? (
                                     <div className="p-12 text-center text-gray-400">No transaction history yet.</div>
@@ -475,7 +465,7 @@ export default function DashboardPage() {
                                 <div className="flex items-center justify-between p-4 bg-emerald-50 rounded-lg">
                                     <span className="text-gray-600 text-sm font-semibold">Total Trades</span>
                                     {loading ? (
-                                        <Skeleton className="h-6 w-8 bg-emerald-100" />
+                                        <Loader size="sm" />
                                     ) : (
                                         <span className="font-bold text-gray-900 text-lg font-display">{myEscrows.length}</span>
                                     )}

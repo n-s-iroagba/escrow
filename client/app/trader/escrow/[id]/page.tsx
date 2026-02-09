@@ -19,7 +19,7 @@ import { useRequiredAuth } from '@/hooks/useAuthContext';
 import { AddBuyerWalletForm } from '@/components/escrow/AddBuyerWalletForm';
 import { AddSellerWalletForm } from '@/components/escrow/AddSellerWalletForm';
 import { AddSellerBankForm } from '@/components/escrow/AddSellerBankForm';
-import { Skeleton } from '@/components/ui/Skeleton';
+import Loader from '@/components/ui/Loader';
 
 export default function EscrowDetailsPage() {
 
@@ -33,42 +33,8 @@ export default function EscrowDetailsPage() {
 
     // Skeleton Layout when loading
     if (loading) return (
-        <div className="min-h-screen bg-[#f6f8f6] p-4 lg:p-8 font-display">
-            <div className="max-w-6xl mx-auto space-y-6">
-                {/* Header Skeleton */}
-                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <div className="space-y-2">
-                        <Skeleton className="h-6 w-32 rounded-full" />
-                        <Skeleton className="h-10 w-64 rounded-lg" />
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                    <div className="lg:col-span-8 space-y-6">
-                        {/* Transaction Details Skeleton */}
-                        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 space-y-6">
-                            <Skeleton className="h-8 w-48" />
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {[1, 2, 3, 4].map(i => (
-                                    <Skeleton key={i} className="h-24 rounded-xl" />
-                                ))}
-                            </div>
-                        </div>
-                        {/* Holdings Skeleton */}
-                        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 space-y-6">
-                            <Skeleton className="h-8 w-48" />
-                            <div className="grid grid-cols-2 gap-4">
-                                <Skeleton className="h-32 rounded-xl" />
-                                <Skeleton className="h-32 rounded-xl" />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="lg:col-span-4 space-y-6">
-                        <Skeleton className="h-64 width-full rounded-2xl" />
-                        <Skeleton className="h-64 width-full rounded-2xl" />
-                    </div>
-                </div>
-            </div>
+        <div className="min-h-screen flex items-center justify-center bg-[#f6f8f6]">
+            <Loader size="lg" text="Loading Transaction Details..." />
         </div>
     );
 

@@ -6,6 +6,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { TradeType, PaymentMethod } from '@/constants/enums';
 import { Copy, ArrowRight, Banknote, ShieldCheck, CheckCircle } from 'lucide-react';
 import { Skeleton } from '@/components/ui/Skeleton';
+import Loader from '@/components/ui/Loader';
 import { useState, useEffect } from 'react';
 import Script from 'next/script';
 import { useRequiredAuth } from '@/hooks/useAuthContext';
@@ -97,17 +98,8 @@ export default function FundEscrowPage() {
     if (loadingDetails || loadingEscrow) {
         return (
             <div className="min-h-screen bg-[#f6f8f6] p-8 font-display flex items-center justify-center">
-                <div className="max-w-2xl w-full bg-white rounded-3xl shadow-xl p-8 border border-gray-100 space-y-8">
-                    <div className="text-center space-y-4">
-                        <Skeleton className="h-8 w-48 mx-auto" />
-                        <Skeleton className="h-4 w-96 mx-auto" />
-                        <Skeleton className="h-6 w-32 mx-auto rounded-full" />
-                    </div>
-                    <div className="space-y-6">
-                        <Skeleton className="h-64 rounded-2xl" />
-                        <Skeleton className="h-16 rounded-xl" />
-                        <Skeleton className="h-16 rounded-xl" />
-                    </div>
+                <div className="max-w-2xl w-full flex flex-col items-center justify-center p-8 space-y-8">
+                    <Loader size="lg" text="Loading secure transaction..." />
                 </div>
             </div>
         );
@@ -364,8 +356,17 @@ export default function FundEscrowPage() {
                             disabled={isFunding || !wireRef}
                             className={`w-full py-4 font-bold rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 ${!wireRef ? 'bg-gray-100 text-gray-400' : 'bg-[#13ec5b] hover:bg-[#10c94d] text-[#0d1b12] shadow-green-200'}`}
                         >
-                            {isFunding ? 'Marking as Sent...' : 'Mark as Sent'}
-                            <ArrowRight className="w-5 h-5" />
+                            {isFunding ? (
+                                <>
+                                    <Loader size="sm" />
+                                    <span>Processing...</span>
+                                </>
+                            ) : (
+                                <>
+                                    Mark as Sent
+                                    <ArrowRight className="w-5 h-5" />
+                                </>
+                            )}
                         </button>
                     </div>
                 )}
@@ -429,8 +430,17 @@ export default function FundEscrowPage() {
                             disabled={isFunding || !cryptoTxHash}
                             className={`w-full py-4 font-bold rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 ${!cryptoTxHash ? 'bg-gray-100 text-gray-400' : 'bg-[#13ec5b] hover:bg-[#10c94d] text-[#0d1b12] shadow-green-200'}`}
                         >
-                            {isFunding ? 'Marking as Sent...' : 'Mark as Sent'}
-                            <ArrowRight className="w-5 h-5" />
+                            {isFunding ? (
+                                <>
+                                    <Loader size="sm" />
+                                    <span>Processing...</span>
+                                </>
+                            ) : (
+                                <>
+                                    Mark as Sent
+                                    <ArrowRight className="w-5 h-5" />
+                                </>
+                            )}
                         </button>
                     </div>
                 )}

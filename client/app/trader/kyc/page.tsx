@@ -7,7 +7,7 @@ import { useRequiredAuth } from '@/hooks/useAuthContext';
 import { useRouter } from 'next/navigation';
 import { ShieldCheck, Upload, FileText, CheckCircle, Clock, XCircle, AlertTriangle, Loader2, Image as ImageIcon, User, CreditCard } from 'lucide-react';
 import { uploadFile } from '@/utils';
-import { Skeleton } from '@/components/ui/Skeleton';
+import Loader from '@/components/ui/Loader';
 
 export default function KYCPage() {
     const { user } = useRequiredAuth();
@@ -79,19 +79,8 @@ export default function KYCPage() {
     };
 
     if (loading) return (
-        <div className="min-h-screen flex items-center justify-center bg-[#f6f8f6] p-8">
-            <div className="max-w-md w-full bg-white rounded-3xl shadow-sm border border-gray-100 p-8 space-y-6">
-                <div className="flex justify-center mb-6">
-                    <Skeleton className="w-20 h-20 rounded-full" />
-                </div>
-                <div className="space-y-3 text-center">
-                    <Skeleton className="h-8 w-48 mx-auto" />
-                    <Skeleton className="h-4 w-64 mx-auto" />
-                </div>
-                <div className="pt-4">
-                    <Skeleton className="h-12 w-full rounded-xl" />
-                </div>
-            </div>
+        <div className="min-h-screen flex items-center justify-center bg-[#f6f8f6]">
+            <Loader size="lg" text="Loading KYC Status..." />
         </div>
     );
 
@@ -273,7 +262,9 @@ export default function KYCPage() {
                                 >
                                     {uploading.front ? (
                                         <div className="flex flex-col items-center">
-                                            <Loader2 className="w-8 h-8 text-[#13ec5b] animate-spin mb-3" />
+                                            <div className="mb-3">
+                                                <Loader size="sm" />
+                                            </div>
                                             <span className="text-xs font-bold text-gray-400">Uploading...</span>
                                         </div>
                                     ) : formData.documentFrontUrl ? (
@@ -303,7 +294,9 @@ export default function KYCPage() {
                                 >
                                     {uploading.back ? (
                                         <div className="flex flex-col items-center">
-                                            <Loader2 className="w-8 h-8 text-[#13ec5b] animate-spin mb-3" />
+                                            <div className="mb-3">
+                                                <Loader size="sm" />
+                                            </div>
                                             <span className="text-xs font-bold text-gray-400">Uploading...</span>
                                         </div>
                                     ) : formData.documentBackUrl ? (
@@ -336,8 +329,12 @@ export default function KYCPage() {
                                     ? 'bg-gray-100 text-gray-400 cursor-not-allowed shadow-none transform-none'
                                     : 'bg-[#13ec5b] hover:bg-[#10c94d] text-[#0d1b12] shadow-green-200'}`}
                         >
-                            {isSubmitting ? 'Submitting...' : 'Submit Verification'}
-                            {!isSubmitting && <ShieldCheck className="w-5 h-5" />}
+                            {isSubmitting ? <Loader size="sm" text="Submitting..." /> : (
+                                <>
+                                    <span>Submit Verification</span>
+                                    <ShieldCheck className="w-5 h-5" />
+                                </>
+                            )}
                         </button>
                     </form>
                 </div>
