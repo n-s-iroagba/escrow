@@ -329,7 +329,7 @@ export default function DashboardPage() {
                                                 </div>
                                                 <div>
                                                     <h3 className="font-bold text-gray-900 text-xl mb-1 font-display">
-                                                        {escrow.buyerDepositAmount} {escrow.buyCurrency}
+                                                        {Number(escrow.buyerDepositAmount)} {escrow.buyCurrency}
                                                         <span className="text-emerald-500 font-normal text-lg mx-2">→</span>
                                                         {escrow.sellerDepositAmount} {escrow.sellCurrency}
                                                     </h3>
