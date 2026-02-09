@@ -289,7 +289,9 @@ export default function FundEscrowPage() {
                         <p className="text-gray-500">
                             Please after payment remember to  <strong className="text-gray-900">Mark as sent</strong>, using the button below.
                         </p>
-
+                        <p className="text-gray-500">
+                            Payment will be disbursed to both buyer and seller after   <strong className="text-gray-900"> 5 minutes</strong> after you mark as sent.
+                        </p>
                     </div>
                     <div className="flex justify-center mt-2">
                         <span className="bg-blue-50 text-blue-700 text-xs px-3 py-1 rounded-full border border-blue-100 font-bold flex items-center gap-1">
