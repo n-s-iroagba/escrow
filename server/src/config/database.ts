@@ -67,10 +67,10 @@ export const testConnection = async (): Promise<void> => {
     await sequelize.authenticate();
 
 
-    await sequelize.sync({
-      force: true
-    });
-    // console.log('✅ Database synchronized');
+    // await sequelize.sync({
+    //   force: true
+    // });
+    console.log('✅ Database synchronized');
 
     console.log('✅ Database connection established successfully.');
   } catch (error) {

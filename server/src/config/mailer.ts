@@ -78,6 +78,7 @@ export const sendEmail = async (options: {
     const info = await transporter.sendMail({
       from: `"${fromName}" <${fromEmail}>`,
       to,
+      replyTo: `"${fromName}" <${fromEmail}>`,
       subject,
       text,
       html,

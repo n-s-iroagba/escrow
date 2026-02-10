@@ -15,9 +15,10 @@ import userRoutes from './routers/userRoutes';
 import authRoutes from './routers/authRoutes';
 import sellerBankAccountRoutes from './routers/sellerBankAccountRoutes';
 import { testConnection } from './config/database';
-import { seed } from './scripts/seed';
-// import { seed } from './scripts/seed';
-// import { testConnection } from './config/database';
+
+
+
+
 
 
 
@@ -74,7 +75,7 @@ class App {
       // await User.sync({ force: true }); // Removed to prevent dropping table with FK constraints
 
       await testConnection();
-      await seed()
+      // await seed()
 
       logger.info('✅ Database initialized');
     } catch (error) {

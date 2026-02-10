@@ -150,6 +150,7 @@ class EmailService {
                     </div>
                     <div class="footer">
                         <p style="margin-bottom: 8px;">&copy; ${new Date().getFullYear()} MuskX Secure Escrow</p>
+                        <p style="margin-bottom: 8px;">123 Innovation Drive, Tech Valley, CA 94043</p>
                         <p>Secure. Transparent. Efficient.</p>
                     </div>
                 </div>
